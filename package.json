@@ -1,0 +1,14 @@
+{
+  "name": "fabula-ultima-technosphere-machine",
+  "version": "1.0.0",
+  "main": "scripts/technosphere-machine.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mettra",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "@types/jquery": "^3.5.32"
+  }
+}

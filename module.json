@@ -1,0 +1,26 @@
+{
+    "name": "fabula-ultima-technosphere-machine",
+    "title": "Fabula Ultime Technosphere Machine",
+    "description": "A module that adds a Technosphere gatcha machine!",
+    "authors": [
+      {
+        "name": "Mettra"
+      }
+    ],
+    "version": "1",
+    "scripts": [
+        "scripts/technosphere-machine.js"
+    ],
+    "styles": [
+        "styles/technosphere-machine.css"
+    ],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "languages/en.json"
+        }
+    ],
+    "minimumCoreVersion": "0.8.8"
+  }
+  

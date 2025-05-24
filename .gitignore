@@ -1,0 +1,4 @@
+.jsinclude
+node_modules
+.vscode
+*.lock
