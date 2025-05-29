@@ -318,8 +318,9 @@ class Memnosphere {
      */
     async createItem() {
         const itemData = {
-            name: "Memnosphere",
-            type: "basic",
+            name: `Memnosphere - ${this.class.name}`,
+            icon: this.class.uuid ? fromUuidSync(this.class.uuid)?.img || "icons/svg/item-bag.svg" : "icons/svg/item-bag.svg",
+            type: "treasure",
             system: {
                 description: this.createDescription()
             },
@@ -485,7 +486,7 @@ const MEMNOSPHERE_ROLL_COST = 500
  * @param {string} params.rollTableUUID - The UUID of the base RollTable for classes (if no existing sphere).
  * @param {string} params.actorUUID - The UUID of the actor whose Zenit will be used and who will own the Memnosphere item.
  * @param {string} [params.existingSphereUUID] - Optional UUID of an existing Memnosphere item to merge with.
- * @returns {Promise<void>}
+ * @returns {Promise<Item>}
  */
 async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
     let actor = fromUuidSync(actorUUID)
@@ -597,6 +598,8 @@ async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
 
     // Update the description of the existing Memnosphere item with the merged data.
     await sphereItem.update({system: {description: mergedMemnosphere.createDescription() } })
+
+    return sphereItem
 }
 
 
@@ -626,6 +629,20 @@ function socketFn(callable) {
 
 // CONFIG.queries[getEventName("rollMemnosphere")] = rollMemnosphere; // This line appears commented out in the original.
 
+async function SetFlagWithoutRender(document, scope, key, value) {
+    const scopes = document.constructor.database.getFlagScopes();
+    if ( !scopes.includes(scope) ) throw new Error(`Flag scope "${scope}" is not valid or not currently active`);
+    return document.update({
+    flags: {
+        [scope]: {
+        [key]: value
+        }
+    }
+    }, {
+        render: false    
+    });
+}
+
 /**
  * Binds an input field's value to a Foundry VTT flag on a sheet.
  * @param {FormApplication} sheet - The sheet object to bind the flag to.
@@ -633,9 +650,17 @@ function socketFn(callable) {
  * @param {string} name - The 'name' attribute of the input field.
  * @param {string} flag - The name of the flag to set on the sheet's document.
  */
-function bindNameToFlag(sheet, html, name, flag) {
+function bindInputToFlag(sheet, html, name, flag) {
     html.on(`change`, `input[name="${name}"]`, async (event) => {
-        await sheet.document.setFlag(ModuleName, flag, event.target.value)
+        await SetFlagWithoutRender(sheet.document, ModuleName, flag, event.target.value)
+    })
+}
+
+
+function bindSelectToFlag(sheet, html, name, flag) {
+    html.on(`change`, `select[name="${name}"]`, async (event) => {
+        Log("Setting flag", flag, event.target.value)
+        await SetFlagWithoutRender(sheet.document, ModuleName, flag, event.target.value)
     })
 }
 
@@ -655,19 +680,35 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
         `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
     )
 
+    // Gather Memnosphere items from the party actor's inventory
+    let memnosphereList = [];
+    try {
+        // The party actor is available as sheet.actor
+        const items = sheet.actor?.items || [];
+        memnosphereList = items.filter(i => i.name && i.type === "treasure" && i.name.toLowerCase().includes("memnosphere"))
+            .map(i => ({ uuid: i.uuid, name: i.name, img: i.img }));
+    } catch (e) {
+        console.warn("Could not get Memnosphere items from party inventory", e);
+    }
+
+    let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
+    if(existingSphereUUID && !memnosphereList.find(v => v.uuid == existingSphereUUID)) {
+        await sheet.document.setFlag(ModuleName, FLAG_EXISTINGSPHERE, null)
+    }
+    
     // Render and append the Technosphere section content.
     let tsSection = await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/technosphere-section.hbs", 
         {
-            // Populate template with current flag values.
             rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
-            existingSphere: getFlag(sheet, FLAG_EXISTINGSPHERE),
+            existingSphere: existingSphereUUID,
+            memnosphereList: memnosphereList
         }
     )
     html.find(".sheet-body").append(tsSection)
 
     // Bind input fields to flags for persistent storage.
-    bindNameToFlag(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE)
-    bindNameToFlag(sheet, html, 'ts-existingSphere', FLAG_EXISTINGSPHERE)
+    bindInputToFlag(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE)
+    bindSelectToFlag(sheet, html, 'ts-existingSphere', FLAG_EXISTINGSPHERE)
     
     // Attach click event listener to the "Technosphere Roll" button.
     html.find('.technosphere-roll').unbind('click').bind('click', async (event) => {
@@ -687,16 +728,18 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
 
         // Directly call rollMemnosphere. If this was intended to be a socket call,
         // the commented lines below would be relevant.
-        await rollMemnosphere(query)
-
-        return false // Prevent further event propagation.
-
         // game.socket.emit(getEventName("rollMemnosphere"), query) // Example of emitting a socket event.
         // Log("rollMemnosphere")
         // await user.query(getEventName("rollMemnosphere"), query, { timeout: 30 * 1000 }); // Example of a query with timeout.
-    });
 
-    Log("Done!")
+
+        let sphereItem = await rollMemnosphere(query)
+        if(sphereItem) {
+            await sheet.actor.createEmbeddedDocuments("Item", [sphereItem.toObject()]);
+        }
+
+        return false // Prevent further event propagation.
+    });
 })
 
 
@@ -776,7 +819,7 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet, html) => {
     ))
 
     // Bind the input field for the base sheet UUID to a flag.
-    bindNameToFlag(sheet, html, 'ts-baseSheet', FLAG_BASESHEET)
+    bindInputToFlag(sheet, html, 'ts-baseSheet', FLAG_BASESHEET)
 
     // Attach click event listener to the "Apply Technosphere" button.
     html.find('.technosphere-apply').unbind('click').bind('click', async event => {

@@ -1,12 +1,27 @@
-<div class="header-fields grid grid-9col" style="margin: 5px 0;">
-    <input type="text" name='ts-sphere-table' value="{{rollableTable}}" />
-</div>
-
- <div class="header-fields grid grid-9col" style="margin: 5px 0;">
-    <input type="text" name='ts-existingSphere' value="{{existingSphere}}" />
-</div>
-
 <div class="tab" data-tab="technosphere-machine">
-    <a class='technosphere-roll'> Hello world! </a>
+    <fieldset class="section-container title-fieldset desc resource-content">
+        <legend class="resource-label-m">
+            Technosphere Machine
+        </legend>
+        <div class="header-fields grid grid-9col" style="margin: 5px 0;">
+            <label for="ts-sphere-table" style="grid-column: span 2;">Roll Table UUID</label>
+            <input type="text" id="ts-sphere-table" name="ts-sphere-table" value="{{rollableTable}}" style="grid-column: span 7;" />
+        </div>
+        <div class="header-fields grid grid-9col" style="margin: 5px 0;">
+            <label for="ts-existingSphere" style="grid-column: span 2;">Memnosphere</label>
+            <select id="ts-existingSphere" name="ts-existingSphere" style="grid-column: span 7;">
+                <option value="">New Memnosphere</option>
+                {{#each memnosphereList}}
+                    <option value="{{this.uuid}}" {{#if (eq ../existingSphere this.uuid)}}selected{{/if}}>
+                        {{this.name}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+        <div style="margin-top: 10px;">
+            <button type="button" class="technosphere-roll button button-style" style="width: 100%;">
+                <i class="icon ra ra-dice-five"></i> Roll Memnosphere
+            </button>
+        </div>
+    </fieldset>
 </div>
-
