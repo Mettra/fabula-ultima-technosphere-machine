@@ -643,14 +643,43 @@ async function SetFlagWithoutRender(document, scope, key, value) {
     });
 }
 
-/**
- * Binds an input field's value to a Foundry VTT flag on a sheet.
- * @param {FormApplication} sheet - The sheet object to bind the flag to.
- * @param {jQuery} html - The jQuery object representing the sheet's HTML.
- * @param {string} name - The 'name' attribute of the input field.
- * @param {string} flag - The name of the flag to set on the sheet's document.
- */
-function bindInputToFlag(sheet, html, name, flag) {
+
+function bindUUIDInput(sheet, html, name, flag, type) {
+    const input = html.find(`input[name="${name}"]`);
+    const clearButton = html.find(`#clear-${name}`);
+    
+    input.on('dragover', (event) => {
+        event.preventDefault(); // Allow drop by preventing default handling of the event
+    });
+
+    input.on('drop', async (event) => {
+        event.preventDefault();  // Prevent default browser behavior (e.g., opening the dropped file)
+        event.stopPropagation(); // Stop the event from bubbling up to FUPartySheet._onDrop
+
+        const data = TextEditor.getDragEventData(event.originalEvent); // Use originalEvent for jQuery
+        Log("Dropped data on ts-sphere-table:", data);
+
+        if (data && data.type === type && data.uuid) {
+            event.target.value = data.uuid; // Update the input field value
+            // Manually save the flag
+            await SetFlagWithoutRender(sheet.document, ModuleName, flag, data.uuid);
+        }
+    });
+    
+    // Ensure that manual changes to the input also save the flag.
+    // This is important because we removed the generic bindInputToFlag for this element.
+    input.on('change', async (event) => {
+        await SetFlagWithoutRender(sheet.document, ModuleName, flag, event.target.value);
+    });
+
+    if (clearButton.length) {
+        clearButton.on('click', async (event) => {
+            event.preventDefault();
+            input.val(''); // Clear the input field
+            await SetFlagWithoutRender(sheet.document, ModuleName, flag, ''); // Clear the flag
+        });
+    }
+
     html.on(`change`, `input[name="${name}"]`, async (event) => {
         await SetFlagWithoutRender(sheet.document, ModuleName, flag, event.target.value)
     })
@@ -693,12 +722,14 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
 
     let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
     if(existingSphereUUID && !memnosphereList.find(v => v.uuid == existingSphereUUID)) {
-        await sheet.document.setFlag(ModuleName, FLAG_EXISTINGSPHERE, null)
+        // Using SetFlagWithoutRender for consistency, assuming no re-render is desired here.
+        await SetFlagWithoutRender(sheet.document, ModuleName, FLAG_EXISTINGSPHERE, null)
     }
     
     // Render and append the Technosphere section content.
     let tsSection = await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/technosphere-section.hbs", 
         {
+            isGM: game.user.isGM,
             rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
             existingSphere: existingSphereUUID,
             memnosphereList: memnosphereList
@@ -707,7 +738,7 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
     html.find(".sheet-body").append(tsSection)
 
     // Bind input fields to flags for persistent storage.
-    bindInputToFlag(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE)
+    bindUUIDInput(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE, "RollTable")
     bindSelectToFlag(sheet, html, 'ts-existingSphere', FLAG_EXISTINGSPHERE)
     
     // Attach click event listener to the "Technosphere Roll" button.
@@ -745,7 +776,14 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Technosphere Sheet Recomputation Logic
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -819,7 +857,7 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet, html) => {
     ))
 
     // Bind the input field for the base sheet UUID to a flag.
-    bindInputToFlag(sheet, html, 'ts-baseSheet', FLAG_BASESHEET)
+    bindUUIDInput(sheet, html, 'ts-baseSheet', FLAG_BASESHEET, "ActorSheet")
 
     // Attach click event listener to the "Apply Technosphere" button.
     html.find('.technosphere-apply').unbind('click').bind('click', async event => {

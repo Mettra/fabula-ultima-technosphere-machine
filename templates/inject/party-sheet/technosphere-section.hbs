@@ -1,16 +1,24 @@
 <div class="tab" data-tab="technosphere-machine">
+    {{#if isGM}}
+    <fieldset class="section-container title-fieldset desc resource-content">
+        <legend class="resource-label-m">
+            Technosphere Machine Settings (GM)
+        </legend>
+        <div class="header-fields grid grid-9col" style="margin: 5px 0;">
+            <label for="ts-sphere-table" style="grid-column: span 2;">Roll Table UUID</label>
+            <input type="text" id="ts-sphere-table" name="ts-sphere-table" value="{{rollableTable}}" style="grid-column: span 6;" data-dtype="RollTable" />
+            <a class="clear-button" id="clear-ts-sphere-table" title="Clear Roll Table UUID" style="grid-column: span 1; text-align: center; cursor: pointer; line-height: inherit;">&#10006;</a>
+        </div>
+    {{/if}}
+    </fieldset>
     <fieldset class="section-container title-fieldset desc resource-content">
         <legend class="resource-label-m">
             Technosphere Machine
         </legend>
         <div class="header-fields grid grid-9col" style="margin: 5px 0;">
-            <label for="ts-sphere-table" style="grid-column: span 2;">Roll Table UUID</label>
-            <input type="text" id="ts-sphere-table" name="ts-sphere-table" value="{{rollableTable}}" style="grid-column: span 7;" />
-        </div>
-        <div class="header-fields grid grid-9col" style="margin: 5px 0;">
             <label for="ts-existingSphere" style="grid-column: span 2;">Memnosphere</label>
             <select id="ts-existingSphere" name="ts-existingSphere" style="grid-column: span 7;">
-                <option value="">New Memnosphere</option>
+                <option value="">Create New Memnosphere</option>
                 {{#each memnosphereList}}
                     <option value="{{this.uuid}}" {{#if (eq ../existingSphere this.uuid)}}selected{{/if}}>
                         {{this.name}}
