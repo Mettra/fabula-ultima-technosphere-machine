@@ -1,0 +1,132 @@
+/* styles/technosphere-party-sheet.css */
+.memnosphere-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjust 120px to your desired card width */
+    gap: 10px; /* Adjust gap as needed */
+    padding: 5px;
+}
+
+.memnosphere-card {
+    cursor: pointer;
+    border: 1px solid #ccc; /* Default border */
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.05);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.memnosphere-card .plate {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    justify-content: flex-start; /* Center content vertically */
+    height: 100%; /* Ensure plate fills the card for centering */
+    text-align: center; /* Center text within the plate */
+}
+
+.memnosphere-card .name {
+    font-weight: bold;
+    margin-bottom: 5px;
+    word-break: break-word; /* Prevent long names from breaking layout */
+}
+
+.memnosphere-card img {
+    width: 32px;
+    height: 32px;
+}
+
+.memnosphere-card .abilities {
+    justify-content: center;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); /* Adjust 120px to your desired card width */
+    gap: 2px; /* Adjust gap as needed */
+    padding: 2px;
+    width: 100%;
+    align-content: start;
+}
+
+/* New styles for ability structure and rank dots */
+.ability {
+    display: flex;
+    flex-direction: column; /* Stack image and dots vertically */
+    align-items: center;    /* Center image and dots horizontally */
+    justify-content: flex-start; /* Align content to the top of the ability cell */
+}
+
+.ability .img { /* Style for the image within an ability item */
+    width: 32px;  /* Explicitly set if not already covered */
+    height: 32px; /* Explicitly set if not already covered */
+    margin-bottom: 4px; /* Space between image and dots */
+}
+
+.ability-rank-dots {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; 
+    align-items: flex-start;
+    width: 32px; /* Match image width */
+    height: auto; /* Allow content to define height */
+    min-height: 4px; /* Ensure some space for alignment */
+    box-sizing: border-box;
+    flex-wrap: wrap;
+}
+
+.rank-dot {
+    width: 5px;
+    height: 5px;
+    background-color: #ccc; /* Default/empty dot color */
+    border-color: #2a2a2a;
+    border-radius: 50%;
+    margin: 0 0.5px 1px; /* Spacing between dots */
+    flex-shrink: 0; /* Prevent dots from shrinking */
+    flex-grow: 0;   /* Prevent dots from growing */
+}
+
+/* Color filled dots based on the parent's data-rank attribute */
+.ability-rank-dots[data-rank="1"] .rank-dot:nth-child(-n+1),
+.ability-rank-dots[data-rank="2"] .rank-dot:nth-child(-n+2),
+.ability-rank-dots[data-rank="3"] .rank-dot:nth-child(-n+3),
+.ability-rank-dots[data-rank="4"] .rank-dot:nth-child(-n+4),
+.ability-rank-dots[data-rank="5"] .rank-dot:nth-child(-n+5),
+.ability-rank-dots[data-rank="6"] .rank-dot:nth-child(-n+6),
+.ability-rank-dots[data-rank="7"] .rank-dot:nth-child(-n+7),
+.ability-rank-dots[data-rank="8"] .rank-dot:nth-child(-n+8),
+.ability-rank-dots[data-rank="9"] .rank-dot:nth-child(-n+9),
+.ability-rank-dots[data-rank="10"] .rank-dot:nth-child(-n+10) {
+    background-color: var(--color-text-dark-primary, #333333); /* Filled dot color */
+}
+
+.memnosphere-card.selected {
+    border-color: var(--color-border-highlight, #ff6400); /* Highlight color for selected card */
+    box-shadow: 0 0 8px var(--color-border-highlight, #ff6400);
+}
+
+.memnosphere-card:hover {
+    border-color: var(--color-border-hover, #aaa);
+}
+
+.memnosphere-card .fa-plus-circle {
+    font-size: 2.5em;
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    color: var(--color-text-dark-primary, #4a4a4a);
+}
+
+.memnosphere-card.selected .fa-plus-circle {
+    color: var(--color-border-highlight, #ff6400);
+}
+
+.memnosphere-card:hover .fa-plus-circle {
+    color: var(--color-text-dark-primary, #2a2a2a);
+}
+
+/* Ensure the general item-card and interactive styles don't conflict or are enhanced */
+.item-card.interactive:hover {
+    /* Standard hover effects if any */
+}
+
+.item-card.interactive.selected {
+    /* Standard selected effects if any, ensure they align with memnosphere-card.selected */
+}

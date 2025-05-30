@@ -4,7 +4,7 @@
       "target": "ES6"
     },
     "exclude": ["node_modules", "**/node_modules/*"],
-    "include": ["projectfu/**/*.mjs", "foundry/**/*.js"],
+    "include": ["scripts/**/*.js"],
     "typeAcquisition": {
       "include": ["jquery"]
     }

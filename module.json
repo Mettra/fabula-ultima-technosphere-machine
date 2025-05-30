@@ -12,7 +12,8 @@
         "scripts/technosphere-machine.js"
     ],
     "styles": [
-        "styles/technosphere-machine.css"
+        "styles/technosphere-machine.css",
+        "styles/technosphere-party-sheet.css"
     ],
     "languages": [
         {

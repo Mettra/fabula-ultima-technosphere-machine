@@ -180,7 +180,7 @@ class Memnosphere {
      * Extracts Memnosphere data from a Foundry VTT item's description.
      * The description is expected to contain key-value pairs representing abilities, roll table, and class.
      * @param {Item} item - The Foundry VTT item to extract data from.
-     * @returns {Memnosphere} A new Memnosphere instance populated with extracted data.
+     * @returns {Memnosphere|null} A new Memnosphere instance populated with extracted data.
      */
     static extractFromItem(item) {
         
@@ -192,6 +192,10 @@ class Memnosphere {
         // Convert lines into key-value pairs.
         lines = extractKVPairsFromLines(lines)
 
+        if(lines.length == 0) {
+            return null
+        }
+
         // The last line is always the class definition.
         const classLine = lines.pop()
         result.class = parseUUIDLink(classLine.key)
@@ -202,7 +206,8 @@ class Memnosphere {
         // Populate abilities array.
         for(let kv of abilitiesKV) {
             let link = parseUUIDLink(kv.key)
-            result.abilities.push({uuid: link.uuid, name: link.name, rank: parseInt(kv.value)})
+            let doc = fromUuidSync(link.uuid)
+            result.abilities.push({uuid: link.uuid, name: link.name, rank: parseInt(kv.value), img: doc.img, maxRank: doc.type == "skill" ? doc.system.level.max : 1})
         }
 
         // Populate roll table array.
@@ -316,17 +321,16 @@ class Memnosphere {
      * Creates a new Foundry VTT "basic" item with the Memnosphere's generated description.
      * @returns {Promise<Item>} A promise that resolves to the created Item document.
      */
-    async createItem() {
+    createItemData() {
         const itemData = {
             name: `Memnosphere - ${this.class.name}`,
-            icon: this.class.uuid ? fromUuidSync(this.class.uuid)?.img || "icons/svg/item-bag.svg" : "icons/svg/item-bag.svg",
+            img: this.class.uuid ? fromUuidSync(this.class.uuid)?.img || "icons/svg/item-bag.svg" : "icons/svg/item-bag.svg",
             type: "treasure",
             system: {
                 description: this.createDescription()
             },
         };
-        let item = await Item.create(itemData);
-        return item
+        return itemData
     }
 }
 
@@ -486,7 +490,7 @@ const MEMNOSPHERE_ROLL_COST = 500
  * @param {string} params.rollTableUUID - The UUID of the base RollTable for classes (if no existing sphere).
  * @param {string} params.actorUUID - The UUID of the actor whose Zenit will be used and who will own the Memnosphere item.
  * @param {string} [params.existingSphereUUID] - Optional UUID of an existing Memnosphere item to merge with.
- * @returns {Promise<Item>}
+ * @returns {Promise<[Memnosphere, Item]>}
  */
 async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
     let actor = fromUuidSync(actorUUID)
@@ -544,8 +548,6 @@ async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
 
         // Create a new Memnosphere with the rolled class and create a new item for it.
         sphere = new Memnosphere({ class: { uuid: doc.uuid, name: classResult.text }})
-        sphereItem = await sphere.createItem()
-        Log("New Sphere", sphere, sphereItem)
     }
     
     // Now, roll for abilities based on the Memnosphere's class table.
@@ -596,10 +598,7 @@ async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
     }
     Log("Merged Memnosphere", mergedMemnosphere)
 
-    // Update the description of the existing Memnosphere item with the merged data.
-    await sphereItem.update({system: {description: mergedMemnosphere.createDescription() } })
-
-    return sphereItem
+    return [mergedMemnosphere, sphereItem]
 }
 
 
@@ -693,11 +692,27 @@ function bindSelectToFlag(sheet, html, name, flag) {
     })
 }
 
+function bindMemnosphereSelectionToFlag(sheet, html, flag) {
+    const memnosphereCards = html.find('[data-action="selectMemnosphere"]');
+    memnosphereCards.on('click', async (event) => {
+        const selectedCard = $(event.currentTarget);
+        const newUuid = selectedCard.data('uuid');
+
+        await SetFlagWithoutRender(sheet.document, ModuleName, flag, newUuid);
+
+        // Update visual selection
+        memnosphereCards.removeClass('selected');
+        selectedCard.addClass('selected');
+    });
+}
+
+
+
 /**
  * Hooks into the `renderFUPartySheet` event to inject Technosphere machine UI elements.
  * This includes adding a new tab, input fields for roll table and existing sphere UUIDs,
  * and a button to trigger the Memnosphere roll.
- * @param {FormApplication} sheet - The Foundry VTT Party Sheet application.
+ * @param {ActorSheet} sheet - The Foundry VTT Party Sheet application.
  * @param {jQuery} html - The jQuery object representing the rendered HTML of the sheet.
  */
 Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
@@ -714,8 +729,7 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
     try {
         // The party actor is available as sheet.actor
         const items = sheet.actor?.items || [];
-        memnosphereList = items.filter(i => i.name && i.type === "treasure" && i.name.toLowerCase().includes("memnosphere"))
-            .map(i => ({ uuid: i.uuid, name: i.name, img: i.img }));
+        memnosphereList = items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Memnosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
     } catch (e) {
         console.warn("Could not get Memnosphere items from party inventory", e);
     }
@@ -739,7 +753,7 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
 
     // Bind input fields to flags for persistent storage.
     bindUUIDInput(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE, "RollTable")
-    bindSelectToFlag(sheet, html, 'ts-existingSphere', FLAG_EXISTINGSPHERE)
+    bindMemnosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE)
     
     // Attach click event listener to the "Technosphere Roll" button.
     html.find('.technosphere-roll').unbind('click').bind('click', async (event) => {
@@ -764,10 +778,17 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
         // await user.query(getEventName("rollMemnosphere"), query, { timeout: 30 * 1000 }); // Example of a query with timeout.
 
 
-        let sphereItem = await rollMemnosphere(query)
-        if(sphereItem) {
-            await sheet.actor.createEmbeddedDocuments("Item", [sphereItem.toObject()]);
+        let [sphere, existingItem] = await rollMemnosphere(query)
+        if(existingItem) {
+            // Update the description of the existing Memnosphere item with the merged data.
+            await existingItem.update({system: {description: sphere.createDescription() } })
         }
+        else {
+            await sheet.actor.createEmbeddedDocuments("Item", [sphere.createItemData()]);
+        }
+
+        // Ensure the Technosphere tab remains active after the roll and potential re-render.
+        sheet.activateTab("technosphere-machine");
 
         return false // Prevent further event propagation.
     });
@@ -894,3 +915,11 @@ Hooks.once("init", () => {
     // Register the socket event for rolling Memnospheres, using the socketFn wrapper.
     game.socket.on(getEventName("rollMemnosphere"), socketFn(rollMemnosphere))
 })
+
+Handlebars.registerHelper('times', function(n, block) {
+  let accum = '';
+  for (let i = 0; i < n; ++i) {
+    accum += block.fn({index: i}); // Pass the index as context
+  }
+  return accum;
+});
