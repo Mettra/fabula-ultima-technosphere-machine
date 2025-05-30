@@ -203,11 +203,21 @@ class Memnosphere {
         // Split the remaining lines into abilities and roll table based on the MEMNOSPHERE_SPLIT_KEY.
         const [abilitiesKV, rolltableKV] = splitArray(lines, kv => kv.key == MEMNOSPHERE_SPLIT_KEY)
 
+        //@TODO
+        // technosphere-machine.js:752 Could not get Memnosphere items from player's inventory TypeError: Cannot read properties of undefined (reading 'level')
+
         // Populate abilities array.
         for(let kv of abilitiesKV) {
             let link = parseUUIDLink(kv.key)
             let doc = fromUuidSync(link.uuid)
-            result.abilities.push({uuid: link.uuid, name: link.name, rank: parseInt(kv.value), img: doc.img, maxRank: doc.type == "skill" ? doc.system.level.max : 1})
+            Log(doc)
+            result.abilities.push({
+                uuid: link.uuid, 
+                name: link.name, 
+                rank: parseInt(kv.value), 
+                img: doc.img, 
+                maxRank: (doc.type == "skill" ? doc.system.level.max : 1)
+            })
         }
 
         // Populate roll table array.
@@ -706,7 +716,9 @@ function bindMemnosphereSelectionToFlag(sheet, html, flag) {
     });
 }
 
-
+function filterMemnospheres(items) {
+    return items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Memnosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
+}
 
 /**
  * Hooks into the `renderFUPartySheet` event to inject Technosphere machine UI elements.
@@ -725,17 +737,26 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
     )
 
     // Gather Memnosphere items from the party actor's inventory
-    let memnosphereList = [];
+    let partyMemnospheres = [];
     try {
         // The party actor is available as sheet.actor
         const items = sheet.actor?.items || [];
-        memnosphereList = items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Memnosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
+        partyMemnospheres = filterMemnospheres(items)
     } catch (e) {
         console.warn("Could not get Memnosphere items from party inventory", e);
     }
 
+    let characterMemnospheres = [];
+    try {
+        // The party actor is available as sheet.actor
+        const items = game.user.character?.items || [];
+        characterMemnospheres = filterMemnospheres(items)
+    } catch (e) {
+        console.warn("Could not get Memnosphere items from player's inventory", e);
+    }
+
     let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
-    if(existingSphereUUID && !memnosphereList.find(v => v.uuid == existingSphereUUID)) {
+    if(existingSphereUUID && !partyMemnospheres.find(v => v.uuid == existingSphereUUID)) {
         // Using SetFlagWithoutRender for consistency, assuming no re-render is desired here.
         await SetFlagWithoutRender(sheet.document, ModuleName, FLAG_EXISTINGSPHERE, null)
     }
@@ -746,7 +767,8 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
             isGM: game.user.isGM,
             rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
             existingSphere: existingSphereUUID,
-            memnosphereList: memnosphereList
+            partyMemnospheres: partyMemnospheres,
+            characterMemnospheres: characterMemnospheres
         }
     )
     html.find(".sheet-body").append(tsSection)
@@ -793,6 +815,18 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
         return false // Prevent further event propagation.
     });
 })
+
+Hooks.on("updateItem", (item, changes, options, userId) => {
+    // Check if the updated item belongs to the player's character
+    if (game.user.character && item.parent?.uuid === game.user.character.uuid) {
+        // Find any open FUPartySheet and refresh it
+        Object.values(ui.windows).forEach(app => {
+            if (app instanceof 'FUPartySheet') {
+                app.render();
+            }
+        });
+    }
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -911,9 +945,11 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet, html) => {
  * Hooks into the Foundry VTT "init" event, which runs once when the game initializes.
  * This is used to register the socket event listener for "rollMemnosphere".
  */
-Hooks.once("init", () => {
+Hooks.once("init", async () => {
     // Register the socket event for rolling Memnospheres, using the socketFn wrapper.
     game.socket.on(getEventName("rollMemnosphere"), socketFn(rollMemnosphere))
+
+    await loadTemplates(['modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs'])
 })
 
 Handlebars.registerHelper('times', function(n, block) {

@@ -1,0 +1,22 @@
+<div class="memnosphere-card item-card interactive {{#if (eq selectedUUID this.item.uuid)}}selected{{/if}}" data-uuid="{{this.item.uuid}}" data-action="selectMemnosphere" title="{{this.item.name}}">
+    <div class="plate border">
+        <img class="img" src="{{this.item.img}}" />
+        <div class="name">{{this.item.name}}</div>
+
+        <div class="abilities">
+            {{#each this.sphere.abilities}}
+                <div class="ability" title="{{this.name}} : {{this.rank}} / {{this.maxRank}}">
+                    <img class="img" src="{{this.img}}" alt="{{this.name}}" />
+
+                    {{#unless (eq this.maxRank 1) }}
+                    <div class="ability-rank-dots" data-rank="{{this.rank}}">
+                        {{#times this.maxRank }}
+                        <span class="rank-dot"></span>
+                        {{/times}}
+                    </div>
+                    {{/unless}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
