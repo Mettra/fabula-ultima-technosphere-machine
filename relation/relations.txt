@@ -1,0 +1,19 @@
+// Declare relational concepts
+UUID :: `string`
+Skill :: UUID
+Class :: UUID
+Item :: UUID
+Memnosphere :: ID
+
+// One to One mapping from Memnosphere to Class
+Memnosphere -> Class
+
+// One to Many mapping from Memnosphere to Skill. Limit of 5 relations between a unique Memnosphere and it's associated Skills.
+Memnosphere ->> Skill, limit 5
+
+// One to Many mapping from Memnosphere to UUID. No limit, so any number of relations are valid.
+Memnosphere ->> UUID
+
+// One to One mapping from Item to Memnosphere
+Item -> Memnosphere
+
