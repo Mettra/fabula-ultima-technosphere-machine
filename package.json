@@ -10,5 +10,8 @@
   "description": "",
   "dependencies": {
     "@types/jquery": "^3.5.32"
+  },
+  "devDependencies": {
+    "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@^12.331.5"
   }
 }

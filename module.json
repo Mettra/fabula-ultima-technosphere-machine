@@ -8,7 +8,7 @@
       }
     ],
     "version": "1",
-    "scripts": [
+    "esmodules": [
         "scripts/technosphere-machine.js"
     ],
     "styles": [
