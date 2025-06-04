@@ -1,16 +1,16 @@
-// types/fabula-ultima.d.ts
 declare global {
-  interface FUItem extends Item {
+  interface FSystem extends System {
+    resources : {
+      zenit: {
+        value : number
+      }
+    }
   }
 
   interface FUActor extends Actor {
-  }
-
-  interface FUPartySheet extends FormApplication {
-  }
-
-  interface FUStandardActorSheet extends ActorSheet {
+    system : FSystem
   }
 }
 
+// this file is purely for its global types
 export {};

@@ -2,45 +2,59 @@
 
 import { Log, MEMNOSPHERE_SPLIT_KEY } from "./core-config.js";
 import { extractKVPairsFromLines, extractParagraphsAsLines, splitArray } from "./parsing-utils.js";
-import { parseUUIDLink, UUIDLink } from "./uuid-utils.js";
+import { parseUUIDLink, UUIDLink as createUUIDLink, type UUIDLink } from "./uuid-utils.js";
 
-/**
- * Represents a Memnosphere, which encapsulates abilities, a roll table, and an associated class.
- */
+interface MemnosphereAbility {
+    uuid: UUID;
+    name: string;
+    rank: number;
+    img: string;
+    maxRank: number;
+}
+
+interface MemnosphereRollTableEntry {
+    name: string;
+    count: number;
+}
+
+interface MemnosphereClass {
+    uuid: UUID;
+    name: string;
+}
+
+interface MemnosphereConfig {
+    abilities?: MemnosphereAbility[];
+    rollTable?: MemnosphereRollTableEntry[];
+    class?: MemnosphereClass;
+}
+
 export class Memnosphere {
-    /**
-     * Constructs a new Memnosphere instance.
-     * @param {object} [config={}] - Initial configuration for the Memnosphere.
-     */
-    constructor(config={}){
+    abilities: MemnosphereAbility[];
+    rollTable: MemnosphereRollTableEntry[];
+    class: MemnosphereClass;
+
+    constructor(config: MemnosphereConfig = {}) {
         this.abilities = []
         this.rollTable = []
-        this.class = { uuid: "", name: "" }
-        Object.assign(this,config);
-    }
-
-    /**
-     * Extracts Memnosphere data from a Foundry VTT item's description.
-     * @param {FUItem} item - The Foundry VTT item to extract data from.
-     * @returns {Memnosphere|null} A new Memnosphere instance populated with extracted data.
-     */
-    static extractFromItem(item) {
+        this.class = { uuid: "" as UUID, name: "" }
+        Object.assign(this, config);
+    }    static extractFromItem(item: any): Memnosphere | null {
         let result = new Memnosphere()
 
         let description = item.system.description
         let lines = extractParagraphsAsLines(description)
-        lines = extractKVPairsFromLines(lines)
+        let kvPairs = extractKVPairsFromLines(lines)
 
-        if(lines.length == 0) {
+        if(kvPairs.length == 0) {
             return null
         }
 
         // The last line is always the class definition
-        const classLine = lines.pop()
+        const classLine = kvPairs.pop()!
         result.class = parseUUIDLink(classLine.key)
 
         // Split the remaining lines into abilities and roll table
-        const [abilitiesKV, rolltableKV] = splitArray(lines, kv => kv.key == MEMNOSPHERE_SPLIT_KEY)
+        const [abilitiesKV, rolltableKV] = splitArray(kvPairs, kv => kv.key == MEMNOSPHERE_SPLIT_KEY)
 
         // Populate abilities array
         for(let kv of abilitiesKV) {
@@ -62,17 +76,7 @@ export class Memnosphere {
         }
 
         return result
-    }
-
-    /**
-     * Merges two arrays based on a find function and a merge function.
-     * @param {Array<any>} arrayBase - The base array to merge into.
-     * @param {Array<any>} arrayToMerge - The array whose elements will be merged.
-     * @param {Function} findFn - A function to determine if elements should be merged.
-     * @param {Function} mergeFn - A function to perform the merge operation on elements.
-     * @returns {Array<any>} A new array containing the merged results.
-     */
-    static mergeArray(arrayBase, arrayToMerge, findFn, mergeFn) {
+    }    static mergeArray<T>(arrayBase: T[], arrayToMerge: T[], findFn: (a: T, b: T) => boolean, mergeFn: (a: T, b: T) => void): T[] {
         const mergedArray = [...arrayBase];
 
         arrayToMerge.forEach(v => {
@@ -85,35 +89,17 @@ export class Memnosphere {
         });
 
         return mergedArray
-    }
-
-    /**
-     * Merges two arrays of abilities. Abilities with the same UUID have their ranks combined.
-     */
-    static mergeAbilities(baseAbilities, mergeAbilities) {
+    }    static mergeAbilities(baseAbilities: MemnosphereAbility[], mergeAbilities: MemnosphereAbility[]): MemnosphereAbility[] {
         return this.mergeArray(baseAbilities, mergeAbilities, 
             (b, v) => b.uuid === v.uuid,
             (b, v) => { b.rank += v.rank; }
         )
-    }
-
-    /**
-     * Merges two arrays of roll table entries. Entries with the same name have their counts combined.
-     */
-    static mergeRollTable(baseRollTable, mergeRollTable) {
+    }    static mergeRollTable(baseRollTable: MemnosphereRollTableEntry[], mergeRollTable: MemnosphereRollTableEntry[]): MemnosphereRollTableEntry[] {
         return this.mergeArray(baseRollTable, mergeRollTable, 
             (b, v) => b.name === v.name,
             (b, v) => { b.count += v.count; }
         )
-    }
-
-    /**
-     * Merges two Memnosphere instances.
-     * @param {Memnosphere} sphere_base - The base Memnosphere.
-     * @param {Memnosphere} sphere_merge - The Memnosphere to merge into the base.
-     * @returns {Memnosphere|undefined} A new merged Memnosphere, or undefined if classes do not match.
-     */
-    static merge(sphere_base, sphere_merge) {
+    }    static merge(sphere_base: Memnosphere, sphere_merge: Memnosphere): Memnosphere | undefined {
         if(sphere_base.class.uuid != sphere_merge.class.uuid) {
             ui.notifications.error(`You cannot merge memnospheres unless they have the same class! ${sphere_base.class.uuid} != ${sphere_merge.class.uuid}`);
             return
@@ -122,18 +108,10 @@ export class Memnosphere {
         const mergedRollTable = Memnosphere.mergeRollTable(sphere_base.rollTable, sphere_merge.rollTable)
         const mergedAbilities = Memnosphere.mergeAbilities(sphere_base.abilities, sphere_merge.abilities)
         return new Memnosphere({abilities: mergedAbilities, rollTable : mergedRollTable, class: sphere_base.class });
-    }
-
-    /**
-     * Creates an HTML string description for the Memnosphere.
-     * @returns {string} The HTML formatted description.
-     */
-    createDescription() {
-        let description = ""
-
-        // Add abilities with their ranks
+    }    createDescription(): string {
+        let description = ""        // Add abilities with their ranks
         for(let ability of this.abilities) {
-            description += `<p>${UUIDLink(ability)} :: ${ability.rank}</p>`
+            description += `<p>${createUUIDLink(ability)} :: ${ability.rank}</p>`
         }
 
         // Add the split key
@@ -145,16 +123,10 @@ export class Memnosphere {
         }
 
         // Add the class information
-        description += `<p>${UUIDLink(this.class)} :: 0</p>`
+        description += `<p>${createUUIDLink(this.class)} :: 0</p>`
 
         return description
-    }
-
-    /**
-     * Creates item data for a new Foundry VTT item.
-     * @returns {object} Item data object.
-     */
-    createItemData() {
+    }    createItemData(): any {
         const itemData = {
             name: `Memnosphere - ${this.class.name}`,
             img: this.class.uuid ? fromUuidSync(this.class.uuid)?.img || "icons/svg/item-bag.svg" : "icons/svg/item-bag.svg",
@@ -167,11 +139,6 @@ export class Memnosphere {
     }
 }
 
-/**
- * Filters items to find Memnospheres and extract their data.
- * @param {Array} items - Array of items to filter.
- * @returns {Array} Array of objects with item and sphere properties.
- */
-export function filterMemnospheres(items) {
+export function filterMemnospheres(items: any[]): Array<{item: any, sphere: Memnosphere}> {
     return items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Memnosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
 }

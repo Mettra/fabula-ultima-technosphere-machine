@@ -9,35 +9,24 @@ export const MEMNOSPHERE_SPLIT_KEY = "@ROLLTABLE"
 CONFIG.debug.hooks = true
 
 // Conditional logging for debug purposes
-if (CONFIG.debug.hooks) var Log = console.log.bind(window.console)
-else var Log = function(){}
+let Log: any;
+if (CONFIG.debug.hooks) {
+    Log = console.log.bind(window.console);
+} else {
+    Log = function(){};
+}
 export {Log};
 
-/**
- * Generates a unique event name for the module.
- * @param {string} name - The base name of the event.
- * @returns {string} The fully qualified event name.
- */
-export function getEventName(name) {
+export function getEventName(name: string): string {
     return `${ModuleName}.${name}`
 }
 
-/**
- * Retrieves the currently controlled character actor, or the game user's character if no token is selected.
- * @returns {Actor|null} The character actor, or null if none is found.
- */
-export function getCharacter() {
+export function getCharacter(): any | null {
     const character = canvas.tokens.controlled.at(0)?.document.actor || game.user.character;
     return character
 }
 
-/**
- * Retrieves a flag from a Foundry VTT document (typically a sheet's document).
- * @param {FormApplication} sheet - The sheet object.
- * @param {string} flagName - The name of the flag to retrieve.
- * @returns {any|null} The value of the flag, or null if an error occurs or the flag is not set.
- */
-export function getFlag(sheet, flagName) {
+export function getFlag(sheet: any, flagName: string): any | null {
     try {
         return sheet.document.getFlag(ModuleName, flagName);
     } catch(err) {
@@ -46,7 +35,7 @@ export function getFlag(sheet, flagName) {
     }
 }
 
-export async function SetFlagWithoutRender(document, scope, key, value) {
+export async function SetFlagWithoutRender(document: any, scope: string, key: string, value: any): Promise<any> {
     const scopes = document.constructor.database.getFlagScopes();
     if ( !scopes.includes(scope) ) throw new Error(`Flag scope "${scope}" is not valid or not currently active`);
     return document.update({

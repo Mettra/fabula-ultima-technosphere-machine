@@ -2,19 +2,8 @@
 
 import { Log } from "./core-config.js";
 
-/**
- * Recomputes and updates the items on an actor sheet based on a base actor.
- * @param {Actor} actor - The target actor whose items will be recomputed.
- * @param {Actor} baseActor - The base actor providing the source items.
- * @returns {Promise<void>}
- */
-export async function recomputeTechnosphereSheet(actor, baseActor) {
-    /**
-     * Checks if an item is a Technosphere-influenced item type.
-     * @param {Item} item - The item to check.
-     * @returns {boolean} True if the item is a skill, class, or spell.
-     */
-    function isTechnosphereItemType(item) {
+export async function recomputeTechnosphereSheet(actor: any, baseActor: any): Promise<void> {
+    function isTechnosphereItemType(item: any): boolean {
         let type = item.type
         return type == "skill" || type == "class" || type == "spell"
     }

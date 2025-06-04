@@ -4,16 +4,14 @@ import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
 import { bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
 
-/**
- * Handles the rolling and creation/merging of Memnospheres.
- * @param {object} params - Parameters for the Memnosphere roll.
- * @param {string} params.rollTableUUID - The UUID of the base RollTable for classes.
- * @param {string} params.actorUUID - The UUID of the actor whose Zenit will be used.
- * @param {string} [params.existingSphereUUID] - Optional UUID of an existing Memnosphere item to merge with.
- * @returns {Promise<[Memnosphere, FUItem]}
- */
-export async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}) {
-    let actor = fromUuidSync(actorUUID)
+interface RollMemnosphereParams {
+    rollTableUUID: UUID;
+    actorUUID: UUID;
+    existingSphereUUID?: UUID;
+}
+
+export async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereUUID}: RollMemnosphereParams): Promise<[Memnosphere, any] | undefined> {
+    let actor = fromUuidSync(actorUUID) as FUActor
     if(actor == null) {
         ui.notifications.error(`You must have an actor selected, or have chosen one to be your player character.`);
         return
@@ -25,7 +23,7 @@ export async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereU
         ui.notifications.error(`You must have at least ${MEMNOSPHERE_ROLL_COST} ${game.i18n.localize('FU.Zenit')} to create a new Memnosphere.`);
         return
     }
-    await actor.update({'system.resources.zenit.value' : currentZenit - MEMNOSPHERE_ROLL_COST})
+    await actor.update({'system.resources.zenit.value' : currentZenit - MEMNOSPHERE_ROLL_COST} as any)
 
     let sphereItem = null
     let sphere = null
@@ -113,30 +111,23 @@ export async function rollMemnosphere({rollTableUUID, actorUUID, existingSphereU
 }
 
 
-/**
- * Hooks into the party sheet to inject Technosphere machine UI.
- */
-Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
+Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
     const FLAG_ROLLTABLE = 'technosphere-roll-table'
     const FLAG_EXISTINGSPHERE = 'technosphere-existing-sphere'
 
     // Add Technosphere tab
     html.find(".sheet-tabs").append(
         `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
-    )
-
-    // Gather Memnosphere items
+    )    // Gather Memnosphere items
     let partyMemnospheres = [];
     try {
-        const items = sheet.actor?.items || [];
+        const items = Array.from(sheet.actor?.items || []);
         partyMemnospheres = filterMemnospheres(items)
     } catch (e) {
         console.warn("Could not get Memnosphere items from party inventory", e);
-    }
-
-    let characterMemnospheres = [];
+    }let characterMemnospheres = [];
     try {
-        const items = game.user.character?.items || [];
+        const items = Array.from(game.user.character?.items || []);
         characterMemnospheres = filterMemnospheres(items)
     } catch (e) {
         console.warn("Could not get Memnosphere items from player's inventory", e);
@@ -186,10 +177,7 @@ Hooks.on(`renderFUPartySheet`, async (sheet, html) => {
     });
 })
 
-/**
- * Hooks into the actor sheet to inject Technosphere settings.
- */
-Hooks.on(`renderFUStandardActorSheet`, async (sheet, html) => {
+Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
     const FLAG_BASESHEET = 'technosphere-base-sheet'
 
     // Add Technosphere settings
@@ -226,9 +214,6 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet, html) => {
 })
 
 
-/**
- * Initialize the module.
- */
 Hooks.once("init", async () => {
     // Register socket events
     // game.socket.on(getEventName("rollMemnosphere"), socketFn(rollMemnosphere))
@@ -237,10 +222,7 @@ Hooks.once("init", async () => {
     await loadTemplates(['modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs'])
 })
 
-/**
- * Handlebars helper for repeating content.
- */
-Handlebars.registerHelper('times', function(n, block) {
+Handlebars.registerHelper('times', function(n: number, block: any) {
   let accum = '';
   for (let i = 0; i < n; ++i) {
     accum += block.fn({index: i});

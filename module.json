@@ -9,7 +9,7 @@
     ],
     "version": "1",
     "esmodules": [
-        "scripts/technosphere-machine.js"
+        "out/technosphere-machine.js"
     ],
     "styles": [
         "styles/technosphere-machine.css",

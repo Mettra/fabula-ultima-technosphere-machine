@@ -3,12 +3,7 @@
 import { Log } from "./core-config.js";
 import { extractKVPairsFromLines, extractParagraphsAsLines } from "./parsing-utils.js";
 
-/**
- * Retrieves a Foundry VTT document from a table result.
- * @param {object} result - A result object from a RollTable draw.
- * @returns {Promise<Document|null>} A promise that resolves to the Foundry VTT document, or null if not found.
- */
-export async function getDocumentFromResult(result) {
+export async function getDocumentFromResult(result: any): Promise<any | null> {
     let pack;
     if ( result.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM ) {
         pack = game.packs.get(result.documentCollection);
@@ -18,13 +13,15 @@ export async function getDocumentFromResult(result) {
     return pack ? await pack.getDocument(id) : game.tables.get(id);
 }
 
-/**
- * Rolls on a custom Foundry VTT RollTable with additional logic for Memnosphere generation.
- * @param {RollTable} rollTable - The RollTable document to roll on.
- * @param {object} [options={}] - Options for the roll.
- * @returns {Promise<{roll: Roll, results: Array<object>}>} A promise that resolves to the Roll object and an array of drawn results.
- */
-export async function rollTableCustom(rollTable, {roll, existingSphere=null, recursive=true, _depth=0}={}) {
+interface RollOptions {
+    roll?: any;
+    existingSphere?: any;
+    recursive?: boolean;
+    _depth?: number;
+}
+
+export async function rollTableCustom(rollTable: any, options: RollOptions = {}): Promise<{roll: any, results: any[]}> {
+    let {roll, existingSphere = null, recursive = true, _depth = 0} = options;
     if ( _depth > 10 ) {
         throw new Error(`Maximum recursion depth exceeded when attempting to draw from RollTable ${rollTable.id}`);
     }

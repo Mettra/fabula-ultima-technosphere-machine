@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "types": ["fvtt-types"],
+      "target": "esnext",
+      "paths": {
+        "fu-system/*": [
+          "C:/Users/Wes/AppData/Local/FoundryVTT/Data/systems/FoundryVTT-Fabula-Ultima/module/*"
+        ]
+      },
+      "moduleResolution": "bundler"
+    },
+    "exclude": ["node_modules", "**/node_modules/*"],
+    "include": [
+      "scripts/**/*.ts",
+      "types/**/*.d.ts",
+      "C:/Users/Wes/AppData/Local/FoundryVTT/Data/systems/FoundryVTT-Fabula-Ultima/module/**/*.mjs"
+    ],
+    "typeAcquisition": {
+      "include": ["jquery", "Handlebars"]
+  }
+}
