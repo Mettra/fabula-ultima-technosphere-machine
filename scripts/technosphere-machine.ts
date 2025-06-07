@@ -222,8 +222,12 @@ Hooks.once("init", async () => {
     await loadTemplates([
         'modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs',
         'modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs',
-        'modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs' // Added animation overlay template
+        'modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs'
     ])
+
+    document.body.insertAdjacentHTML('beforeend', await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs", {
+        // Add template params here
+    }))
 })
 
 Handlebars.registerHelper('times', function(n: number, block: any) {
