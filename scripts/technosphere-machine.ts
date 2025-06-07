@@ -230,6 +230,10 @@ Hooks.once("init", async () => {
     }))
 })
 
+Hooks.once("ready", async () => {
+    await playMemnosphereAnimation({ itemName: "Test Memnosphere", rarity: "common", imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png" }); 
+})
+
 Handlebars.registerHelper('times', function(n: number, block: any) {
   let accum = '';
   for (let i = 0; i < n; ++i) {

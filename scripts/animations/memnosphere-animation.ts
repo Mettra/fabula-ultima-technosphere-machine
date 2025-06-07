@@ -36,11 +36,11 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         animationContainer.style.backgroundColor = 'rgba(0,0,0,0.7)'; // Initial background
 
         // --- Helper function to create basic elements ---
-        function createElement(tag: string, classes: string[] = [], styles: Partial<CSSStyleDeclaration> = {}): HTMLElement {
+        function createElement(tag: string, classes: string[] = [], styles: Partial<CSSStyleDeclaration> = {}, parent: HTMLElement = animationContainer!): HTMLElement {
             const el = document.createElement(tag);
             el.classList.add(...classes);
             Object.assign(el.style, styles);
-            animationContainer!.appendChild(el);
+            parent.appendChild(el); // Use the specified parent, defaulting to animationContainer
             return el;
         }
 
@@ -153,29 +153,77 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         // Example: createSparkleEffect(particleContainer, 50, memnosphereData.rarity);
         tl.add({
             // Placeholder for particle/energy animations
-            duration: 800, // Duration of this phase
+            duration: 1000, // Duration of this phase
             begin: () => {
-                // Example of how you might add particles dynamically
-                for (let i = 0; i < 30; i++) {
+                const pcWidth = particleContainer.offsetWidth;
+                const pcHeight = particleContainer.offsetHeight;
+                const targetX = pcWidth / 2; // Center X of the particle container
+                const targetY = pcHeight / 2; // Center Y of the particle container
+
+                for (let i = 0; i < 100; i++) {
+                    const initialLeftPercent = anime.random(20, 80);
+                    const initialTopPercent = anime.random(20, 80);
+                    const size = anime.random(5, 25);
+
                     const p = createElement('div', ['particle-effect'], {
                         position: 'absolute',
-                        left: `${anime.random(20, 80)}%`,
-                        top: `${anime.random(20, 80)}%`,
-                        width: `${anime.random(5, 15)}px`,
-                        height: `${anime.random(5, 15)}px`,
-                        backgroundColor: `hsl(${anime.random(180,240)}, 100%, 70%)`, // Blues/Cyans
+                        left: `${initialLeftPercent}%`,
+                        top: `${initialTopPercent}%`,
+                        width: `${size}px`,
+                        height: `${size}px`,
+                        //backgroundColor: `hsl(${anime.random(180,240)}, 100%, 70%)`,
                         borderRadius: '50%',
-                        opacity: '0'
+                        opacity: '0' // Start transparent, anime.js will handle fade-in
+                    }, particleContainer);
+
+                    // Calculate initial pixel position of the particle's top-left corner
+                    const initialLeftPx = (initialLeftPercent / 100) * pcWidth;
+                    const initialTopPx = (initialTopPercent / 100) * pcHeight;
+
+                    // Calculate the required translation to move the particle's top-left to the target center
+                    const finalTranslateX = targetX - initialLeftPx;
+                    const finalTranslateY = targetY - initialTopPx;
+
+                    // Calculate the angle towards the center
+                    const angleRad = Math.atan2(finalTranslateY, finalTranslateX);
+                    const angleDeg = angleRad * (180 / Math.PI);
+
+                    // Create a pseudo-element for the skewed line
+                    const line = document.createElement('div');
+                    line.classList.add('particle-line');
+                    p.appendChild(line);
+
+                    // Apply styles to the pseudo-element using JavaScript
+                    Object.assign(line.style, {
+                        position: 'absolute',
+                        top: '50%',
+                        left: '0%',
+                        width: '100%', // Adjust as needed
+                        height: `${Math.log2(size)}px`,  // Line thickness
+                        backgroundColor: `hsl(${anime.random(180,240)}, 100%, 70%)`, // Blues/Cyans
+                        transformOrigin: '0% 50%', // Rotate around the left edge
+                        transform: `rotate(${angleDeg}deg)`, // Rotate towards the center
                     });
+
+                    anime({
+                        targets: line,
+                        height: [0, `${Math.log2(size)}px`],
+                        duration: anime.random(100, 200),
+                        easing: 'easeOutCubic',
+                        delay: anime.random(0, 50),
+                    })
+
                     anime({
                         targets: p,
-                        translateX: [0, anime.random(-100, 100)],
-                        translateY: [0, anime.random(-100, 100)],
+                        width: 0,
+                        height: 0,
+                        translateX: [0, finalTranslateX], // Move towards the center X
+                        translateY: [0, finalTranslateY], // Move towards the center Y
                         scale: [1, 0],
-                        opacity: [1,0],
-                        duration: anime.random(800, 1500),
-                        easing: 'easeOutQuad',
-                        delay: anime.random(0, 400),
+                        opacity: [1, 0.2],
+                        duration: anime.random(300, 900),// Adjusted duration for travel
+                        easing: 'easeOutCubic',            // Accelerate towards the target
+                        delay: anime.random(50, 500),
                         complete: () => p.remove()
                     });
                 }
