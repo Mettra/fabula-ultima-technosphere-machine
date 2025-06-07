@@ -3,12 +3,6 @@
         <img class="img" src="{{this.img}}" />
         <div class="name">{{this.name}}</div>
 
-        {{#if this.canChooseHeroicSkill}}
-        <button type="button" class="heroic-skill-button" title="Choose Heroic Skill" data-action="openHeroicSkillPopup">
-            <i class="fas fa-star"></i> <!-- Or some other icon -->
-        </button>
-        {{/if}}
-
         <div class="abilities">
             {{#each this.abilities}}
                 <div class="ability" title="{{this.name}} : {{this.rank}} / {{this.maxRank}}">
@@ -24,5 +18,17 @@
                 </div>
             {{/each}}
         </div>
+
+        {{#if this.canChooseHeroicSkill }}
+        <div class="heroic-skill-section" style="text-align: center; margin-top: 5px;">
+            <button type="button" class="heroic-skill-button" title="Choose Heroic Skill" data-action="openHeroicSkillPopup">
+               {{#if this.heroicSkill.img}}
+                    <img src="{{this.heroicSkill.img}}" alt="{{this.heroicSkill.name}}" style="max-width: 24px; max-height: 24px; vertical-align: middle;"/>
+                {{else}}
+                    <i class="fas fa-star"></i> <!-- Default icon if no heroic skill chosen or no image -->
+                {{/if}}
+            </button>
+        </div>
+        {{/if}}
     </div>
 </div>

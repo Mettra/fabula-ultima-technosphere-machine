@@ -178,25 +178,57 @@ export async function resolveSkills(skillUUIDs : UUID[]) {
 }
 
 export async function filterMemnospheres(items: Item[]) {
-    const skillsAndItems = items.map(i => { return [Relations.Memnosphere.skill.get(Relations.Item.memnosphere.get(i.uuid as UUID)), i] })
-    let validSkillsAndItems = skillsAndItems.filter(obj => obj[0] != undefined)
-    let result = validSkillsAndItems.map(
-        async obj => {
-            const skillUUIDs = obj[0] as UUID[]
-            const item = obj[1] as Item
+    const skillsAndItems = items.map(i => { 
+        const memnosphereId = Relations.Item.memnosphere.get(i.uuid as UUID);
+        if (!memnosphereId) return [undefined, undefined, i]; // Ensure item is always passed through
+        return [
+            Relations.Memnosphere.skill.get(memnosphereId), 
+            Relations.Memnosphere.heroicskill.get(memnosphereId), 
+            i
+        ];
+    })
+    
 
-            const skills = await resolveSkills(skillUUIDs)
+    let validMemnosphereItems = skillsAndItems.filter(obj => Relations.Item.memnosphere.get(obj[2].uuid as UUID) !== undefined);
+
+    let result = validMemnosphereItems.map(
+        async obj => {
+            const skillUUIDs = (obj[0] || []) as UUID[];
+            const heroicSkillUUID = obj[1] as UUID | undefined;
+            const item = obj[2] as Item;
+
+            const skills = await resolveSkills(skillUUIDs);
+            let heroicSkill = null;
+            if (heroicSkillUUID) {
+                const heroicSkillDoc = await fromUuid(heroicSkillUUID);
+                if (heroicSkillDoc) {
+                    heroicSkill = {
+                        name: heroicSkillDoc.name,
+                        img: heroicSkillDoc.img,
+                        uuid: heroicSkillUUID
+                    };
+                }
+            }
 
             return {
                 name: item.name,
                 img: item.img,
                 uuid : item.uuid,
-                abilities : skills
+                abilities : skills,
+                heroicSkill: heroicSkill,
+
+                get totalSkillRanks() {
+                    return Object.values(this.abilities).reduce((total, skill: any) => total + skill.rank, 0);
+                },
+
+                get canChooseHeroicSkill() {
+                    return this.totalSkillRanks >= 5
+                }
             }
         }
     );
 
-    return await Promise.all(result)
+    return await Promise.all(result);
 }
 
 /*

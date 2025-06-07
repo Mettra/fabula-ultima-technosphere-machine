@@ -107,24 +107,6 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         console.warn("Could not get Memnosphere items from player's inventory", e);
     }
 
-    // Add canChooseHeroicSkill property to memnospheres
-    const enrichMemnospheres = async (memnospheres) => {
-        for (const sphere of memnospheres) {
-            let totalRank = 0;
-            if (sphere.abilities) { // Ensure abilities exist
-                for (const uuid of Object.keys(sphere.abilities)) {
-                    totalRank += sphere.abilities[uuid].rank || 0;
-                }
-            }
-            sphere.canChooseHeroicSkill = totalRank >= 5;
-        }
-        return memnospheres;
-    };
-
-    partyMemnospheres = await enrichMemnospheres(partyMemnospheres);
-    characterMemnospheres = await enrichMemnospheres(characterMemnospheres);
-
-
     let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
     if(existingSphereUUID && !partyMemnospheres.find(v => v.uuid == existingSphereUUID)) {
         await SetFlagWithoutRender(sheet.document, ModuleName, FLAG_EXISTINGSPHERE, null)

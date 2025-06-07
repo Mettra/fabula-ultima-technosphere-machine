@@ -1,7 +1,7 @@
 // UI binding utilities for form elements and flags
 
 import { Log, ModuleName, SetFlagWithoutRender } from "./core-config.js";
-import { createMemnosphereDescriptionBody } from "./memnosphere.js";
+import { createMemnosphereDescriptionBody, filterMemnospheres } from "./memnosphere.js";
 
 export function bindUUIDInput(sheet: any, html: any, name: string, flag: string, type: string): void {
     const input = html.find(`input[name="${name}"]`);
@@ -63,12 +63,17 @@ export function bindHeroicSkillPopup(sheet: any, html: any, memnosphereItemUUID:
         event.preventDefault();
         event.stopPropagation();
 
-        const content = await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs", {});
+        const memnosphereItem = await fromUuid(memnosphereItemUUID) as Item;
+
+        const sphere = (await filterMemnospheres([memnosphereItem]))[0]
+        const content = await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs", {
+            sphere: sphere
+        });
         const dialog = new Dialog({
             title: "Choose Heroic Skill",
             content: content,
             buttons: {},
-            render: (dialogHtml) => {
+            render: (dialogHtml) => { 
                 const dropTarget = dialogHtml.find('.drop-target');
                 dropTarget.on('dragover', (ev) => ev.preventDefault());
                 dropTarget.on('drop', async (ev) => {
@@ -76,7 +81,6 @@ export function bindHeroicSkillPopup(sheet: any, html: any, memnosphereItemUUID:
                     ev.stopPropagation();
                     const data = TextEditor.getDragEventData(ev.originalEvent) as any;
                     if (data && data.type === "Item" && data.uuid) {
-                        const memnosphereItem = await fromUuid(memnosphereItemUUID) as Item;
                         if (memnosphereItem) {
 
                             let newAbillityLinks = await createMemnosphereDescriptionBody([data.uuid])

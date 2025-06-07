@@ -4,7 +4,11 @@
     </header>
     <section class="dialog-content">
         <div class="drop-target" data-action="dropHeroicSkill">
-            <p style="color: black;">Drop a skill from a compendium here.</p>
+            {{#if sphere.heroicSkill.img}}
+                <img src="{{heroicSkill.img}}" alt="{{heroicSkill.name}}" style="display: block; margin-left: auto; margin-right: auto;"/>
+            {{else}}
+                <p style="color: black;">Drop a skill from a compendium here.</p>
+            {{/if}}
         </div>
     </section>
 </div>
