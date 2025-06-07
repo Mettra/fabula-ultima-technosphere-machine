@@ -167,6 +167,7 @@ export async function resolveSkills(skillUUIDs : UUID[]) {
         skills[uuid] ??= {
             name : skillDoc.name,
             img : skillDoc.img,
+            uuid: skillDoc.uuid,
             maxRank: skillDoc.system.level.max,
             rank: 0,
         };

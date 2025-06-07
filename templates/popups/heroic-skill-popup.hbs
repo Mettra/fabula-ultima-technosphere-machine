@@ -3,12 +3,17 @@
         <h2 class="dialog-title">Choose your Heroic Skill</h2>
     </header>
     <section class="dialog-content">
-        <div class="drop-target" data-action="dropHeroicSkill">
+        <div class="drop-target" data-action="dropHeroicSkill" style="text-align: center; margin-bottom: 10px;">
             {{#if sphere.heroicSkill.img}}
-                <img src="{{heroicSkill.img}}" alt="{{heroicSkill.name}}" style="display: block; margin-left: auto; margin-right: auto;"/>
+                <img src="{{sphere.heroicSkill.img}}" alt="{{sphere.heroicSkill.name}}" style="display: block; width: 100%; height: 100%; object-fit: contain;"/>
             {{else}}
                 <p style="color: black;">Drop a skill from a compendium here.</p>
             {{/if}}
         </div>
+        {{#if sphere.heroicSkill.uuid}}
+        <div style="text-align: center;">
+            <a class="content-link" data-uuid="{{sphere.heroicSkill.uuid}}">{{sphere.heroicSkill.name}}</a>
+        </div>
+        {{/if}}
     </section>
 </div>
