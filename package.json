@@ -4,20 +4,24 @@
   "main": "out/scripts/technosphere-machine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p . --outDir out",
-    "watch": "tsc -p . --outDir out --watch"
+    "build": "esbuild --bundle --format=esm --outdir=build scripts/technosphere-machine.ts",
+    "watch": "esbuild --bundle --format=esm --outdir=build scripts/technosphere-machine.ts --watch",
+    "lint": "eslint . --ext .ts"
   },
   "type": "module",
   "author": "Mettra",
   "license": "MIT",
   "description": "",
   "dependencies": {
-    "@types/jquery": "^3.5.32"
+    "@types/animejs": "^3.1.13",
+    "@types/jquery": "^3.5.32",
+    "animejs": "^3.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
+    "esbuild": "^0.20.2",
     "eslint": "^9.28.0",
     "eslint-plugin-no-floating-promise": "^2.0.0",
     "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@^12.331.5",

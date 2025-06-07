@@ -1,4 +1,4 @@
-import anime from '../lib/anime.es.js';
+import anime from 'animejs';
 
 /**
  * Plays the full-screen memnosphere gacha-style animation.

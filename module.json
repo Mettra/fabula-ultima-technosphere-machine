@@ -8,8 +8,8 @@
       }
     ],
     "version": "1",
-    "esmodules": [
-        "out/technosphere-machine.js"
+    "scripts": [
+        "build/technosphere-machine.js"
     ],
     "styles": [
         "styles/technosphere-machine.css",
