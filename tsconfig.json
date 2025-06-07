@@ -2,6 +2,7 @@
     "compilerOptions": {
       "types": ["fvtt-types"],
       "target": "esnext",
+      "outDir": "out",
       "sourceMap": true,
       "paths": {
         "fu-system/*": [

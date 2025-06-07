@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tsc: watch",
+            "type": "typescript", // Uses VS Code's built-in TypeScript task type
+            "tsconfig": "tsconfig.json", // Points to your tsconfig.json file
+            "option": "watch", // Equivalent to --watch
+            "problemMatcher": [
+                "$tsc-watch" // This is key for parsing output and showing notifications
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true // Optional: makes it the default build task
+            },
+            "presentation": {
+                "reveal": "always", // Show the terminal panel when the task starts
+                "panel": "dedicated", // Use a dedicated terminal for this task
+                "clear": true // Clear the terminal on each run (for the watch task, this applies to the start)
+            },
+            "runOptions": { "runOn": "folderOpen" } // Optional: automatically run when you open the workspace
+        }
+    ]
+}
