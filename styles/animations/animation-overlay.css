@@ -1,0 +1,49 @@
+/* Styles for the Memnosphere Animation Overlay */
+
+#memnosphere-animation-container {
+    /* Base styles are set inline for critical layout, but can be augmented */
+    font-family: Arial, sans-serif; /* Example font */
+}
+
+.animation-bg-layer {
+    /* Styles for background layers, if you use them for complex scenes */
+    background-size: cover;
+    background-position: center center;
+}
+
+.animation-item-image {
+    /* Styles for the revealed item image */
+    /* box-shadow is often animated by Anime.js directly for more control */
+    /* transition: box-shadow 0.3s ease-out; */ /* Only if not animated by JS */
+    image-rendering: -webkit-optimize-contrast; /* Try to keep pixel art crisp if applicable */
+    image-rendering: crisp-edges;
+}
+
+.animation-item-name {
+    /* Styles for the item name text */
+    /* font-family: var(--your-cool-font-family); */ /* Define in your main CSS or load fonts */
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    /* text-transform: uppercase; */ /* Optional styling */
+}
+
+.particle-effect {
+    /* Styles for DOM-based particles. Anime.js will control most properties like position, opacity, transform. */
+    /* You might set a default appearance here if not entirely controlled by JS */
+    /* e.g., border-radius: 50%; */
+    /* e.g., background-color: #fff; */
+    will-change: transform, opacity; /* Hint for browser performance */
+}
+
+/* Add more specific styles for different rarities or effects as needed */
+.legendary-glow {
+    filter: drop-shadow(0 0 15px gold) drop-shadow(0 0 25px orange);
+}
+
+.epic-glow {
+    filter: drop-shadow(0 0 10px purple) drop-shadow(0 0 15px violet);
+}
+
+/* You might want to define keyframe animations here for CSS-driven effects
+   that Anime.js can trigger or control, though Anime.js is powerful enough for most direct JS animations.
+*/

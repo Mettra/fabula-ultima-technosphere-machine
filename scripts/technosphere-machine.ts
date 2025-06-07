@@ -4,6 +4,7 @@ import { Memnosphere_ID, Relations } from "./relation.js";
 import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
 import { bindHeroicSkillPopup, bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
+import { playMemnosphereAnimation } from "./animations/memnosphere-animation.js"; // Added import
 
 // Setup foundry hooks for memnospheres
 SetupMemnosphereHooks()
@@ -159,9 +160,15 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         // No memnosphere selected means generate a new one
         if(sphereItemUUID == '') {
             const itemData = await generateNewMemnosphere(getFlag(sheet, FLAG_ROLLTABLE))
+            // TODO: Get proper image URL and rarity for the animation
+            await playMemnosphereAnimation({ itemName: itemData.name, rarity: "common", imageUrl: itemData.img }); // Added animation call
             sheet.actor.createEmbeddedDocuments("Item", [itemData])
         }
         else {
+            const item = await fromUuid(sphereItemUUID);
+            // TODO: Get proper image URL and rarity for the animation
+            // This might require parsing the item description or having rarity stored differently
+            await playMemnosphereAnimation({ itemName: item.name, rarity: "unknown", imageUrl: item.img }); // Added animation call
             await addAbilityToMemnosphere(sphereItemUUID)
         }
         
@@ -214,7 +221,8 @@ Hooks.once("init", async () => {
     // Load templates
     await loadTemplates([
         'modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs',
-        'modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs' // Add new template
+        'modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs',
+        'modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs' // Added animation overlay template
     ])
 })
 
