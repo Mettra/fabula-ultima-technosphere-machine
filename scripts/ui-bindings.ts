@@ -91,6 +91,12 @@ export function bindHeroicSkillPopup(sheet: any, html: any, memnosphereItemUUID:
                         }
                     }
                 });
+
+                dialogHtml.on("click", "a.content-link", async (ev) => {
+                    ev.preventDefault();
+                    const doc = await fromUuid(ev.currentTarget.dataset.uuid);
+                    return doc?._onClickDocumentLink(ev);
+                });
             }
         });
         dialog.render(true);
