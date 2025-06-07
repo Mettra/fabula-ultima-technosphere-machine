@@ -35,6 +35,9 @@ export function SetupMemnosphereHooks() {
             else if (doc.type === "skill") {
                 Relations.Memnosphere.skill.define(id, doc.uuid);
             }
+            else if (doc.type === "heroic") {
+                Relations.Memnosphere.heroicskill.define(id, doc.uuid);
+            }
             else {
                 Relations.Memnosphere.uuid.define(id, doc.uuid);
             }

@@ -3,6 +3,7 @@ type ID = number & { readonly __brand: "ID" };
 export type Skill_ID = UUID ;
 export type Class_ID = UUID ;
 export type Item_ID = UUID ;
+export type HeroicSkill_ID = UUID ;
 export type Memnosphere_ID = number & { readonly __brand: "Memnosphere" } ;
 
 const Relations = {
@@ -83,6 +84,13 @@ const Relations = {
                     remove: function(id : Memnosphere_ID) { delete this.tbl[id]; }
                 },
 
+                heroicskill: {
+                    tbl : {} as { [key: Memnosphere_ID]: UUID; },
+                    define: function(id : Memnosphere_ID, value : UUID) { this.tbl[id] = value; },
+                    get: function(id : Memnosphere_ID) : UUID|undefined { return this.tbl[id]; },
+                    remove: function(id : Memnosphere_ID) { delete this.tbl[id]; },
+                },
+
             /**
              * Clear all relations for a specific instance.
              * @param {Memnosphere_ID} id - The unique ID of the Memnosphere.
@@ -91,6 +99,7 @@ const Relations = {
                 delete this.class.tbl[id];
                 delete this.skill.tbl[id];
                 delete this.uuid.tbl[id];
+                delete this.heroicskill.tbl[id];
 
             }
          },
@@ -101,6 +110,7 @@ const Relations = {
         console.log("Relations.Memnosphere.class.tbl:", this.Memnosphere.class.tbl);
         console.log("Relations.Memnosphere.skill.tbl:", this.Memnosphere.skill.tbl);
         console.log("Relations.Memnosphere.uuid.tbl:", this.Memnosphere.uuid.tbl);
+        console.log("Relations.Memnosphere.heroicskill.tbl:", this.Memnosphere.heroicskill.tbl);
         console.log("--- End of Relation Tables ---");
     },
 }

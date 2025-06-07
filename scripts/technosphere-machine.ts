@@ -3,7 +3,7 @@ import { createMemnosphereDescription, createMemnosphereDescriptionBody, createM
 import { Memnosphere_ID, Relations } from "./relation.js";
 import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
-import { bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
+import { bindHeroicSkillPopup, bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
 
 // Setup foundry hooks for memnospheres
 SetupMemnosphereHooks()
@@ -107,6 +107,24 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         console.warn("Could not get Memnosphere items from player's inventory", e);
     }
 
+    // Add canChooseHeroicSkill property to memnospheres
+    const enrichMemnospheres = async (memnospheres) => {
+        for (const sphere of memnospheres) {
+            let totalRank = 0;
+            if (sphere.abilities) { // Ensure abilities exist
+                for (const uuid of Object.keys(sphere.abilities)) {
+                    totalRank += sphere.abilities[uuid].rank || 0;
+                }
+            }
+            sphere.canChooseHeroicSkill = totalRank >= 5;
+        }
+        return memnospheres;
+    };
+
+    partyMemnospheres = await enrichMemnospheres(partyMemnospheres);
+    characterMemnospheres = await enrichMemnospheres(characterMemnospheres);
+
+
     let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
     if(existingSphereUUID && !partyMemnospheres.find(v => v.uuid == existingSphereUUID)) {
         await SetFlagWithoutRender(sheet.document, ModuleName, FLAG_EXISTINGSPHERE, null)
@@ -127,6 +145,13 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
     // Bind UI elements
     bindUUIDInput(sheet, html, 'ts-sphere-table', FLAG_ROLLTABLE, "RollTable")
     bindMemnosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE)
+
+    // Bind heroic skill popups
+    for (const sphere of [...partyMemnospheres, ...characterMemnospheres]) {
+        if (sphere.canChooseHeroicSkill) {
+            bindHeroicSkillPopup(sheet, html, sphere.uuid);
+        }
+    }
     
     // Handle Technosphere roll button
     html.find('.technosphere-roll').unbind('click').bind('click', async (event) => {
@@ -205,7 +230,10 @@ Hooks.once("init", async () => {
     // game.socket.on(getEventName("rollMemnosphere"), socketFn(rollMemnosphere))
 
     // Load templates
-    await loadTemplates(['modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs'])
+    await loadTemplates([
+        'modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs',
+        'modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs' // Add new template
+    ])
 })
 
 Handlebars.registerHelper('times', function(n: number, block: any) {

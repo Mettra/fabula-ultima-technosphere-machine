@@ -1,2 +1,30 @@
+/* filepath: c:\Users\Wes\AppData\Local\FoundryVTT\Data\modules\fabula-ultima-technosphere-machine\styles\technosphere-machine.css */
+
+.heroic-skill-popup {
+    background-image: url("../ui/stone_texture_01.webp"); /* Assuming similar background */
+    border: 1px solid #000;
+    box-shadow: 0 0 10px #000;
+    padding: 15px;
+    text-align: center;
+}
+
+.heroic-skill-popup .dialog-title {
+    margin-bottom: 10px;
+}
+
+.heroic-skill-popup .drop-target {
+    width: 150px; /* Adjust as needed */
+    height: 150px; /* Adjust as needed */
+    border: 2px dashed #ccc;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.heroic-skill-popup .drop-target p {
+    color: #eee;
+}
 
 

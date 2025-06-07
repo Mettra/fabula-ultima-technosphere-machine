@@ -3,6 +3,12 @@
         <img class="img" src="{{this.img}}" />
         <div class="name">{{this.name}}</div>
 
+        {{#if this.canChooseHeroicSkill}}
+        <button type="button" class="heroic-skill-button" title="Choose Heroic Skill" data-action="openHeroicSkillPopup">
+            <i class="fas fa-star"></i> <!-- Or some other icon -->
+        </button>
+        {{/if}}
+
         <div class="abilities">
             {{#each this.abilities}}
                 <div class="ability" title="{{this.name}} : {{this.rank}} / {{this.maxRank}}">

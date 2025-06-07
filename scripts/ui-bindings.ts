@@ -1,6 +1,7 @@
 // UI binding utilities for form elements and flags
 
 import { Log, ModuleName, SetFlagWithoutRender } from "./core-config.js";
+import { createMemnosphereDescriptionBody } from "./memnosphere.js";
 
 export function bindUUIDInput(sheet: any, html: any, name: string, flag: string, type: string): void {
     const input = html.find(`input[name="${name}"]`);
@@ -53,5 +54,41 @@ export function bindMemnosphereSelectionToFlag(sheet: any, html: any, flag: stri
         // Update visual selection
         memnosphereCards.removeClass('selected');
         selectedCard.addClass('selected');
+    });
+}
+
+export function bindHeroicSkillPopup(sheet: any, html: any, memnosphereItemUUID: string): void {
+    const openButton = html.find(`[data-uuid="${memnosphereItemUUID}"] .heroic-skill-button`);
+    openButton.on('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const content = await renderTemplate("modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs", {});
+        const dialog = new Dialog({
+            title: "Choose Heroic Skill",
+            content: content,
+            buttons: {},
+            render: (dialogHtml) => {
+                const dropTarget = dialogHtml.find('.drop-target');
+                dropTarget.on('dragover', (ev) => ev.preventDefault());
+                dropTarget.on('drop', async (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    const data = TextEditor.getDragEventData(ev.originalEvent) as any;
+                    if (data && data.type === "Item" && data.uuid) {
+                        const memnosphereItem = await fromUuid(memnosphereItemUUID) as Item;
+                        if (memnosphereItem) {
+
+                            let newAbillityLinks = await createMemnosphereDescriptionBody([data.uuid])
+                            memnosphereItem.update({system: { description: memnosphereItem.system.description + newAbillityLinks }})
+
+                            dialog.close();
+                            sheet.render(true); // Re-render the sheet to reflect changes
+                        }
+                    }
+                });
+            }
+        });
+        dialog.render(true);
     });
 }

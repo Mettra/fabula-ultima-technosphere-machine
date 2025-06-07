@@ -16,6 +16,7 @@
 }
 
 .memnosphere-card .plate {
+    position: relative; /* Add relative positioning to the plate */
     display: flex;
     flex-direction: column;
     align-items: center; /* Center content horizontally */
@@ -123,10 +124,23 @@
 }
 
 /* Ensure the general item-card and interactive styles don't conflict or are enhanced */
-.item-card.interactive:hover {
-    /* Standard hover effects if any */
+
+.heroic-skill-button {
+    position: absolute;
+    top: 2px; /* Adjust as needed */
+    right: 2px; /* Adjust as needed */
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    background: none;
+    border: none;
+    color: gold; /* Or your preferred color */
+    font-size: 1em; /* Adjust as needed */
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    z-index: 10; /* Ensure it's above other card content */
 }
 
-.item-card.interactive.selected {
-    /* Standard selected effects if any, ensure they align with memnosphere-card.selected */
+.heroic-skill-button i {
+    display: block;
 }

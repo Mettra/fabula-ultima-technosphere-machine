@@ -6,6 +6,7 @@ UUID :: `string`
 Skill :: UUID
 Class :: UUID
 Item :: UUID
+HeroicSkill :: UUID
 Memnosphere :: ID
 
 // One to One mapping from Memnosphere to Class
@@ -17,6 +18,7 @@ Memnosphere ->> Skill, limit 5
 // One to Many mapping from Memnosphere to UUID. No limit, so any number of relations are valid.
 Memnosphere ->> UUID
 
+Memnosphere -> HeroicSkill
+
 // One to One mapping from Item to Memnosphere
 Item -> Memnosphere
-
