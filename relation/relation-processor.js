@@ -35,7 +35,9 @@ function tokenize(input) {
         
         if (parts[1] === "::") {
             // Handle type definitions (e.g., Concept :: ID)
-            const type = parts[2];
+            const parsedType = parts[2];
+            const type = parsedType == "ID" ? null : parsedType
+
             tokens.push({ token: "definition" });
             tokens.push({ token: "concept", value: concept });
             tokens.push({ token: "type", value: type });
@@ -94,13 +96,7 @@ function parse(tokens) {
             const conceptName = conceptToken.value;
             const typeValue = typeToken.value;
 
-            if (typeof conceptName !== 'string' || typeof typeValue !== 'string') {
-                console.warn(`[Parser] Invalid value type for concept or type in definition. Concept: '${conceptName}', Type: '${typeValue}'. Skipping definition.`);
-                i += 3;
-                continue;
-            }
-
-            if (typeValue.startsWith("`") && typeValue.endsWith("`")) {
+            if (typeValue && typeValue.startsWith("`") && typeValue.endsWith("`")) {
                 const externalType = typeValue.slice(1, -1); 
                 ast.externalTypes[conceptName] = externalType;
             } else {
@@ -135,23 +131,12 @@ function parse(tokens) {
             
             const relationValue = relationToken.value;
             // targetToken.value is an array, e.g., ["ClassName"] from tokenize step
-            if (targetToken.value.length === 0 || typeof targetToken.value !== 'string') {
+            if ( typeof targetToken.value !== 'string' || targetToken.value.length === 0) {
                  console.warn(`[Parser] Invalid target value for relation from concept '${conceptName}'. Expected string. Got: ${JSON.stringify(targetToken.value)}.`);
                  i += 3; // Skip concept, relation, target
                  continue;
             }
             const targetName = targetToken.value;
-
-            // Ensure source concept exists
-            if (!ast.concepts[conceptName]) {
-                ast.concepts[conceptName] = { type: "ID", relations: [] }; // Default type if not defined yet
-            }
-
-            // Ensure target concept placeholder exists if it's not known as an external type alias.
-            // Its type defaults to "ID" and can be updated if a definition for it is parsed later.
-            if (!ast.concepts[targetName] && !ast.externalTypes[targetName]) {
-                ast.concepts[targetName] = { type: "ID", relations: [] };
-            }
 
             let limit = null;
             let consumedTokens = 3; // concept, relation, target
@@ -191,85 +176,64 @@ function parse(tokens) {
  * @returns {string} - The generated JavaScript code.
  */
 function generate(ast) {
-    let output = `/**
- * A unique identifier for a concept.
- * @typedef {number} ID
- */
+    let output = `
+type ID = number & { readonly __brand: "ID" };`
+
+    // Generate ID interfaces
+    for (const [concept, data] of Object.entries(ast.concepts)) {
+        output += `
+export type ${concept}_ID = ${data.type || `number & { readonly __brand: "${concept}" }`} ;`
+    }
+
+    output += `
 
 const Relations = {
 `;
 
     for (const [concept, data] of Object.entries(ast.concepts)) {
-        const type = data.type === "ID" ? "ID" : ast.externalTypes[data.type] || data.type;
+        if (data.relations.length == 0) continue;
 
         output += `
-        /**
-         * A unique identifier for a ${concept}.
-         * @typedef {${type}} ${concept}_ID
-         */
-
-        /**
-         * Defines relationships for ${concept}.
-         */
+        
         ${concept}: {
             NextId: 0,
 
-            GetNextId() {
-                return this.NextId++; 
+            GetNextId() : ${concept}_ID {
+                return this.NextId++ as any; 
             },
 
 `;
 
         for (const relation of data.relations) {
             const { relation: relType, target, limit } = relation;
-            const targetType = ast.concepts[target]?.type || ast.externalTypes[target] || "ID";
+            const targetType = ast.concepts[target]?.type || ast.externalTypes[target] || `${target}_ID`;
 
             if (relType === "->") {
                 output += `
                 ${target.toLowerCase()}: {
-                    /**
-                     * Stores the one-to-one relationships.
-                     * @type {Object<${concept}_ID, ${targetType}>}
-                     */
-                    tbl: {},
-
-                    /**
-                     * Defines a one-to-one relationship from ${concept} to ${target}.
-                     * @param {${concept}_ID} id - The unique ID of the ${concept}.
-                     * @param {${targetType}} value - The value to associate with the ${target}.
-                     */
-                    define: function(id, value) { this.tbl[id] = value; }
+                    tbl : {} as { [key: ${concept}_ID]: ${targetType}; },
+                    define: function(id : ${concept}_ID, value : ${targetType}) { this.tbl[id] = value; },
+                    get: function(id : ${concept}_ID) : ${targetType}|undefined { return this.tbl[id]; },
+                    remove: function(id : ${concept}_ID) { delete this.tbl[id]; },
                 },
 `;
             } else if (relType === "->>") {
                 output += `
                 ${target.toLowerCase()}: {
-                    /**
-                     * Stores the one-to-many relationships.
-                     * @type {Object<${concept}_ID, Array<${targetType}>>}
-                     */
-                    tbl: {},
+                    tbl : {} as { [key: ${concept}_ID]: ${targetType}[]; },
 
-                    /**
-                     * Defines a one-to-many relationship from ${concept} to ${target}.
-                     * ${limit ? `Enforces a maximum of ${limit} relations.` : "No limit on relations."}
-                     * @param {${concept}_ID} id - The unique ID of the ${concept}.
-                     * @param {${targetType}} value - The value to associate with the ${target}.
-                     */
-                    define: function(id, value) {
+                    define: function(id : ${concept}_ID, value : ${targetType}) {
                         if (!this.tbl[id]) this.tbl[id] = [];
                         ${limit ? `if (this.tbl[id].length >= ${limit}) RelationErrorHandler.notifyError('Limit exceeded');` : ""}
                         this.tbl[id].push(value);
                     },
 
-                    /**
-                     * Clears the relationship from ${concept} to ${target}.
-                     * @param {${concept}_ID} id - The unique ID of the ${concept}.
-                     * @param {${targetType}} value - The value to associate with the ${target}.
-                     */
                     clear: function(id, value) {
-                        this.tbl[id] = null;
-                    }
+                        delete this.tbl[id];
+                    },
+
+                    get: function(id : ${concept}_ID) : ${targetType}[]|undefined { return this.tbl[id]; },
+                    remove: function(id : ${concept}_ID) { delete this.tbl[id]; }
                 },
 `;
             }
@@ -284,7 +248,7 @@ const Relations = {
 `
         for (const relation of data.relations) {
             const { relation: relType, target, limit } = relation;
-            output += `                this.${target.toLowerCase()}[id] = null;
+            output += `                delete this.${target.toLowerCase()}.tbl[id];
 `
         }
         output += `
@@ -343,14 +307,14 @@ export { Relations };
 }
 
 // Example usage
-const fs = require("fs");
+import { readFileSync, writeFileSync } from "fs";
 const inputPath = "./relation/relations.txt";
-const outputPath = "./relation/output2.js";
+const outputPath = "./scripts/relation.ts";
 
-const input = fs.readFileSync(inputPath, "utf-8");
+const input = readFileSync(inputPath, "utf-8");
 const tokens = tokenize(input);
 const ast = parse(tokens);
 const generatedCode = generate(ast);
 
-fs.writeFileSync(outputPath, generatedCode, "utf-8");
+writeFileSync(outputPath, generatedCode, "utf-8");
 console.log("Relations processed and output.js generated.");

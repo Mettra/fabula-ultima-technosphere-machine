@@ -11,7 +11,7 @@ CONFIG.debug.hooks = true
 // Conditional logging for debug purposes
 let Log: any;
 if (CONFIG.debug.hooks) {
-    Log = console.log.bind(window.console);
+    Log = console.log.bind(window.console, `${ModuleName} | `);
 } else {
     Log = function(){};
 }

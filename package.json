@@ -7,6 +7,7 @@
     "build": "tsc -p . --outDir out",
     "watch": "tsc -p . --outDir out --watch"
   },
+  "type": "module",
   "author": "Mettra",
   "license": "MIT",
   "description": "",
@@ -14,6 +15,13 @@
     "@types/jquery": "^3.5.32"
   },
   "devDependencies": {
-    "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@^12.331.5"
+    "@eslint/js": "^9.28.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
+    "eslint": "^9.28.0",
+    "eslint-plugin-no-floating-promise": "^2.0.0",
+    "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@^12.331.5",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
   }
 }

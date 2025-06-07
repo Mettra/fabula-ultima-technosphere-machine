@@ -2,6 +2,7 @@
     "compilerOptions": {
       "types": ["fvtt-types"],
       "target": "esnext",
+      "sourceMap": true,
       "paths": {
         "fu-system/*": [
           "C:/Users/Wes/AppData/Local/FoundryVTT/Data/systems/FoundryVTT-Fabula-Ultima/module/*"

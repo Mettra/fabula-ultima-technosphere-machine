@@ -1,3 +1,6 @@
+// resource, data, concept, relation
+
+
 // Declare relational concepts
 UUID :: `string`
 Skill :: UUID

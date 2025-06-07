@@ -16,6 +16,6 @@ export function parseUUIDLink(linkText: string): UUIDLink {
     return { uuid: results[1] as UUID, name: results[2] }
 }
 
-export function UUIDLink(link: UUIDLink): string {
+export function createUUIDLink(link: UUIDLink): string {
     return `@UUID[${link.uuid}]{${link.name}}`;
 }

@@ -1,0 +1,16 @@
+{
+  "env": {
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "no-floating-promise"
+  ],
+  "rules": {
+    "no-floating-promise/no-floating-promise": "error"
+  }
+}

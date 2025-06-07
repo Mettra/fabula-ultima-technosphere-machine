@@ -2,6 +2,8 @@
 
 import { Log } from "./core-config.js";
 import { extractKVPairsFromLines, extractParagraphsAsLines } from "./parsing-utils.js";
+import { Memnosphere_ID, Relations } from "./relation.js";
+import { parseUUIDLink } from "./uuid-utils.js";
 
 export async function getDocumentFromResult(result: any): Promise<any | null> {
     let pack;
@@ -15,13 +17,13 @@ export async function getDocumentFromResult(result: any): Promise<any | null> {
 
 interface RollOptions {
     roll?: any;
-    existingSphere?: any;
+    initialAbility?: boolean;
     recursive?: boolean;
     _depth?: number;
 }
 
 export async function rollTableCustom(rollTable: any, options: RollOptions = {}): Promise<{roll: any, results: any[]}> {
-    let {roll, existingSphere = null, recursive = true, _depth = 0} = options;
+    let {roll, initialAbility = false, recursive = true, _depth = 0} = options;
     if ( _depth > 10 ) {
         throw new Error(`Maximum recursion depth exceeded when attempting to draw from RollTable ${rollTable.id}`);
     }
@@ -37,23 +39,20 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
     const paragraphs = extractParagraphsAsLines(rollTable.description)
     const lines = extractKVPairsFromLines(paragraphs)
     for(let kv of lines) {
-        if(kv.key == "Start") {
-            if(existingSphere == null) continue
-
-            const abilityName = kv.value
-            Log(`START Rule - Have we already picked ${abilityName}?`, existingSphere.rollTable)
-
-            if(existingSphere.rollTable.find(v => { return v.name == abilityName })) {
-                continue
-            }
+        if(kv.key.toLowerCase() == "start") {
+            if(initialAbility == false) continue
 
             Log(`START Rule - Force set roll`)
-
             rollTable.results.forEach(res => { 
                 if(res.text == kv.value) { 
                     roll = Roll.create(res.range[0].toString()) 
                 } 
             })
+        }
+        else if(kv.key.toLowerCase() == "add") {
+            let link = parseUUIDLink(kv.value)
+            let doc = await fromUuid(link.uuid)
+            results.push({documentId : doc.id, documentCollection: doc.pack, type: doc.pack ? CONST.TABLE_RESULT_TYPES.COMPENDIUM : null, text : link.name})
         }
     }
 
@@ -87,10 +86,9 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
             break;
         }
         roll = await roll.reroll();
-        results = rollTable.getResultsForRoll(roll.total);
-        for ( let result of results ) {
-            result.chain = []
-        }
+        
+        let rollResults = rollTable.getResultsForRoll(roll.total)
+        results.push(...rollResults);
         iter++;
     }
 
@@ -104,10 +102,7 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
             if ( documentName === "RollTable" ) {
                 const innerTable = await getDocumentFromResult(result)
                 if (innerTable) {
-                    const innerRoll = await rollTableCustom(innerTable, {_depth: _depth + 1, existingSphere: existingSphere});
-                    for(let res of innerRoll.results) {
-                        res.chain.push(result.text)
-                    }
+                    const innerRoll = await rollTableCustom(innerTable, {_depth: _depth + 1, initialAbility: initialAbility});
                     innerResults = innerResults.concat(innerRoll.results);
                 }
             }
