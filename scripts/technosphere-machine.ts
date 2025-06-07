@@ -1,10 +1,11 @@
-import { getCharacter, getEventName, getFlag, Log, MEMNOSPHERE_ROLL_COST, ModuleName, SetFlagWithoutRender } from "./core-config.js";
+import { getCharacter, getEventName, getFlag, Log, MEMNOSPHERE_ROLL_COST, ModuleName, SetFlagWithoutRender, DEV_MODE } from "./core-config.js";
 import { createMemnosphereDescription, createMemnosphereDescriptionBody, createMemnosphereItemData, filterMemnospheres, MemnosphereHeader, SetupMemnosphereHooks } from "./memnosphere.js";
 import { Memnosphere_ID, Relations } from "./relation.js";
 import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
 import { bindHeroicSkillPopup, bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
-import { playMemnosphereAnimation } from "./animations/memnosphere-animation.js"; // Added import
+import { playMemnosphereAnimation } from "./animations/memnosphere-animation.js";
+import { initializeAnimationDevMode, cleanupAnimationDevMode } from "./animations/animation-dev-manager.js";
 
 // Setup foundry hooks for memnospheres
 SetupMemnosphereHooks()
@@ -78,9 +79,10 @@ async function addAbilityToMemnosphere(sphereItemUUID : UUID) {
 
     let newAbilities = await rollMemnosphereAbility(classUUID, { initialAbility: false })
     let newAbillityLinks = await createMemnosphereDescriptionBody([...newAbilities])
-    
-    let item = await fromUuid(sphereItemUUID)
-    item.update({system: { description: item.system.description + newAbillityLinks }})
+      let item = await fromUuid(sphereItemUUID)
+    if (item && 'system' in item) {
+        item.update({system: { description: (item.system as any).description + newAbillityLinks }})
+    }
 }
 
 
@@ -92,9 +94,8 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
     html.find(".sheet-tabs").append(
         `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
     )    // Gather Memnosphere items
-    let partyMemnospheres = [];
-    try {
-        const items = Array.from(sheet.actor?.items || [] as Item[]);
+    let partyMemnospheres = [];    try {
+        const items = Array.from(sheet.actor?.items || []) as Item[];
         partyMemnospheres = await filterMemnospheres(items)
     } catch (e) {
         console.warn("Could not get Memnosphere items from party inventory", e);
@@ -163,12 +164,13 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
             // TODO: Get proper image URL and rarity for the animation
             await playMemnosphereAnimation({ itemName: itemData.name, rarity: "common", imageUrl: itemData.img }); // Added animation call
             sheet.actor.createEmbeddedDocuments("Item", [itemData])
-        }
-        else {
+        }        else {
             const item = await fromUuid(sphereItemUUID);
-            // TODO: Get proper image URL and rarity for the animation
-            // This might require parsing the item description or having rarity stored differently
-            await playMemnosphereAnimation({ itemName: item.name, rarity: "unknown", imageUrl: item.img }); // Added animation call
+            if (item && 'name' in item && 'img' in item) {
+                // TODO: Get proper image URL and rarity for the animation
+                // This might require parsing the item description or having rarity stored differently
+                await playMemnosphereAnimation({ itemName: item.name as string, rarity: "unknown", imageUrl: item.img as string | null });
+            }
             await addAbilityToMemnosphere(sphereItemUUID)
         }
         
@@ -231,7 +233,11 @@ Hooks.once("init", async () => {
 })
 
 Hooks.once("ready", async () => {
-    await playMemnosphereAnimation({ itemName: "Test Memnosphere", rarity: "common", imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png" }); 
+    // Initialize development mode if enabled
+    if (DEV_MODE) {
+        Log("Development mode enabled - initializing animation dev tools");
+        initializeAnimationDevMode();
+    }
 })
 
 Handlebars.registerHelper('times', function(n: number, block: any) {
@@ -242,4 +248,11 @@ Handlebars.registerHelper('times', function(n: number, block: any) {
   return accum;
 });
 
-console.log("Technosphere Machine Initialized!")
+// Cleanup when module is disabled/reloaded
+Hooks.on("hotReload", () => {
+    if (DEV_MODE) {
+        cleanupAnimationDevMode();
+    }
+});
+
+Log("Technosphere Machine Initialized!")

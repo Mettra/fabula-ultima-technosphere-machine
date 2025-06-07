@@ -1,7 +1,8 @@
-{
-    "compilerOptions": {
+{    
+      "compilerOptions": {
       "types": ["fvtt-types"],
       "target": "esnext",
+      "module": "esnext",
       "outDir": "out",
       "sourceMap": true,
       "declaration": true,

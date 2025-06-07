@@ -4,7 +4,7 @@
         {
             "label": "npm: watch", // Updated label
             "type": "shell",          // Changed from "typescript"
-            "command": "npm run watch", // Command to execute the npm script
+            "command": "npm run watch:all", // Command to execute the npm script
             "problemMatcher": [
                 "$tsc-watch"          // Keep for TSC errors, esbuild errors will be in terminal
             ],

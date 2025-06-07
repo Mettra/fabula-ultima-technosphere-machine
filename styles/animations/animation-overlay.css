@@ -2,7 +2,44 @@
 
 #memnosphere-animation-container {
     /* Base styles are set inline for critical layout, but can be augmented */
-    font-family: Arial, sans-serif; /* Example font */
+    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Development mode styles */
+#memnosphere-animation-container .animation-close-hint {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 12px;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+}
+
+#memnosphere-animation-container .animation-close-hint:hover {
+    opacity: 1;
+}
+
+/* Development overlay styles */
+#animation-dev-overlay {
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+#animation-dev-overlay button {
+    transition: all 0.2s ease;
+}
+
+#animation-dev-overlay button:hover {
+    background: #555 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#animation-dev-overlay button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .animation-bg-layer {
@@ -13,25 +50,28 @@
 
 .animation-item-image {
     /* Styles for the revealed item image */
-    /* box-shadow is often animated by Anime.js directly for more control */
-    /* transition: box-shadow 0.3s ease-out; */ /* Only if not animated by JS */
+    transition: box-shadow 0.3s ease-out;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     image-rendering: -webkit-optimize-contrast; /* Try to keep pixel art crisp if applicable */
     image-rendering: crisp-edges;
 }
 
 .animation-item-name {
     /* Styles for the item name text */
-    /* font-family: var(--your-cool-font-family); */ /* Define in your main CSS or load fonts */
-    font-weight: bold;
-    letter-spacing: 0.05em;
-    /* text-transform: uppercase; */ /* Optional styling */
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .particle-effect {
     /* Styles for DOM-based particles. Anime.js will control most properties like position, opacity, transform. */
-    /* You might set a default appearance here if not entirely controlled by JS */
-    /* e.g., border-radius: 50%; */
-    /* e.g., background-color: #fff; */
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
     will-change: transform, opacity; /* Hint for browser performance */
 }
 
@@ -44,6 +84,7 @@
     height: 2px;  /* Line thickness */
     background-color: cyan; /* Or any color you prefer */
     transform-origin: 0% 50%; /* Rotate around the left edge */
+    box-shadow: 0 0 3px currentColor;
     /* transform: rotate(45deg);  Will be set dynamically by Anime.js */
 }
 

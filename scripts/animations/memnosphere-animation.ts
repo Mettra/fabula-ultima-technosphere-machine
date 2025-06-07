@@ -1,4 +1,5 @@
-import  anime from 'animejs';
+import anime from 'animejs';
+import { DEV_MODE, Log } from "../core-config.js";
 
 /**
  * Plays the full-screen memnosphere gacha-style animation.
@@ -25,15 +26,42 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             //     backgroundColor: 'rgba(0,0,0,0.7)',
             //     zIndex: '9999', // Ensure this is higher than other UI elements
             //     overflow: 'hidden'
-            // });
-            // document.body.appendChild(animationContainer);
+            // });            // document.body.appendChild(animationContainer);
             return; // If it's not in the template, we might have other issues.
         }
 
-        // 0. Clear previous animation elements and make container visible
-        animationContainer.innerHTML = ''; // Clear previous content
+        // Clear previous content and reset container state
+        animationContainer.innerHTML = '';
+        
+        // Reset all container styles to initial state
         animationContainer.style.display = 'block';
-        animationContainer.style.backgroundColor = 'rgba(0,0,0,0.7)'; // Initial background
+        animationContainer.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        animationContainer.style.opacity = '1';
+        animationContainer.style.transform = '';
+        animationContainer.style.pointerEvents = 'none'; // Reset pointer events
+
+        // Enable pointer events and click to close in dev mode
+        if (DEV_MODE) {
+            animationContainer.style.pointerEvents = 'auto';
+            const closeHint = animationContainer.querySelector('.animation-close-hint') as HTMLElement;
+            if (closeHint) {
+                closeHint.style.display = 'block';
+            }
+            
+            // Add click handler to close animation in dev mode
+            const clickHandler = (event: MouseEvent) => {
+                if (event.target === animationContainer) {
+                    Log("Dev mode: Animation closed by click");
+                    animationContainer.style.display = 'none';
+                    animationContainer.style.pointerEvents = 'none';
+                    if (closeHint) {
+                        closeHint.style.display = 'none';
+                    }
+                    resolve();
+                }
+            };
+            animationContainer.addEventListener('click', clickHandler, { once: true });
+        }
 
         // --- Helper function to create basic elements ---
         function createElement(tag: string, classes: string[] = [], styles: Partial<CSSStyleDeclaration> = {}, parent: HTMLElement = animationContainer!): HTMLElement {
@@ -97,10 +125,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
         });
-        itemNameText.textContent = memnosphereData.itemName;
-
-
-        // --- 2. Master Anime.js Timeline ---
+        itemNameText.textContent = memnosphereData.itemName;        // --- 2. Master Anime.js Timeline ---
         const tl = anime.timeline({
             easing: 'easeOutExpo', // Default easing for the timeline
             duration: 750,       // Default duration for animations in the timeline
@@ -108,6 +133,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 console.log(`Memnosphere animation complete for: ${memnosphereData.itemName}`);
                 // Optional: Add a slight delay before hiding, or a fade-out for the container itself
                 // Consider adding a "click to continue" or auto-advance after a few seconds
+                const holdTime = DEV_MODE ? 1000 : 2000; // Shorter hold time in dev mode for faster iteration
                 setTimeout(() => {
                     if (animationContainer) {
                         anime({
@@ -117,8 +143,13 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                             easing: 'linear',
                             complete: () => {
                                 animationContainer.style.display = 'none';
+                                animationContainer.style.pointerEvents = 'none';
                                 animationContainer.innerHTML = ''; // Clean up
                                 animationContainer.style.opacity = '1'; // Reset for next time
+                                const closeHint = animationContainer.querySelector('.animation-close-hint') as HTMLElement;
+                                if (closeHint) {
+                                    closeHint.style.display = 'none';
+                                }
                                 resolve(); // Resolve the promise here
                             }
                         });
@@ -126,7 +157,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                         resolve(); // Resolve even if container is somehow gone
                     }
                     // TODO: Call any post-animation logic here (e.g., display item in UI, resolve a promise)
-                }, 2000); // Hold the final frame for 2 seconds before fading out
+                }, holdTime); // Hold the final frame before fading out
             }
         });
 
