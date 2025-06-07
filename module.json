@@ -13,7 +13,8 @@
     ],
     "styles": [
         "styles/technosphere-machine.css",
-        "styles/technosphere-party-sheet.css"
+        "styles/technosphere-party-sheet.css",
+        "styles/animations/animation-overlay.css"
     ],
     "languages": [
         {
@@ -24,4 +25,3 @@
     ],
     "minimumCoreVersion": "0.8.8"
   }
-  
