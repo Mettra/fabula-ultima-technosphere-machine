@@ -270,11 +270,12 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             left: '50%',
             transform: 'translate(-50%, -50%) scale(0.5)', // Initial state for animation
             opacity: '0',
-            maxWidth: 'clamp(200px, 40%, 500px)', // Responsive size
-            maxHeight: 'clamp(200px, 40%, 500px)',
+            width: 'clamp(200px, 40%, 500px)', // Responsive size
+            height: 'clamp(200px, 40%, 500px)',
             //border: '3px solid gold', // Example styling, can be dynamic
             //borderRadius: '10px',
             objectFit: 'contain',
+            zIndex: '15'
         }) as HTMLImageElement;
 
         if (memnosphereData.imageUrl) {
@@ -304,9 +305,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             pointerEvents: 'none',
             overflow: 'visible' // Important for paths that might go slightly out of bounds during animation
         });
-        particleContainer.appendChild(svgOverlay); // Add to particle container
-
-        // Text element for item name (example)
+        particleContainer.appendChild(svgOverlay); // Add to particle container        // Text element for item name (example)
         const itemNameText = createElement('div', ['animation-item-name'], {
             position: 'absolute',
             bottom: '20%',
@@ -318,7 +317,21 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
         });        
-        itemNameText.textContent = memnosphereData.itemName;        // --- 2. Master Anime.js Timeline ---
+        itemNameText.textContent = memnosphereData.itemName;        
+          // Center glow element for Phase B end transition
+        const centerGlow = createElement('div', ['animation-center-glow'], {
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '200px',
+            height: '200px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, rgba(100, 255, 200, 0.6) 12%, rgba(50, 200, 255, 0.4) 31%, rgba(255, 255, 255, 0) 50%)',
+            opacity: '0',
+            pointerEvents: 'none',
+            zIndex: '10' // Layer above the comets
+        });// --- 2. Master Anime.js Timeline ---
         
         const tl = createTimeline({
             defaults: {
@@ -378,6 +391,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         const pcHeight = pcRect.height;
         const targetX = pcWidth / 2;
         const targetY = pcHeight / 2;        
+        let spiralDuration = 0
         if (pcWidth > 0 && pcHeight > 0) { // Only create trails if container has valid dimensions
             const numTrails = 30; // Number of trails
             const trailAnimDurationBase = 1800; // Base duration for a trail to draw
@@ -385,7 +399,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
 
             const totalSpiralTimeline = createTimeline()
             for (let i = 0; i < numTrails; i++) {
-                let duration = trailAnimDurationBase + utils.random(-300, 400)
+                let duration = trailAnimDurationBase + utils.random(-1000, 200)
                 let spiralTimeline = addSvgSpiralTrail("", {
                     svgContainer: svgOverlay,
                     centerX: targetX,
@@ -401,19 +415,29 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                     pointsPerRotation: 48 // More points for smoother spirals
                 });
 
-                totalSpiralTimeline.sync(spiralTimeline, `${utils.random(0, 1000)}`)
-            }
+                let offset = utils.random(0, 1000)
+                spiralDuration = Math.max(spiralDuration, duration + offset)
+                totalSpiralTimeline.sync(spiralTimeline, `${offset}`)
 
+            }            
             tl.sync(totalSpiralTimeline, `<`)
+
         } else {
             console.warn("Particle container has no dimensions, skipping Phase B trails.");
-        }
+        }       
+        
+        // Phase B.5: Center Glow Transition
+        // Add a radial glow that starts at the end of the spiral trails and fades before item reveal
+        tl.add(centerGlow, {
+            opacity: [0, 1, 0],
+            width: ['200px', '1600px', '4200px'], // Start small, grow to cover center focus area, then slightly larger as it fades
+            height: ['200px', '1600px', '4200px'], // Keep it circular by matching width
+            duration: spiralDuration + 500,
+            ease: 'inOutQuad'
+        }, '<<+=500');
         
 
-        // The old Phase B (particle effects) is removed. 
-        // If you still want the old particle effects, you would add them here as another set of animations.
-        // For example, to add them concurrently with the trails:
-        // tl.add({ /* old particle animation params */ }, phaseBBaseOffset);        // Phase C: Item Reveal
+        // Phase C: Item Reveal
         tl.add(itemImageElement, {
             opacity: [0, 1],
             scale: [0.3, 1.1, 1], // Zoom in, slight overshoot, then settle
@@ -448,7 +472,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         // Phase E: Outro / Final Flourish (e.g. lingering particles, item pulse)
         tl.add(itemImageElement, {
             scale: [1, 1.05, 1], // Subtle pulse
-            duration: 1500,
+            duration: 500,
             ease: 'inOutSine',
             loop: 2, // Pulse a couple of times
         }, '<-=300');

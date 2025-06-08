@@ -53,8 +53,22 @@
     transition: box-shadow 0.3s ease-out;
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    image-rendering: -webkit-optimize-contrast; /* Try to keep pixel art crisp if applicable */
+    
+    /* Optimized pixel art rendering for maximum clarity */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -webkit-crisp-edges;
+    image-rendering: pixelated;
     image-rendering: crisp-edges;
+    
+    /* Prevent smoothing/anti-aliasing */
+    -ms-interpolation-mode: nearest-neighbor;
+    
+    /* Ensure no scaling artifacts */
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    
+    /* Force hardware acceleration for crisp rendering */
+    will-change: transform;
 }
 
 .animation-item-name {
@@ -66,6 +80,12 @@
     border-radius: 8px;
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.animation-center-glow {
+    /* Styles for the center glow effect that radiates during Phase B transition */
+    will-change: transform, opacity;
+    mix-blend-mode: screen; /* Blend mode for better layering with spiral trails */
 }
 
 .particle-effect {
