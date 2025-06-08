@@ -1,8 +1,6 @@
-import animeJS from 'animejs';
-import { init as initAnimeInspector } from '../../lib/anime-inspector.js';
+import { animate, createTimeline, utils, createSpring, createTimer, eases } from 'animejs';
 import { DEV_MODE, Log } from "../core-config.js";
 import { easing } from 'jquery';
-const anime = animeJS;
 
 
 class PathWindowAnimator {
@@ -14,7 +12,7 @@ class PathWindowAnimator {
   constructor(path, windowSize = 0.3) {
     this.path = path;
     this.pathLength = this.path.getTotalLength();
-    this.windowLength = this.pathLength * windowSize;
+    this.windowLength = Math.ceil(this.pathLength * windowSize);
     this.currentPosition = 0;
   }
   
@@ -33,46 +31,47 @@ class PathWindowAnimator {
     this.path.style.strokeDasharray = dashArray;
     this.path.style.strokeDashoffset = '0';
     
+    Log(progress)
     this.currentPosition = progress;
-  }
+  }    
   
   // Animate the complete sequence
-  animateFullSequence(tl, duration = 3000, offset = "") {
-    return tl
-      // Phase 1: Fade in window at start
-      .add({
-        duration: duration * 0.05,
-        easing: "easeOutSine",
-        update: (anim) => {
-          const progress = anim.progress / 100;
-          const currentWindowLength = this.windowLength * progress;
-          this.path.style.strokeDasharray = `0 0 ${currentWindowLength} ${this.pathLength}`;
-        }
-      }, offset)
-      // Phase 2: Slide window across path
-      .add({
-        duration: duration * 0.8,
-        easing: "easeInOutSine",
-        update: (anim) => {
-          const progress = anim.progress / 100;
-          this.setWindowPosition(progress);
-        }
-      }, offset)
-      // Phase 3: Fade out window at end
-      .add({
-        duration: duration * 0.2,
-        easing: "easeOutSine",
-        update: (anim) => {
-          const progress = 1 - (anim.progress / 100);
-          const currentWindowLength = this.windowLength * progress;
-          const windowStart = this.pathLength - currentWindowLength;
-          this.path.style.strokeDasharray = `0 ${windowStart} ${currentWindowLength} ${this.pathLength}`;
-        },
+  animateFullSequence(duration = 3000) {
+    // Create a dummy object to animate for custom onRender callbacks
+    const dummy = { progress: 0 };
 
-        complete: () => {
-            this.path.remove(); // Remove path after animation
+    const tl = createTimeline()
+
+    // Phase 1: Fade in window at start
+    tl.sync(createTimer({
+        duration: duration * 0.05,
+        onUpdate: (anim) => {
+            const progress = eases.outSine(anim.progress);
+            const currentWindowLength = this.windowLength * progress;
+            this.path.style.strokeDasharray = `0 1 ${currentWindowLength} ${this.pathLength}`;
         }
-      }, offset);
+    }))
+
+    // Phase 2: Slide window across path
+    tl.sync(createTimer({
+        duration: duration * 0.8,
+        onUpdate: (anim) => {
+            this.setWindowPosition(eases.inOutSine(anim.progress));
+        }
+    }))
+
+    // Phase 3: Fade out window at end
+    tl.sync(createTimer({
+        duration: duration * 0.2,
+        onUpdate: (anim) => {
+            const progress = 1 - eases.outSine(anim.progress);
+            const currentWindowLength = this.windowLength * progress;
+            const windowStart = this.pathLength - currentWindowLength;
+            this.path.style.strokeDasharray = `0 ${windowStart} ${currentWindowLength} ${this.pathLength}`;
+        }
+    }))
+
+    return tl
   }
 }
 
@@ -145,29 +144,25 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             Object.assign(el.style, styles);
             parent.appendChild(el); // Use the specified parent, defaulting to animationContainer
             return el;
-        }
-
-        function slidePathWindow(path, windowPercent = 0.3, duration = 3000) : anime.AnimeAnimParams {
+        }        function slidePathWindow(path, windowPercent = 0.3, duration = 3000) {
             const pathLength = path.getTotalLength();
             const windowLength = pathLength * windowPercent;
             
-            return {
-                    targets: { position: 0 },
-                    position: pathLength - windowLength,
-                    duration: duration,
-                    easing: 'easeInOutQuad',
-                    update: function(anim) {
-                        const pos = anim.animatables[0].target.position;
-                        const dashArray = `0 ${pos} ${windowLength} ${pathLength}`;
-                        path.style.strokeDasharray = dashArray;
-                        path.style.strokeDashoffset = '0';
+            return animate({ position: 0 }, {
+                position: pathLength - windowLength,
+                duration: duration,
+                ease: 'inOutQuad',
+                onRender: function(anim) {
+                    const pos = anim.progress * (pathLength - windowLength);
+                    const dashArray = `0 ${pos} ${windowLength} ${pathLength}`;
+                    path.style.strokeDasharray = dashArray;
+                    path.style.strokeDashoffset = '0';
                 }
-            };
+            });
         }
 
         // Helper function to add an SVG spiral trail animation to a timeline
         function addSvgSpiralTrail(
-            timeline: anime.AnimeTimelineInstance,
             baseOffset: string | number, // Base offset for this group of trails
             options: {
                 svgContainer: SVGElement,
@@ -184,8 +179,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 pointsPerRotation?: number,
                 easing?: string,
             }
-        ) {
-            const {
+        ) {            const {
                 svgContainer,
                 centerX,
                 centerY,
@@ -198,7 +192,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 strokeWidth = 4,
                 initialAngleOffset = 0,
                 pointsPerRotation = 36,
-                easing = "easeInOutQuint",
+                easing = "inOutQuint",
             } = options;
 
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -232,23 +226,30 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 path.remove();
                 return;
             }            
-            
-            // Initialize path style for animation
+              // Initialize path style for animation
             path.style.opacity = '0'; // Start hidden
-
+            
             const animator = new PathWindowAnimator(path, 0.25); // 25% window size
-            animator.animateFullSequence(timeline, duration, `-=${trailSpecificDelay}`);
+            let pathTL = animator.animateFullSequence(duration);
 
-            timeline.add({
-                targets: path,
+            let opacityTL = createTimeline().add(path, {
                 duration: duration,
                 opacity : [
-                    { value: 0, duration: 0, easing: 'linear' },
-                    { value: 1, duration: duration * 0.05, easing: 'linear' }, // Quick fade in
-                    { value: 1, duration: duration * 0.99, easing: 'linear' }, // Stay visible
-                    { value: 0, duration: duration * 0.01, easing: 'linear' }  // Quick fade out
-                ]
-            }, `-=${duration}`)
+                    { to: 0, duration: 0, ease: 'linear' },
+                    { to: 1, duration: duration * 0.2, ease: 'linear' }, // Quick fade in
+                    { to: 1, duration: duration * 0.6, ease: 'linear' }, // Stay visible
+                    { to: 0, duration: duration * 0.4, ease: 'linear' }  // Quick fade out
+                ],
+                onComplete: () => {
+                    path.remove()
+                }
+            })
+
+
+            let timeline = createTimeline()
+            timeline.sync(pathTL)
+            timeline.sync(opacityTL, `-=${duration}`)
+            return timeline
         }
 
         // --- 1. Create Dynamic Elements (Examples - expand as needed) ---
@@ -308,7 +309,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         // Text element for item name (example)
         const itemNameText = createElement('div', ['animation-item-name'], {
             position: 'absolute',
-            bottom: '15%',
+            bottom: '20%',
             left: '50%',
             transform: 'translateX(-50%)',
             opacity: '0',
@@ -316,24 +317,25 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             fontSize: 'clamp(1.5em, 3vw, 2.5em)',
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
-        });
+        });        
         itemNameText.textContent = memnosphereData.itemName;        // --- 2. Master Anime.js Timeline ---
-        const tl = anime.timeline({
-            easing: 'easeOutExpo', // Default easing for the timeline
-            duration: 750,       // Default duration for animations in the timeline
-            complete: () => {
+        
+        const tl = createTimeline({
+            defaults: {
+                ease: 'outExpo', // Default easing for the timeline
+                duration: 750,       // Default duration for animations in the timeline
+            },
+            onComplete: () => {
                 console.log(`Memnosphere animation complete for: ${memnosphereData.itemName}`);
                 // Optional: Add a slight delay before hiding, or a fade-out for the container itself
                 // Consider adding a "click to continue" or auto-advance after a few seconds
                 const holdTime = 1000
-                setTimeout(() => {
-                    if (animationContainer) {
-                        anime({
-                            targets: animationContainer,
+                setTimeout(() => {                    if (animationContainer) {
+                        animate(animationContainer, {
                             opacity: 0,
                             duration: 500,
-                            easing: 'linear',
-                            complete: () => {
+                            ease: 'linear',
+                            onComplete: () => {
                                 animationContainer.style.display = 'none';
                                 animationContainer.style.pointerEvents = 'none';
                                 animationContainer.innerHTML = ''; // Clean up
@@ -353,112 +355,103 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             }
         });
 
-        // --- 3. Animation Phases (Add your Anime.js calls here) ---
-
-        // Phase A: Intro & Background Transition
-        tl.add({
-            targets: animationContainer,
+        // --- 3. Animation Phases (Add your Anime.js calls here) ---        // Phase A: Intro & Background Transition
+        tl.add(animationContainer, {
             backgroundColor: ['rgba(0,0,0,0.0)', 'rgba(0,0,0,0.85)'], // Fade in dark overlay
             duration: 300,
-            easing: 'linear'
+            ease: 'linear'
         })
-        .add({
-            targets: bgLayer1,
+        .add(bgLayer1, {
             opacity: [0, 0.6], // Example: fade in a subtle background texture or color wash
-            // backgroundColor: memnosphereData.rarity === 'legendary' ? 'rgba(255,215,0,0.2)' : 'rgba(50,50,70,0.3)',
+            backgroundColor: memnosphereData.rarity === 'legendary' ? 'rgba(255,215,0,0.2)' : 'rgba(50,50,70,0.3)',
             duration: 700,
             // Add background image animation if desired
             // translateX: ['-100%', '0%'], // Example slide-in
         }, '-=150'); // Overlap with previous animation slightly
 
         // Phase B: Spiraling Trails
-        const phaseBBaseOffset = '+=50'; // Start Phase B effects 50ms after Phase A animations effectively end
-
         // Ensure particle container dimensions are available for calculations
         // These might be 0 if the container is not yet rendered or display:none
+
         const pcRect = particleContainer.getBoundingClientRect();
         const pcWidth = pcRect.width;
         const pcHeight = pcRect.height;
         const targetX = pcWidth / 2;
-        const targetY = pcHeight / 2;
-
+        const targetY = pcHeight / 2;        
         if (pcWidth > 0 && pcHeight > 0) { // Only create trails if container has valid dimensions
-            const numTrails = anime.random(7, 12); // Number of trails
+            const numTrails = 30; // Number of trails
             const trailAnimDurationBase = 1800; // Base duration for a trail to draw
             const trailStagger = 100; // ms delay between the start of each trail
 
+            const totalSpiralTimeline = createTimeline()
             for (let i = 0; i < numTrails; i++) {
-                addSvgSpiralTrail(tl, "", {
+                let duration = trailAnimDurationBase + utils.random(-300, 400)
+                let spiralTimeline = addSvgSpiralTrail("", {
                     svgContainer: svgOverlay,
                     centerX: targetX,
                     centerY: targetY,
-                    startRadius: Math.min(pcWidth, pcHeight) * anime.random(30, 80) / 100, // Start further out
+                    startRadius: Math.min(pcWidth, pcHeight) * utils.random(30, 80) / 100, // Start further out
                     endRadius: 0, // End exactly at the center
-                    rotations: anime.random(2, 6), // Fewer rotations for better convergence
-                    duration: trailAnimDurationBase + anime.random(-300, 400),
-                    trailSpecificDelay: i * trailStagger, // Stagger start time of each trail
-                    color: `hsl(${anime.random(100, 170)}, 100%, ${anime.random(60, 80)}%)`, // Vibrant greens/cyans
-                    strokeWidth: anime.random(1, 7),
-                    initialAngleOffset: anime.random(0, Math.PI * 2), // Random start angle for each trail
+                    rotations: utils.random(2, 6), // Fewer rotations for better convergence
+                    duration: duration,
+                    trailSpecificDelay: trailStagger, // Stagger start time of each trail
+                    color: `hsl(${utils.random(100, 170)}, 100%, ${utils.random(60, 80)}%)`, // Vibrant greens/cyans
+                    strokeWidth: utils.random(1, 7),
+                    initialAngleOffset: utils.random(0, Math.PI * 2), // Random start angle for each trail
                     pointsPerRotation: 48 // More points for smoother spirals
                 });
+
+                totalSpiralTimeline.sync(spiralTimeline, `${utils.random(0, 1000)}`)
             }
+
+            tl.sync(totalSpiralTimeline, `<`)
         } else {
             console.warn("Particle container has no dimensions, skipping Phase B trails.");
         }
+        
 
         // The old Phase B (particle effects) is removed. 
         // If you still want the old particle effects, you would add them here as another set of animations.
         // For example, to add them concurrently with the trails:
-        // tl.add({ /* old particle animation params */ }, phaseBBaseOffset);
-
-        // Phase C: Item Reveal
-        tl.add({
-            targets: itemImageElement,
+        // tl.add({ /* old particle animation params */ }, phaseBBaseOffset);        // Phase C: Item Reveal
+        tl.add(itemImageElement, {
             opacity: [0, 1],
             scale: [0.3, 1.1, 1], // Zoom in, slight overshoot, then settle
             rotate: ['-10deg', '5deg', '0deg'], // Slight wobble
             duration: 1200,
-            easing: 'spring(1, 80, 10, 0)', // Spring physics for a bouncier feel
-        }, '-=500'); // Overlap with the end of particle effects
+            ease: createSpring({ mass: 1, stiffness: 80, damping: 10, velocity: 0 }), // Spring physics for a bouncier feel
+        }, '<-=500'); // Overlap with the end of particle effects        // Phase D: Rarity Indication & Text Reveal
+        
+        let glowColor = 'rgba(255,255,255,0.7)'; // Default glow
+        if (memnosphereData.rarity.toLowerCase() === 'rare') glowColor = 'rgba(0,191,255,0.7)'; // Deep sky blue
+        else if (memnosphereData.rarity.toLowerCase() === 'epic') glowColor = 'rgba(138,43,226,0.7)'; // Blue violet
+        else if (memnosphereData.rarity.toLowerCase() === 'legendary') glowColor = 'rgba(255,165,0,0.8)'; // Orange
 
-        // Phase D: Rarity Indication & Text Reveal
-        // Example: Add a glow based on rarity
-        if (memnosphereData.rarity) {
-            let glowColor = 'rgba(255,255,255,0.7)'; // Default glow
-            if (memnosphereData.rarity.toLowerCase() === 'rare') glowColor = 'rgba(0,191,255,0.7)'; // Deep sky blue
-            else if (memnosphereData.rarity.toLowerCase() === 'epic') glowColor = 'rgba(138,43,226,0.7)'; // Blue violet
-            else if (memnosphereData.rarity.toLowerCase() === 'legendary') glowColor = 'rgba(255,165,0,0.8)'; // Orange
+        tl.add(itemImageElement, {
+            boxShadow: [
+                `0 0 0px 0px ${glowColor}`,
+                `0 0 30px 10px ${glowColor}`,
+                `0 0 15px 5px ${glowColor}` // Settle with a smaller glow
+            ],
+            duration: 800,
+            ease: 'outQuad'
+        }, '<-=800'); // Start glow during item reveal
 
-            tl.add({
-                targets: itemImageElement,
-                boxShadow: [
-                    `0 0 0px 0px ${glowColor}`,
-                    `0 0 30px 10px ${glowColor}`,
-                    `0 0 15px 5px ${glowColor}` // Settle with a smaller glow
-                ],
-                duration: 800,
-                easing: 'easeOutQuad'
-            }, '-=800'); // Start glow during item reveal
-        }
-
-        tl.add({
-            targets: itemNameText,
+        tl.add(itemNameText, {
             opacity: [0, 1],
             translateY: ['20px', '0px'], // Slide up
             duration: 600,
-            easing: 'easeOutQuint'
-        }, '-=600'); // Overlap with item settling
+            ease: 'outQuint'
+        }, '<-=600'); // Overlap with item settling
 
 
         // Phase E: Outro / Final Flourish (e.g. lingering particles, item pulse)
-        tl.add({
-            targets: itemImageElement,
+        tl.add(itemImageElement, {
             scale: [1, 1.05, 1], // Subtle pulse
             duration: 1500,
-            easing: 'easeInOutSine',
+            ease: 'inOutSine',
             loop: 2, // Pulse a couple of times
-        }, '-=300');
+        }, '<-=300');
 
 
         // Start the animation

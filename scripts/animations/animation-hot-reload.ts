@@ -1,5 +1,5 @@
 import { Log } from "../core-config.js";
-import anime from 'animejs';
+import { animate } from 'animejs';
 
 /**
  * Hot reload system for animation development
@@ -18,8 +18,8 @@ export function cleanupAnimationState(): void {
         container.innerHTML = '';
         container.style.display = 'none';
         
-        const runningAnims = anime.running; 
-        while (runningAnims.length > 0) { runningAnims.pop(); }
+        // In Anime.js v4, animations are automatically cleaned up when elements are removed
+        // We can also manually stop any running timelines if we have references to them
     }
     
     
