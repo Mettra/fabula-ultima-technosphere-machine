@@ -357,11 +357,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             zIndex: '15'
         }) as HTMLImageElement;
 
-        if (memnosphereData.imageUrl) {
-            itemImageElement.src = memnosphereData.imageUrl;
-        } else {
-            itemImageElement.alt = memnosphereData.itemName || "Revealed Item"; // Fallback alt text
-        }
+        itemImageElement.src = "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png"
 
         // Particle container (if using DOM particles, otherwise use canvas)
         const particleContainer = createElement('div', ['particle-container'], {

@@ -14,7 +14,7 @@ export const TEST_SCENARIOS: MemnosphereTestData[] = [
     {
         itemName: "Basic Crystal Shard",
         rarity: "common",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Chanter.png",
         effects: ["sparkle"],
         description: "A basic test scenario with common rarity"
     },
