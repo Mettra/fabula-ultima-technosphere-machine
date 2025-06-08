@@ -317,8 +317,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
         });        
-        itemNameText.textContent = memnosphereData.itemName;        
-          // Center glow element for Phase B end transition
+        itemNameText.textContent = memnosphereData.itemName;          // Center glow element for Phase B end transition
         const centerGlow = createElement('div', ['animation-center-glow'], {
             position: 'absolute',
             top: '50%',
@@ -331,7 +330,39 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             opacity: '0',
             pointerEvents: 'none',
             zIndex: '10' // Layer above the comets
-        });// --- 2. Master Anime.js Timeline ---
+        });
+
+        // Star background container for Phase A and B
+        const starContainer = createElement('div', ['animation-star-container'], {
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            pointerEvents: 'none',
+            zIndex: '5' // Below particles but above background
+        });
+
+        // Create small glistening stars
+        const stars: HTMLElement[] = [];
+        const numStars = 40; // Number of stars to create
+        for (let i = 0; i < numStars; i++) {
+            const star = createElement('div', ['animation-star'], {
+                position: 'absolute',
+                width: `${utils.random(2, 6)}px`,
+                height: `${utils.random(2, 6)}px`,
+                borderRadius: '50%',
+                background: `radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 255, 0.7) 40%, rgba(150, 150, 255, 0.3) 70%, transparent 100%)`,
+                boxShadow: `0 0 ${utils.random(3, 8)}px rgba(255, 255, 255, 0.6)`,
+                left: `${utils.random(5, 95)}%`,
+                top: `${utils.random(5, 95)}%`,
+                opacity: '0',
+                transform: `scale(${utils.random(0.3, 1.2)})`,
+                // Add slight color variation
+                filter: `hue-rotate(${utils.random(-30, 30)}deg) brightness(${utils.random(0.8, 1.2)})`
+            }, starContainer);
+            stars.push(star);
+        }// --- 2. Master Anime.js Timeline ---
         
         const tl = createTimeline({
             defaults: {
@@ -366,9 +397,8 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                     // TODO: Call any post-animation logic here (e.g., display item in UI, resolve a promise)
                 }, holdTime); // Hold the final frame before fading out
             }
-        });
-
-        // --- 3. Animation Phases (Add your Anime.js calls here) ---        // Phase A: Intro & Background Transition
+        });        // --- 3. Animation Phases (Add your Anime.js calls here) ---        
+        // // Phase A: Intro & Background Transition
         tl.add(animationContainer, {
             backgroundColor: ['rgba(0,0,0,0.0)', 'rgba(0,0,0,0.85)'], // Fade in dark overlay
             duration: 300,
@@ -380,7 +410,37 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             duration: 700,
             // Add background image animation if desired
             // translateX: ['-100%', '0%'], // Example slide-in
-        }, '-=150'); // Overlap with previous animation slightly
+        }, '-=150') // Overlap with previous animation slightly
+        
+        // Add stars fade-in during Phase A
+        .add(stars, {
+            opacity: [0, 1],
+            scale: (el, i) => [utils.random(0.1, 0.3), utils.random(0.8, 1.4)], // Random scale animation per star
+            duration: (el, i) => utils.random(800, 1500), // Staggered timing
+            delay: (el, i) => utils.random(0, 600), // Random delay for each star
+            ease: 'outQuart'
+        }, '-=500'); // Start during background fade        // Add gentle twinkling animation for stars during Phase A and B
+        stars.forEach((star, index) => {
+            const twinkleDelay = utils.random(1000, 3000); // Random delay before twinkling starts
+            const twinkleDuration = utils.random(1500, 2500) * 2; // Random twinkling duration
+            
+            // Create individual twinkling timeline for each star
+            setTimeout(() => {
+                const starTwinkle = createTimeline({
+                    loop: true
+                });
+                
+                starTwinkle.add(star, {
+                    opacity: [null, utils.random(0.3, 0.7), null, 1], // Fade down and back up
+                    scale: [null, utils.random(0.7, 0.9), null, 1], // Slight scale variation
+                    duration: twinkleDuration,
+                    ease: 'linear'
+                });
+                
+                // Store the timeline reference to stop it later
+                (star as any).twinkleTimeline = starTwinkle;
+            }, twinkleDelay);
+        });
 
         // Phase B: Spiraling Trails
         // Ensure particle container dimensions are available for calculations
@@ -425,8 +485,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         } else {
             console.warn("Particle container has no dimensions, skipping Phase B trails.");
         }       
-        
-        // Phase B.5: Center Glow Transition
+          // Phase B.5: Center Glow Transition
         // Add a radial glow that starts at the end of the spiral trails and fades before item reveal
         tl.add(centerGlow, {
             opacity: [0, 1, 0],
@@ -434,7 +493,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             height: ['200px', '1600px', '4200px'], // Keep it circular by matching width
             duration: spiralDuration + 500,
             ease: 'inOutQuad'
-        }, '<<+=500');
+        }, '<<+=500')
         
 
         // Phase C: Item Reveal
