@@ -14,42 +14,42 @@ export const TEST_SCENARIOS: MemnosphereTestData[] = [
     {
         itemName: "Basic Crystal Shard",
         rarity: "common",
-        imageUrl: "modules/fabula-ultima-compendium/images/classes/Chanter.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Entropist.png",
         effects: ["sparkle"],
         description: "A basic test scenario with common rarity"
     },
     {
         itemName: "Rare Techno Core",
         rarity: "rare",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Chanter.png",
         effects: ["glow", "pulse"],
         description: "A rare item with multiple effects"
     },
     {
         itemName: "Epic Data Fragment",
         rarity: "epic",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Darkblade.png",
         effects: ["shimmer", "burst", "glow"],
         description: "An epic item with complex effects"
     },
     {
         itemName: "Legendary Quantum Matrix",
         rarity: "legendary",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Guardian.png",
         effects: ["explosion", "rainbow", "sparkle", "glow"],
         description: "The ultimate legendary item with all effects"
     },
     {
         itemName: "Mythic Void Essence",
         rarity: "mythic",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
         effects: ["void", "reality-warp", "cosmic"],
         description: "A mythic item that bends reality"
     },
     {
         itemName: "Test Long Name Item That Might Overflow",
         rarity: "rare",
-        imageUrl: "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png",
+        imageUrl: "modules/fabula-ultima-compendium/images/classes/Esper.png",
         effects: ["glow"],
         description: "Testing long item names for UI layout"
     },

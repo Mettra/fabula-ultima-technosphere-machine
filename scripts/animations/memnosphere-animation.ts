@@ -30,8 +30,6 @@ class PathWindowAnimator {
     const dashArray = `0 ${windowStart} ${this.windowLength} ${this.pathLength - windowEnd}`;
     this.path.style.strokeDasharray = dashArray;
     this.path.style.strokeDashoffset = '0';
-    
-    Log(progress)
     this.currentPosition = progress;
   }    
   
@@ -75,18 +73,405 @@ class PathWindowAnimator {
   }
 }
 
+interface HSLColor {
+  h: number; // Hue: 0-360
+  s: number; // Saturation: 0-100 (%)
+  l: number; // Lightness: 0-100 (%)
+}
+
+/**
+ * Converts a HEX color string to an HSL object.
+ * @param hex The HEX color string (e.g., "#FF0000", "FF0000", "#F00", "F00").
+ * @returns An HSLColor object {h, s, l} or null if the hex string is invalid.
+ */
+function hexToHSL(hex: string): HSLColor | null {
+  if (!hex) {
+    return null;
+  }
+
+  // Remove # if present
+  let sanitizedHex = hex.startsWith('#') ? hex.slice(1) : hex;
+
+  // Expand shorthand form (e.g., "F00" to "FF0000")
+  if (sanitizedHex.length === 3) {
+    sanitizedHex = sanitizedHex
+      .split('')
+      .map((char) => char + char)
+      .join('');
+  }
+
+  if (sanitizedHex.length !== 6 || !/^[0-9A-Fa-f]{6}$/.test(sanitizedHex)) {
+    console.error("Invalid HEX color string:", hex);
+    return null; // Invalid hex format
+  }
+
+  const rHex = sanitizedHex.substring(0, 2);
+  const gHex = sanitizedHex.substring(2, 4);
+  const bHex = sanitizedHex.substring(4, 6);
+
+  const r = parseInt(rHex, 16);
+  const g = parseInt(gHex, 16);
+  const b = parseInt(bHex, 16);
+
+  if (isNaN(r) || isNaN(g) || isNaN(b)) {
+    console.error("Failed to parse HEX components:", hex);
+    return null; // Should not happen if regex passed
+  }
+
+  const rNorm = r / 255;
+  const gNorm = g / 255;
+  const bNorm = b / 255;
+
+  const max = Math.max(rNorm, gNorm, bNorm);
+  const min = Math.min(rNorm, gNorm, bNorm);
+  const delta = max - min;
+
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+
+  if (delta === 0) {
+    // Achromatic (gray)
+    h = 0;
+    s = 0;
+  } else {
+    // Chromatic
+    s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+
+    switch (max) {
+      case rNorm:
+        h = (gNorm - bNorm) / delta + (gNorm < bNorm ? 6 : 0);
+        break;
+      case gNorm:
+        h = (bNorm - rNorm) / delta + 2;
+        break;
+      case bNorm:
+        h = (rNorm - gNorm) / delta + 4;
+        break;
+    }
+    h /= 6;
+  }
+
+  return {
+    h: Math.round(h * 360),
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
+}
+
+interface ImageColors {
+  primary: HSLColor;
+  secondary: HSLColor;
+}
+
+/**
+ * Converts RGB color components to a HEX color string.
+ * @param r Red component (0-255)
+ * @param g Green component (0-255)
+ * @param b Blue component (0-255)
+ * @returns HEX color string (e.g., "#FF0000")
+ */
+function rgbToHex(r: number, g: number, b: number): string {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+/**
+ * Quickly determines primary and secondary colors from a pixel art image URL using mean shift clustering.
+ * Assumes the image has bright and distinct colors.
+ * This function is intended for browser environments.
+ * @param imageUrl The URL of the image to analyze.
+ * @returns A Promise that resolves with an object containing primary and secondary HSL color strings.
+ */
+async function getPixelArtColors(imageUrl: string): Promise<ImageColors> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+
+    img.onload = () => {
+      if (img.width === 0 || img.height === 0) {
+        reject(new Error('Image has zero width or height.'));
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Could not get 2D rendering context for canvas.'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0);
+
+      let imageData: ImageData;
+      try {
+        imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      } catch (error) {
+        let message = 'Failed to get image data.';
+        if (error instanceof Error) {
+            message += ` This might be due to CORS policy. Original error: ${error.message}`;
+        } else if (typeof error === 'string') {
+            message += ` Original error: ${error}`;
+        }
+        reject(new Error(message));
+        return;
+      }
+      
+      const data = imageData.data;
+      const colorCounts: { [hexColor: string]: number } = {};
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3];
+        if (a === 255) {
+          const hex = rgbToHex(r, g, b);
+          colorCounts[hex] = (colorCounts[hex] || 0) + 1;
+        }
+      }
+
+      // --- Start of Mean Shift Implementation ---
+      if (Object.keys(colorCounts).length === 0) {
+        reject(new Error('No opaque colors found in the image.'));
+        return;
+      }
+
+      // 1. Prepare initial points from unique colors
+      const initialPoints: {
+        rgb: { r: number; g: number; b: number }; // Original RGB
+        count: number; // Pixel count of this original color
+        id: number; // Unique ID for tracking/debugging
+        currentRgb: { r: number; g: number; b: number }; // RGB value that gets shifted
+      }[] = [];
+      let pointId = 0;
+      for (const hex in colorCounts) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        initialPoints.push({
+          rgb: { r, g, b },
+          count: colorCounts[hex],
+          id: pointId++,
+          currentRgb: { r, g, b },
+        });
+      }
+
+      if (initialPoints.length === 0) {
+          reject(new Error('No valid initial points for clustering.'));
+          return;
+      }
+
+      // Helper for squared Euclidean distance in RGB space
+      const calculateDistanceSq = (
+        p1: { r: number; g: number; b: number },
+        p2: { r: number; g: number; b: number }
+      ): number => {
+        const dr = p1.r - p2.r;
+        const dg = p1.g - p2.g;
+        const db = p1.b - p2.b;
+        return dr * dr + dg * dg + db * db;
+      };
+
+      // Mean Shift Parameters (these may need tuning based on your image characteristics)
+      const MEAN_SHIFT_BANDWIDTH = 40; // Radius for searching neighbors in RGB space
+      const BANDWIDTH_SQ = MEAN_SHIFT_BANDWIDTH * MEAN_SHIFT_BANDWIDTH;
+      const MAX_ITERATIONS = 15;       // Max iterations for convergence
+      const CONVERGENCE_THRESHOLD_SQ = 0.5 * 0.5; // Min average movement to continue iterating
+
+      let currentPointsState = initialPoints.map(p => ({ ...p })); // Work with copies
+
+      // 2. Mean Shift Iterations
+      for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
+        let totalMovementSq = 0;
+        const nextPointsState = currentPointsState.map(point => {
+          let sumR = 0, sumG = 0, sumB = 0;
+          let totalWeightInKernel = 0;
+
+          // For each point, find neighbors within bandwidth and calculate weighted mean
+          for (const otherPoint of currentPointsState) {
+            const distSq = calculateDistanceSq(point.currentRgb, otherPoint.currentRgb);
+            if (distSq < BANDWIDTH_SQ) {
+              // Weight by the original pixel count of the 'otherPoint'
+              // This gives more influence to colors that were initially more prevalent
+              const weight = otherPoint.count;
+              sumR += otherPoint.currentRgb.r * weight;
+              sumG += otherPoint.currentRgb.g * weight;
+              sumB += otherPoint.currentRgb.b * weight;
+              totalWeightInKernel += weight;
+            }
+          }
+
+          let shiftedRgb;
+          if (totalWeightInKernel > 0) {
+            shiftedRgb = {
+              r: sumR / totalWeightInKernel,
+              g: sumG / totalWeightInKernel,
+              b: sumB / totalWeightInKernel,
+            };
+          } else {
+            // If no neighbors in bandwidth (isolated point), it doesn't move
+            shiftedRgb = { ...point.currentRgb };
+          }
+          
+          totalMovementSq += calculateDistanceSq(point.currentRgb, shiftedRgb);
+          return { ...point, newRgb: shiftedRgb }; // Store the shifted position
+        });
+
+        // Update points to their new shifted positions
+        currentPointsState = nextPointsState.map(p => ({ ...p, currentRgb: { ...p.newRgb } }));
+
+        // Check for convergence
+        if (currentPointsState.length > 0 && (totalMovementSq / currentPointsState.length) < CONVERGENCE_THRESHOLD_SQ && iter > 0) {
+          break; // Converged
+        }
+      }
+
+      // 3. Post-Iteration: Group converged points (modes) into clusters
+      const CLUSTER_MERGE_THRESHOLD = 25; // Max distance to merge two modes into the same cluster
+      const MERGE_THRESHOLD_SQ = CLUSTER_MERGE_THRESHOLD * CLUSTER_MERGE_THRESHOLD;
+      
+      // Modes are the final positions of the points after shifting
+      const modes = currentPointsState.map(p => ({
+          convergedRgb: p.currentRgb,
+          originalCount: p.count, // Original pixel count of the color that led to this mode
+      }));
+
+      // Sort modes by their original pixel count to prioritize significant colors when forming clusters
+      modes.sort((a, b) => b.originalCount - a.originalCount);
+
+      const clusters: {
+        center: { r: number; g: number; b: number };
+        totalOriginalCount: number;
+      }[] = [];
+      const assignedToCluster = new Array(modes.length).fill(false);
+
+      for (let i = 0; i < modes.length; i++) {
+        if (assignedToCluster[i]) continue;
+
+        const currentMode = modes[i];
+        let clusterSumR = currentMode.convergedRgb.r * currentMode.originalCount;
+        let clusterSumG = currentMode.convergedRgb.g * currentMode.originalCount;
+        let clusterSumB = currentMode.convergedRgb.b * currentMode.originalCount;
+        let clusterTotalOriginalCount = currentMode.originalCount;
+        assignedToCluster[i] = true;
+
+        // Find other modes close to the currentMode to form a cluster
+        for (let j = i + 1; j < modes.length; j++) {
+          if (assignedToCluster[j]) continue;
+          const otherMode = modes[j];
+          // Using currentMode.convergedRgb as the reference for merging
+          if (calculateDistanceSq(currentMode.convergedRgb, otherMode.convergedRgb) < MERGE_THRESHOLD_SQ) {
+            assignedToCluster[j] = true;
+            clusterSumR += otherMode.convergedRgb.r * otherMode.originalCount;
+            clusterSumG += otherMode.convergedRgb.g * otherMode.originalCount;
+            clusterSumB += otherMode.convergedRgb.b * otherMode.originalCount;
+            clusterTotalOriginalCount += otherMode.originalCount;
+          }
+        }
+        
+        if (clusterTotalOriginalCount > 0) {
+            clusters.push({
+              center: { // Calculate the weighted center of the cluster
+                r: clusterSumR / clusterTotalOriginalCount,
+                g: clusterSumG / clusterTotalOriginalCount,
+                b: clusterSumB / clusterTotalOriginalCount,
+              },
+              totalOriginalCount: clusterTotalOriginalCount,
+            });
+        }
+      }
+
+      // Sort clusters by the total original pixel count they represent
+      clusters.sort((a, b) => b.totalOriginalCount - a.totalOriginalCount);
+
+      let primaryRgb: { r: number; g: number; b: number };
+      let secondaryRgb: { r: number; g: number; b: number };
+
+      if (clusters.length === 0) {
+          // Fallback if clustering yields no results (e.g., very few distinct colors or unusual distribution)
+          // Use the most frequent original color
+          if (initialPoints.length > 0) {
+              const mostFrequentInitial = [...initialPoints].sort((a,b) => b.count - a.count)[0];
+              primaryRgb = mostFrequentInitial.rgb;
+              secondaryRgb = mostFrequentInitial.rgb;
+          } else {
+              // This case should ideally be caught by earlier checks
+              reject(new Error('Clustering resulted in no clusters and no fallback available.'));
+              return;
+          }
+      } else {
+          primaryRgb = clusters[0].center;
+          secondaryRgb = clusters.length > 1 ? clusters[1].center : primaryRgb; // If only one cluster, use it for both
+      }
+      
+      // Ensure RGB components are integers before converting to hex
+      const finalPrimaryRgb = {
+          r: Math.max(0, Math.min(255, Math.round(primaryRgb.r))),
+          g: Math.max(0, Math.min(255, Math.round(primaryRgb.g))),
+          b: Math.max(0, Math.min(255, Math.round(primaryRgb.b)))
+      };
+      const finalSecondaryRgb = {
+          r: Math.max(0, Math.min(255, Math.round(secondaryRgb.r))),
+          g: Math.max(0, Math.min(255, Math.round(secondaryRgb.g))),
+          b: Math.max(0, Math.min(255, Math.round(secondaryRgb.b)))
+      };
+
+      const primaryHex = rgbToHex(finalPrimaryRgb.r, finalPrimaryRgb.g, finalPrimaryRgb.b);
+      const secondaryHex = rgbToHex(finalSecondaryRgb.r, finalSecondaryRgb.g, finalSecondaryRgb.b);
+      
+      const primaryHSL = hexToHSL(primaryHex);
+      const secondaryHSL = hexToHSL(secondaryHex);
+
+      if (!primaryHSL || !secondaryHSL) {
+          // Fallback if HSL conversion fails for some reason
+          console.error("Failed to convert clustered RGB to HSL. Primary RGB:", finalPrimaryRgb, "Secondary RGB:", finalSecondaryRgb);
+          // Attempt to use the most frequent color as a last resort
+          if (initialPoints.length > 0) {
+            const fallbackHex = rgbToHex(initialPoints[0].rgb.r, initialPoints[0].rgb.g, initialPoints[0].rgb.b);
+            const fallbackHSL = hexToHSL(fallbackHex);
+            if (fallbackHSL) {
+                resolve({ primary: fallbackHSL, secondary: fallbackHSL });
+                return;
+            }
+          }
+          reject(new Error('Failed to convert clustered RGB colors to HSL and no fallback.'));
+          return;
+      }
+
+      resolve({
+        primary: primaryHSL,
+        secondary: secondaryHSL,
+      });
+      // --- End of Mean Shift Implementation ---
+    };
+
+    img.onerror = () => {
+      reject(new Error(`Failed to load image from URL: ${imageUrl}`));
+    };
+
+    img.src = imageUrl;
+  });
+}
+
 /**
  * Plays the full-screen memnosphere gacha-style animation.
  * @param {object} memnosphereData - Data about the memnosphere being rolled.
  *                                 Example: { itemName: "Crystal Shard", rarity: "rare", imageUrl: "icons/crystal.png", effects: ["sparkle", "glow"] }
  */
 export function playMemnosphereAnimation(memnosphereData: { itemName: string, rarity: string, imageUrl: string | null, effects?: string[] }): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(async (resolve) => {
+        let colors = await getPixelArtColors(memnosphereData.imageUrl)
+
         // --- Dynamic Color Palette Configuration ---
         // Define base palette colors - these can be easily changed to create different themes
-        const PRIMARY_COLOR = { h: 135, s: 100, l: 70 };   // Vibrant cyan-green (HSL: 135°, 100%, 70%)
-        const SECONDARY_COLOR = { h: 190, s: 100, l: 65 }; // Bright cyan-blue (HSL: 190°, 100%, 65%)
+        const PRIMARY_COLOR = colors.primary //{ h: 135, s: 100, l: 70 };   // Vibrant cyan-green (HSL: 135°, 100%, 70%)
+        const SECONDARY_COLOR = colors.secondary //{ h: 190, s: 100, l: 65 }; // Bright cyan-blue (HSL: 190°, 100%, 65%)
         
+        Log(PRIMARY_COLOR, SECONDARY_COLOR)
+
         // Enhanced color system with more sophisticated variations
         const ColorPalette = {
             // Core palette reference
@@ -531,12 +916,13 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             const totalSpiralTimeline = createTimeline()
             for (let i = 0; i < numTrails; i++) {
                 let duration = trailAnimDurationBase + utils.random(-1000, 200)
+
+                let color = utils.randomPick([PRIMARY_COLOR, SECONDARY_COLOR])
+
                   // Generate dynamic trail color using the palette
-                const hueRange = Math.abs(PRIMARY_COLOR.h - SECONDARY_COLOR.h);
-                const minHue = Math.min(PRIMARY_COLOR.h, SECONDARY_COLOR.h);
-                const trailHue = minHue + utils.random(0, hueRange);
-                const trailSaturation = utils.random(80, 100);
-                const trailLightness = utils.random(60, 80);
+                const trailHue = color.h + utils.random(-10, 10);
+                const trailSaturation = color.s + utils.random(-10, 10);
+                const trailLightness = color.l + utils.random(-10, 10);
                 
                 let spiralTimeline = addSvgSpiralTrail("", {
                     svgContainer: svgOverlay,
