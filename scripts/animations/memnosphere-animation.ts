@@ -1,5 +1,80 @@
-import anime from 'animejs';
+import animeJS from 'animejs';
+import { init as initAnimeInspector } from '../../lib/anime-inspector.js';
 import { DEV_MODE, Log } from "../core-config.js";
+import { easing } from 'jquery';
+const anime = animeJS;
+
+
+class PathWindowAnimator {
+    path: any;
+    pathLength: any;
+    windowLength: number;
+    currentPosition: number;
+
+  constructor(path, windowSize = 0.3) {
+    this.path = path;
+    this.pathLength = this.path.getTotalLength();
+    this.windowLength = this.pathLength * windowSize;
+    this.currentPosition = 0;
+  }
+  
+  // Set window position (0 = start, 1 = end)
+  setWindowPosition(progress) {
+    // Clamp progress between 0 and 1
+    progress = Math.max(0, Math.min(1, progress));
+    
+    // Calculate window boundaries
+    const maxStart = this.pathLength - this.windowLength;
+    const windowStart = maxStart * progress;
+    const windowEnd = windowStart + this.windowLength;
+    
+    // Create dash pattern: gap-before, visible-section, gap-after
+    const dashArray = `0 ${windowStart} ${this.windowLength} ${this.pathLength - windowEnd}`;
+    this.path.style.strokeDasharray = dashArray;
+    this.path.style.strokeDashoffset = '0';
+    
+    this.currentPosition = progress;
+  }
+  
+  // Animate the complete sequence
+  animateFullSequence(tl, duration = 3000, offset = "") {
+    return tl
+      // Phase 1: Fade in window at start
+      .add({
+        duration: duration * 0.05,
+        easing: "easeOutSine",
+        update: (anim) => {
+          const progress = anim.progress / 100;
+          const currentWindowLength = this.windowLength * progress;
+          this.path.style.strokeDasharray = `0 0 ${currentWindowLength} ${this.pathLength}`;
+        }
+      }, offset)
+      // Phase 2: Slide window across path
+      .add({
+        duration: duration * 0.8,
+        easing: "easeInOutSine",
+        update: (anim) => {
+          const progress = anim.progress / 100;
+          this.setWindowPosition(progress);
+        }
+      }, offset)
+      // Phase 3: Fade out window at end
+      .add({
+        duration: duration * 0.2,
+        easing: "easeOutSine",
+        update: (anim) => {
+          const progress = 1 - (anim.progress / 100);
+          const currentWindowLength = this.windowLength * progress;
+          const windowStart = this.pathLength - currentWindowLength;
+          this.path.style.strokeDasharray = `0 ${windowStart} ${currentWindowLength} ${this.pathLength}`;
+        },
+
+        complete: () => {
+            this.path.remove(); // Remove path after animation
+        }
+      }, offset);
+  }
+}
 
 /**
  * Plays the full-screen memnosphere gacha-style animation.
@@ -72,6 +147,110 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             return el;
         }
 
+        function slidePathWindow(path, windowPercent = 0.3, duration = 3000) : anime.AnimeAnimParams {
+            const pathLength = path.getTotalLength();
+            const windowLength = pathLength * windowPercent;
+            
+            return {
+                    targets: { position: 0 },
+                    position: pathLength - windowLength,
+                    duration: duration,
+                    easing: 'easeInOutQuad',
+                    update: function(anim) {
+                        const pos = anim.animatables[0].target.position;
+                        const dashArray = `0 ${pos} ${windowLength} ${pathLength}`;
+                        path.style.strokeDasharray = dashArray;
+                        path.style.strokeDashoffset = '0';
+                }
+            };
+        }
+
+        // Helper function to add an SVG spiral trail animation to a timeline
+        function addSvgSpiralTrail(
+            timeline: anime.AnimeTimelineInstance,
+            baseOffset: string | number, // Base offset for this group of trails
+            options: {
+                svgContainer: SVGElement,
+                centerX: number,
+                centerY: number,
+                startRadius: number,
+                endRadius: number,
+                rotations: number,
+                duration: number,
+                trailSpecificDelay?: number, // Delay for this specific trail relative to baseOffset
+                color?: string,
+                strokeWidth?: number,
+                initialAngleOffset?: number, // in radians
+                pointsPerRotation?: number,
+                easing?: string,
+            }
+        ) {
+            const {
+                svgContainer,
+                centerX,
+                centerY,
+                startRadius,
+                endRadius,
+                rotations,
+                duration,
+                trailSpecificDelay = 0,
+                color = 'lime',
+                strokeWidth = 4,
+                initialAngleOffset = 0,
+                pointsPerRotation = 36,
+                easing = "easeInOutQuint",
+            } = options;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            svgContainer.appendChild(path);
+
+            const totalAngle = rotations * 2 * Math.PI;
+            const numPoints = Math.max(2, Math.ceil(rotations * pointsPerRotation));
+
+            let d = '';
+            for (let i = 0; i <= numPoints; i++) {
+                const progress = i / numPoints;
+                const currentAngle = initialAngleOffset + progress * totalAngle;
+                const currentRadius = startRadius + (endRadius - startRadius) * progress;
+                const x = centerX + currentRadius * Math.cos(currentAngle);
+                const y = centerY + currentRadius * Math.sin(currentAngle);
+                if (i === 0) {
+                    d += `M ${x} ${y}`;
+                } else {
+                    d += ` L ${x} ${y}`;
+                }
+            }
+
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', strokeWidth.toString());
+            path.setAttribute('fill', 'none');
+            path.setAttribute('stroke-linecap', 'round');
+            
+            const pathLength = path.getTotalLength();
+            if (pathLength === 0) { // Path is empty or invalid, remove and skip animation
+                path.remove();
+                return;
+            }            
+            
+            // Initialize path style for animation
+            path.style.opacity = '0'; // Start hidden
+
+            const animator = new PathWindowAnimator(path, 0.25); // 25% window size
+            animator.animateFullSequence(timeline, duration, `-=${trailSpecificDelay}`);
+
+            timeline.add({
+                targets: path,
+                duration: duration,
+                opacity : [
+                    { value: 0, duration: 0, easing: 'linear' },
+                    { value: 1, duration: duration * 0.05, easing: 'linear' }, // Quick fade in
+                    { value: 1, duration: duration * 0.99, easing: 'linear' }, // Stay visible
+                    { value: 0, duration: duration * 0.01, easing: 'linear' }  // Quick fade out
+                ]
+            }, `-=${duration}`)
+        }
+
         // --- 1. Create Dynamic Elements (Examples - expand as needed) ---
 
         // Background layers (could be more sophisticated with multiple layers)
@@ -113,6 +292,19 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             pointerEvents: 'none' // Particles shouldn't block interaction
         });
 
+        // SVG Overlay for trails
+        const svgOverlay = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        Object.assign(svgOverlay.style, {
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            pointerEvents: 'none',
+            overflow: 'visible' // Important for paths that might go slightly out of bounds during animation
+        });
+        particleContainer.appendChild(svgOverlay); // Add to particle container
+
         // Text element for item name (example)
         const itemNameText = createElement('div', ['animation-item-name'], {
             position: 'absolute',
@@ -133,7 +325,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 console.log(`Memnosphere animation complete for: ${memnosphereData.itemName}`);
                 // Optional: Add a slight delay before hiding, or a fade-out for the container itself
                 // Consider adding a "click to continue" or auto-advance after a few seconds
-                const holdTime = DEV_MODE ? 1000 : 2000; // Shorter hold time in dev mode for faster iteration
+                const holdTime = 1000
                 setTimeout(() => {
                     if (animationContainer) {
                         anime({
@@ -179,88 +371,46 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             // translateX: ['-100%', '0%'], // Example slide-in
         }, '-=150'); // Overlap with previous animation slightly
 
-        // Phase B: Initial Burst / Energy Gathering (Placeholder for particle effects)
-        // This is where you'd trigger functions to create and animate particles
-        // Example: createSparkleEffect(particleContainer, 50, memnosphereData.rarity);
-        tl.add({
-            // Placeholder for particle/energy animations
-            duration: 1000, // Duration of this phase
-            begin: () => {
-                const pcWidth = particleContainer.offsetWidth;
-                const pcHeight = particleContainer.offsetHeight;
-                const targetX = pcWidth / 2; // Center X of the particle container
-                const targetY = pcHeight / 2; // Center Y of the particle container
+        // Phase B: Spiraling Trails
+        const phaseBBaseOffset = '+=50'; // Start Phase B effects 50ms after Phase A animations effectively end
 
-                for (let i = 0; i < 100; i++) {
-                    const initialLeftPercent = anime.random(20, 80);
-                    const initialTopPercent = anime.random(20, 80);
-                    const size = anime.random(5, 25);
+        // Ensure particle container dimensions are available for calculations
+        // These might be 0 if the container is not yet rendered or display:none
+        const pcRect = particleContainer.getBoundingClientRect();
+        const pcWidth = pcRect.width;
+        const pcHeight = pcRect.height;
+        const targetX = pcWidth / 2;
+        const targetY = pcHeight / 2;
 
-                    const p = createElement('div', ['particle-effect'], {
-                        position: 'absolute',
-                        left: `${initialLeftPercent}%`,
-                        top: `${initialTopPercent}%`,
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        //backgroundColor: `hsl(${anime.random(180,240)}, 100%, 70%)`,
-                        borderRadius: '50%',
-                        opacity: '0' // Start transparent, anime.js will handle fade-in
-                    }, particleContainer);
+        if (pcWidth > 0 && pcHeight > 0) { // Only create trails if container has valid dimensions
+            const numTrails = anime.random(7, 12); // Number of trails
+            const trailAnimDurationBase = 1800; // Base duration for a trail to draw
+            const trailStagger = 100; // ms delay between the start of each trail
 
-                    // Calculate initial pixel position of the particle's top-left corner
-                    const initialLeftPx = (initialLeftPercent / 100) * pcWidth;
-                    const initialTopPx = (initialTopPercent / 100) * pcHeight;
-
-                    // Calculate the required translation to move the particle's top-left to the target center
-                    const finalTranslateX = targetX - initialLeftPx;
-                    const finalTranslateY = targetY - initialTopPx;
-
-                    // Calculate the angle towards the center
-                    const angleRad = Math.atan2(finalTranslateY, finalTranslateX);
-                    const angleDeg = angleRad * (180 / Math.PI);
-
-                    // Create a pseudo-element for the skewed line
-                    const line = document.createElement('div');
-                    line.classList.add('particle-line');
-                    p.appendChild(line);
-
-                    // Apply styles to the pseudo-element using JavaScript
-                    Object.assign(line.style, {
-                        position: 'absolute',
-                        top: '50%',
-                        left: '0%',
-                        width: '100%', // Adjust as needed
-                        height: `${Math.log2(size)}px`,  // Line thickness
-                        backgroundColor: `hsl(${anime.random(180,240)}, 100%, 70%)`, // Blues/Cyans
-                        transformOrigin: '0% 50%', // Rotate around the left edge
-                        transform: `rotate(${angleDeg}deg)`, // Rotate towards the center
-                    });
-
-                    anime({
-                        targets: line,
-                        height: [0, `${Math.log2(size)}px`],
-                        duration: anime.random(100, 200),
-                        easing: 'easeOutCubic',
-                        delay: anime.random(0, 50),
-                    })
-
-                    anime({
-                        targets: p,
-                        width: 0,
-                        height: 0,
-                        translateX: [0, finalTranslateX], // Move towards the center X
-                        translateY: [0, finalTranslateY], // Move towards the center Y
-                        scale: [1, 0],
-                        opacity: [1, 0.2],
-                        duration: anime.random(300, 900),// Adjusted duration for travel
-                        easing: 'easeOutCubic',            // Accelerate towards the target
-                        delay: anime.random(50, 500),
-                        complete: () => p.remove()
-                    });
-                }
+            for (let i = 0; i < numTrails; i++) {
+                addSvgSpiralTrail(tl, "", {
+                    svgContainer: svgOverlay,
+                    centerX: targetX,
+                    centerY: targetY,
+                    startRadius: Math.min(pcWidth, pcHeight) * anime.random(30, 80) / 100, // Start further out
+                    endRadius: 0, // End exactly at the center
+                    rotations: anime.random(2, 6), // Fewer rotations for better convergence
+                    duration: trailAnimDurationBase + anime.random(-300, 400),
+                    trailSpecificDelay: i * trailStagger, // Stagger start time of each trail
+                    color: `hsl(${anime.random(100, 170)}, 100%, ${anime.random(60, 80)}%)`, // Vibrant greens/cyans
+                    strokeWidth: anime.random(1, 7),
+                    initialAngleOffset: anime.random(0, Math.PI * 2), // Random start angle for each trail
+                    pointsPerRotation: 48 // More points for smoother spirals
+                });
             }
-        });
+        } else {
+            console.warn("Particle container has no dimensions, skipping Phase B trails.");
+        }
 
+        // The old Phase B (particle effects) is removed. 
+        // If you still want the old particle effects, you would add them here as another set of animations.
+        // For example, to add them concurrently with the trails:
+        // tl.add({ /* old particle animation params */ }, phaseBBaseOffset);
 
         // Phase C: Item Reveal
         tl.add({

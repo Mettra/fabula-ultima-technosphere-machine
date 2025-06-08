@@ -70,8 +70,6 @@
 
 .particle-effect {
     /* Styles for DOM-based particles. Anime.js will control most properties like position, opacity, transform. */
-    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 100%);
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
     will-change: transform, opacity; /* Hint for browser performance */
 }
 
