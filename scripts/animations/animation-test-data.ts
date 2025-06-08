@@ -12,42 +12,42 @@ export interface MemnosphereTestData {
 
 export const TEST_SCENARIOS: MemnosphereTestData[] = [
     {
-        itemName: "Basic Crystal Shard",
+        itemName: "Mnemosphere - Entropist",
         rarity: "common",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Entropist.png",
         effects: ["sparkle"],
         description: "A basic test scenario with common rarity"
     },
     {
-        itemName: "Rare Techno Core",
+        itemName: "Mnemosphere - Chanter",
         rarity: "rare",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Chanter.png",
         effects: ["glow", "pulse"],
         description: "A rare item with multiple effects"
     },
     {
-        itemName: "Epic Data Fragment",
+        itemName: "Mnemosphere - Darkblade",
         rarity: "epic",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Darkblade.png",
         effects: ["shimmer", "burst", "glow"],
         description: "An epic item with complex effects"
     },
     {
-        itemName: "Legendary Quantum Matrix",
+        itemName: "Mnemosphere - Guardian",
         rarity: "legendary",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Guardian.png",
         effects: ["explosion", "rainbow", "sparkle", "glow"],
         description: "The ultimate legendary item with all effects"
     },
     {
-        itemName: "Mythic Void Essence",
+        itemName: "Mnemosphere - Weaponmaster",
         rarity: "mythic",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
         effects: ["void", "reality-warp", "cosmic"],
         description: "A mythic item that bends reality"
     },
     {
-        itemName: "Test Long Name Item That Might Overflow",
+        itemName: "Mnemosphere - Esper",
         rarity: "rare",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Esper.png",
         effects: ["glow"],

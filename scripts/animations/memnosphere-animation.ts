@@ -894,15 +894,15 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         particleContainer.appendChild(svgOverlay); // Add to particle container        // Text element for item name (example)
         const itemNameText = createElement('div', ['animation-item-name'], {
             position: 'absolute',
-            bottom: '20%',
+            bottom: "20%",
             left: '50%',
-            transform: 'translateX(-50%)',
+            transform: 'translateX(-50%)', // Ensures horizontal centering and growth
             opacity: '0',
             color: 'white',
             fontSize: 'clamp(1.5em, 3vw, 2.5em)',
-            textAlign: 'center',
+            textAlign: 'center', // Centers text if it wraps to multiple lines
             textShadow: '0 0 5px black, 0 0 10px black'
-        });          
+        });
         itemNameText.textContent = memnosphereData.itemName;
         
         // Center glow element for Phase B end transition
@@ -1124,6 +1124,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         tl.add(itemNameText, {
             opacity: [0, 1],
             translateY: ['20px', '0px'], // Slide up
+            translateX: '-50%',
             duration: 600,
             ease: 'outQuint'
         }, '<-=600'); // Overlap with item settling
