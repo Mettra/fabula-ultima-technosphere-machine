@@ -1,5 +1,5 @@
 import { getCharacter, getEventName, getFlag, Log, MEMNOSPHERE_ROLL_COST, ModuleName, SetFlagWithoutRender, DEV_MODE } from "./core-config.js";
-import { createMemnosphereDescription, createMemnosphereDescriptionBody, createMemnosphereItemData, filterMemnospheres, MemnosphereHeader, SetupMemnosphereHooks } from "./memnosphere.js";
+import { createMemnosphereDescription, createMemnosphereDescriptionBody, createMemnosphereItemData, filterMemnospheres, MemnosphereHeader, resolveSkills, SetupMemnosphereHooks } from "./memnosphere.js";
 import { Memnosphere_ID, Relations } from "./relation.js";
 import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
@@ -70,19 +70,40 @@ async function generateNewMemnosphere(rollTableUUID : UUID) {
 }
 
 async function addAbilityToMemnosphere(sphereItemUUID : UUID) {
-    Log(`Updating Memnosphere ${sphereItemUUID}`)
-    let sphereId = Relations.Item.memnosphere.get(sphereItemUUID)
-    let classUUID = Relations.Memnosphere.class.get(sphereId)
-    if(classUUID == null) {
-        ui.notifications.error(`Memnosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MemnosphereHeader} at the start of the description, and a link to the class RollTable.`);
+    const MAX_ITERATIONS = 100
+    let iter = 0
+    while(++iter < MAX_ITERATIONS) {
+        let sphereId = Relations.Item.memnosphere.get(sphereItemUUID)
+        let classUUID = Relations.Memnosphere.class.get(sphereId)
+        if(classUUID == null) {
+            ui.notifications.error(`Memnosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MemnosphereHeader} at the start of the description, and a link to the class RollTable.`);
+        }
+
+        let existingSkills = await resolveSkills(Relations.Memnosphere.skill.get(sphereId) ?? [])
+        let newAbilities = await rollMemnosphereAbility(classUUID, { initialAbility: false })
+        let allValid = true
+        for(let uuid of newAbilities) {
+            const existingSkill = existingSkills[uuid]
+            if(existingSkill && existingSkill.rank == existingSkill.maxRank) {
+                allValid = false;
+                break;
+            }
+        }
+        
+        // If we rolled an invalid skill, try again
+        if(!allValid) {
+            continue;
+        }
+
+        let newAbillityLinks = await createMemnosphereDescriptionBody([...newAbilities])
+        let item = await fromUuid(sphereItemUUID)
+        if (item && 'system' in item) {
+            item.update({system: { description: (item as any).system.description + newAbillityLinks }})
+        }
+        break;
     }
 
-    let newAbilities = await rollMemnosphereAbility(classUUID, { initialAbility: false })
-    let newAbillityLinks = await createMemnosphereDescriptionBody([...newAbilities])
-      let item = await fromUuid(sphereItemUUID)
-    if (item && 'system' in item) {
-        item.update({system: { description: (item.system as any).description + newAbillityLinks }})
-    }
+    return iter < MAX_ITERATIONS
 }
 
 
@@ -166,11 +187,6 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
             sheet.actor.createEmbeddedDocuments("Item", [itemData])
         }        else {
             const item = await fromUuid(sphereItemUUID);
-            if (item && 'name' in item && 'img' in item) {
-                // TODO: Get proper image URL and rarity for the animation
-                // This might require parsing the item description or having rarity stored differently
-                await playMemnosphereAnimation({ itemName: item.name as string, rarity: "unknown", imageUrl: item.img as string | null });
-            }
             await addAbilityToMemnosphere(sphereItemUUID)
         }
         

@@ -55,7 +55,7 @@ const Relations = {
 
                     define: function(id : Memnosphere_ID, value : UUID) {
                         if (!this.tbl[id]) this.tbl[id] = [];
-                        if (this.tbl[id].length >= 5) RelationErrorHandler.notifyError('Limit exceeded');
+                        //if (this.tbl[id].length >= 5) RelationErrorHandler.notifyError('Limit exceeded');
                         this.tbl[id].push(value);
                     },
 
