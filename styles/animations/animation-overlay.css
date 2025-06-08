@@ -42,6 +42,19 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Drag handle styles */
+#animation-dev-overlay .drag-handle {
+    transition: background-color 0.2s ease;
+}
+
+#animation-dev-overlay .drag-handle:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+#animation-dev-overlay .drag-handle:active {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
 .animation-bg-layer {
     /* Styles for background layers, if you use them for complex scenes */
     background-size: cover;

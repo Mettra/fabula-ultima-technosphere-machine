@@ -11,6 +11,7 @@ export class AnimationDevManager {
     private isInitialized: boolean = false;
     private debugOverlay: HTMLElement | null = null;
     private lastTestScenario: MemnosphereTestData | null = null;
+    private setTranslate: ((xPos: number, yPos: number) => void) | null = null;
 
     /**
      * Initialize the development manager
@@ -151,10 +152,8 @@ export class AnimationDevManager {
             z-index: 10000;
             min-width: 250px;
             border: 1px solid #444;
-        `;
-
-        this.debugOverlay.innerHTML = `
-            <div style="font-weight: bold; margin-bottom: 5px;">🎬 Animation Dev Mode</div>
+        `;        this.debugOverlay.innerHTML = `
+            <div class="drag-handle" style="font-weight: bold; margin-bottom: 5px; cursor: move; padding: 2px; border-radius: 3px; user-select: none;">🎬 Animation Dev Mode</div>
             <div style="margin-bottom: 3px;">Ctrl+R: Test Animation</div>
             <div style="margin-bottom: 3px;">Ctrl+L: Reload Module</div>
             <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 5px;">
@@ -166,9 +165,7 @@ export class AnimationDevManager {
                 <button class="reload-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Reload</button>
                 <button class="cycle-btn" style="padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Cycle</button>
             </div>
-        `;
-
-        // Add click handlers for buttons
+        `;        // Add click handlers for buttons
         const testBtn = this.debugOverlay.querySelector('.test-btn');
         const reloadBtn = this.debugOverlay.querySelector('.reload-btn');
         const cycleBtn = this.debugOverlay.querySelector('.cycle-btn');
@@ -180,8 +177,146 @@ export class AnimationDevManager {
             this.updateDebugOverlay(scenario);
         });
 
+        // Add drag functionality
+        this.setupDragFunctionality();
+
         document.body.appendChild(this.debugOverlay);
         Log("Debug overlay created");
+    }
+
+    /**
+     * Set up drag functionality for the debug overlay
+     */
+    private setupDragFunctionality(): void {
+        if (!this.debugOverlay) return;
+
+        const dragHandle = this.debugOverlay.querySelector('.drag-handle') as HTMLElement;
+        if (!dragHandle) return;
+
+        let isDragging = false;
+        let currentX = 0;
+        let currentY = 0;
+        let initialX = 0;
+        let initialY = 0;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        // Get current position from computed styles
+        const rect = this.debugOverlay.getBoundingClientRect();
+        xOffset = rect.left;
+        yOffset = rect.top;
+
+        const dragStart = (e: MouseEvent | TouchEvent) => {
+            if (e.type === "touchstart") {
+                const touch = (e as TouchEvent).touches[0];
+                initialX = touch.clientX - xOffset;
+                initialY = touch.clientY - yOffset;
+            } else {
+                initialX = (e as MouseEvent).clientX - xOffset;
+                initialY = (e as MouseEvent).clientY - yOffset;
+            }
+
+            if (e.target === dragHandle) {
+                isDragging = true;
+                dragHandle.style.background = 'rgba(255, 255, 255, 0.1)';
+            }
+        };
+
+        const dragEnd = () => {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+            dragHandle.style.background = '';
+
+            // Save position to localStorage for persistence
+            if (this.debugOverlay) {
+                localStorage.setItem('animation-debug-overlay-position', JSON.stringify({
+                    x: xOffset,
+                    y: yOffset
+                }));
+            }
+        };
+
+        const drag = (e: MouseEvent | TouchEvent) => {
+            if (isDragging) {
+                e.preventDefault();
+
+                if (e.type === "touchmove") {
+                    const touch = (e as TouchEvent).touches[0];
+                    currentX = touch.clientX - initialX;
+                    currentY = touch.clientY - initialY;
+                } else {
+                    currentX = (e as MouseEvent).clientX - initialX;
+                    currentY = (e as MouseEvent).clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                // Constrain to viewport
+                const overlay = this.debugOverlay!;
+                const rect = overlay.getBoundingClientRect();
+                const maxX = window.innerWidth - rect.width;
+                const maxY = window.innerHeight - rect.height;
+
+                xOffset = Math.max(0, Math.min(xOffset, maxX));
+                yOffset = Math.max(0, Math.min(yOffset, maxY));
+
+                this.setTranslate(xOffset, yOffset);
+            }
+        };
+
+        const setTranslate = (xPos: number, yPos: number) => {
+            if (this.debugOverlay) {
+                this.debugOverlay.style.left = `${xPos}px`;
+                this.debugOverlay.style.top = `${yPos}px`;
+                this.debugOverlay.style.right = 'auto'; // Remove right positioning
+            }
+        };
+
+        // Store setTranslate as instance method for use in other methods
+        this.setTranslate = setTranslate;
+
+        // Event listeners
+        dragHandle.addEventListener('mousedown', dragStart, false);
+        document.addEventListener('mouseup', dragEnd, false);
+        document.addEventListener('mousemove', drag, false);
+
+        // Touch events for mobile support
+        dragHandle.addEventListener('touchstart', dragStart, false);
+        document.addEventListener('touchend', dragEnd, false);
+        document.addEventListener('touchmove', drag, false);
+
+        // Load saved position if available
+        this.loadSavedPosition();
+    }
+
+    /**
+     * Load saved position from localStorage
+     */
+    private loadSavedPosition(): void {
+        try {
+            const savedPosition = localStorage.getItem('animation-debug-overlay-position');
+            if (savedPosition && this.debugOverlay && this.setTranslate) {
+                const position = JSON.parse(savedPosition);
+                
+                // Validate the position is within current viewport
+                const maxX = window.innerWidth - this.debugOverlay.offsetWidth;
+                const maxY = window.innerHeight - this.debugOverlay.offsetHeight;
+                
+                const x = Math.max(0, Math.min(position.x || 10, maxX));
+                const y = Math.max(0, Math.min(position.y || 10, maxY));
+                
+                this.setTranslate(x, y);
+                Log(`Restored debug overlay position to (${x}, ${y})`);
+            }
+        } catch (error) {
+            Log("Failed to load saved overlay position:", error);
+            // Fallback to default position if loading fails
+            if (this.debugOverlay && this.setTranslate) {
+                this.setTranslate(10, 10);
+            }
+        }
     }
 
     /**
@@ -213,9 +348,7 @@ export class AnimationDevManager {
         }
 
         await this.runAnimationTest(scenario);
-    }
-
-    /**
+    }    /**
      * Cleanup and remove event handlers
      */
     public cleanup(): void {
@@ -228,6 +361,9 @@ export class AnimationDevManager {
             this.debugOverlay.remove();
             this.debugOverlay = null;
         }
+
+        // Clean up drag-related properties
+        this.setTranslate = null;
 
         this.isInitialized = false;
         Log("Animation Development Manager cleaned up");
