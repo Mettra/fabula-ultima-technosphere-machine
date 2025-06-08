@@ -144,6 +144,12 @@
     /* transform: rotate(45deg);  Will be set dynamically by Anime.js */
 }
 
+.burst-particle {
+    /* Styles for the burst particles in Phase C */
+    will-change: transform, opacity, background-color, box-shadow; /* Hint for browser performance */
+    /* Base styles like position, width, height, background-color, border-radius, opacity, box-shadow, z-index are set dynamically in JS */
+}
+
 /* Add more specific styles for different rarities or effects as needed */
 .legendary-glow {
     filter: drop-shadow(0 0 15px gold) drop-shadow(0 0 25px orange);
