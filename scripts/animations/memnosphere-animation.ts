@@ -902,7 +902,10 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             fontSize: 'clamp(1.5em, 3vw, 2.5em)',
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
-        });          // Center glow element for Phase B end transition
+        });          
+        itemNameText.textContent = memnosphereData.itemName;
+        
+        // Center glow element for Phase B end transition
         const centerGlow = createElement('div', ['animation-center-glow'], {
             position: 'absolute',
             top: '50%',
