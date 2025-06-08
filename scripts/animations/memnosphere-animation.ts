@@ -82,7 +82,86 @@ class PathWindowAnimator {
  */
 export function playMemnosphereAnimation(memnosphereData: { itemName: string, rarity: string, imageUrl: string | null, effects?: string[] }): Promise<void> {
     return new Promise((resolve) => {
-        const animationContainerId = 'memnosphere-animation-container';
+        // --- Dynamic Color Palette Configuration ---
+        // Define base palette colors - these can be easily changed to create different themes
+        const PRIMARY_COLOR = { h: 135, s: 100, l: 70 };   // Vibrant cyan-green (HSL: 135°, 100%, 70%)
+        const SECONDARY_COLOR = { h: 190, s: 100, l: 65 }; // Bright cyan-blue (HSL: 190°, 100%, 65%)
+        
+        // Enhanced color system with more sophisticated variations
+        const ColorPalette = {
+            // Core palette reference
+            primary: PRIMARY_COLOR,
+            secondary: SECONDARY_COLOR,
+            
+            // Generate HSL color string with optional modifications
+            hsl: (baseColor: typeof PRIMARY_COLOR, hueShift = 0, satShift = 0, lightShift = 0, alpha?: number) => {
+                const h = Math.max(0, Math.min(360, baseColor.h + hueShift));
+                const s = Math.max(0, Math.min(100, baseColor.s + satShift));
+                const l = Math.max(0, Math.min(100, baseColor.l + lightShift));
+                return alpha !== undefined ? `hsla(${h}, ${s}%, ${l}%, ${alpha})` : `hsl(${h}, ${s}%, ${l}%)`;
+            },
+            
+            // Generate RGB approximation for better compatibility
+            rgb: (baseColor: typeof PRIMARY_COLOR, lightShift = 0, alpha = 1) => {
+                const adjustedL = Math.max(0, Math.min(100, baseColor.l + lightShift));
+                const factor = adjustedL / 100;
+                
+                // More accurate HSL to RGB conversion based on hue ranges
+                let r, g, b;
+                
+                if (baseColor.h >= 120 && baseColor.h <= 180) { // Green-cyan range
+                    const greenIntensity = 1 - Math.abs(baseColor.h - 150) / 30; // Peak at 150°
+                    r = Math.round(80 * factor * (1 - greenIntensity * 0.6));
+                    g = Math.round(255 * factor);
+                    b = Math.round((180 + 75 * Math.sin((baseColor.h - 120) * Math.PI / 60)) * factor);
+                } else if (baseColor.h >= 180 && baseColor.h <= 240) { // Cyan-blue range
+                    const blueIntensity = (baseColor.h - 180) / 60; // 0 at cyan, 1 at blue
+                    r = Math.round(60 * factor * (1 - blueIntensity * 0.3));
+                    g = Math.round((220 - 20 * blueIntensity) * factor);
+                    b = Math.round(255 * factor);
+                } else { // Fallback for other hues
+                    r = Math.round(100 * factor);
+                    g = Math.round(200 * factor);
+                    b = Math.round(230 * factor);
+                }
+                
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            },
+            
+            // Predefined color variations for common use cases
+            variations: {
+                // Light variations - higher lightness
+                primaryLight: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 0, -10, 15, alpha),
+                secondaryLight: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 0, -10, 15, alpha),
+                
+                // Dark variations - lower lightness
+                primaryDark: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 0, 10, -25, alpha),
+                secondaryDark: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 0, 10, -25, alpha),
+                
+                // Complementary colors - opposite on color wheel
+                primaryComplement: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 180, 0, 0, alpha),
+                secondaryComplement: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 180, 0, 0, alpha),
+                
+                // Analogous colors - adjacent on color wheel
+                primaryAnalog1: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 30, -5, 0, alpha),
+                primaryAnalog2: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, -30, -5, 0, alpha),
+                secondaryAnalog1: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 30, -5, 0, alpha),
+                secondaryAnalog2: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, -30, -5, 0, alpha),
+                
+                // Triadic colors - 120° apart
+                primaryTriad1: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 120, -10, 5, alpha),
+                primaryTriad2: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 240, -10, 5, alpha),
+                
+                // Desaturated versions for subtle effects
+                primaryMuted: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 0, -40, -10, alpha),
+                secondaryMuted: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 0, -40, -10, alpha),
+                
+                // High contrast versions
+                primaryBright: (alpha?: number) => ColorPalette.hsl(PRIMARY_COLOR, 0, 0, 20, alpha),
+                secondaryBright: (alpha?: number) => ColorPalette.hsl(SECONDARY_COLOR, 0, 0, 20, alpha),
+            }
+        };
+          const animationContainerId = 'memnosphere-animation-container';
         let animationContainer = document.getElementById(animationContainerId);
 
         if (!animationContainer) {
@@ -316,8 +395,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             fontSize: 'clamp(1.5em, 3vw, 2.5em)',
             textAlign: 'center',
             textShadow: '0 0 5px black, 0 0 10px black'
-        });        
-        itemNameText.textContent = memnosphereData.itemName;          // Center glow element for Phase B end transition
+        });          // Center glow element for Phase B end transition
         const centerGlow = createElement('div', ['animation-center-glow'], {
             position: 'absolute',
             top: '50%',
@@ -326,7 +404,7 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             width: '200px',
             height: '200px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, rgba(100, 255, 200, 0.6) 12%, rgba(50, 200, 255, 0.4) 31%, rgba(255, 255, 255, 0) 50%)',
+            background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 1) 0%, ${ColorPalette.variations.primaryDark(0.8)} 12%, ${ColorPalette.variations.secondaryDark(0.4)} 31%, rgba(255, 255, 255, 0) 50%)`,
             opacity: '0',
             pointerEvents: 'none',
             zIndex: '10' // Layer above the comets
@@ -341,18 +419,15 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
             left: '0',
             pointerEvents: 'none',
             zIndex: '5' // Below particles but above background
-        });
-
-        // Create small glistening stars
+        });        // Create small glistening stars
         const stars: HTMLElement[] = [];
         const numStars = 40; // Number of stars to create
-        for (let i = 0; i < numStars; i++) {
-            const star = createElement('div', ['animation-star'], {
+        for (let i = 0; i < numStars; i++) {            const star = createElement('div', ['animation-star'], {
                 position: 'absolute',
                 width: `${utils.random(2, 6)}px`,
                 height: `${utils.random(2, 6)}px`,
                 borderRadius: '50%',
-                background: `radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 255, 0.7) 40%, rgba(150, 150, 255, 0.3) 70%, transparent 100%)`,
+                background: `radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, ${ColorPalette.variations.secondaryDark(0.7)} 40%, ${ColorPalette.variations.primaryMuted(0.3)} 70%, transparent 100%)`,
                 boxShadow: `0 0 ${utils.random(3, 8)}px rgba(255, 255, 255, 0.6)`,
                 left: `${utils.random(5, 95)}%`,
                 top: `${utils.random(5, 95)}%`,
@@ -374,7 +449,8 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                 // Optional: Add a slight delay before hiding, or a fade-out for the container itself
                 // Consider adding a "click to continue" or auto-advance after a few seconds
                 const holdTime = 1000
-                setTimeout(() => {                    if (animationContainer) {
+                setTimeout(() => {                    
+                    if (animationContainer) {
                         animate(animationContainer, {
                             opacity: 0,
                             duration: 500,
@@ -455,11 +531,17 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
         if (pcWidth > 0 && pcHeight > 0) { // Only create trails if container has valid dimensions
             const numTrails = 30; // Number of trails
             const trailAnimDurationBase = 1800; // Base duration for a trail to draw
-            const trailStagger = 100; // ms delay between the start of each trail
-
+            const trailStagger = 100; // ms delay between the start of each trail            
             const totalSpiralTimeline = createTimeline()
             for (let i = 0; i < numTrails; i++) {
                 let duration = trailAnimDurationBase + utils.random(-1000, 200)
+                  // Generate dynamic trail color using the palette
+                const hueRange = Math.abs(PRIMARY_COLOR.h - SECONDARY_COLOR.h);
+                const minHue = Math.min(PRIMARY_COLOR.h, SECONDARY_COLOR.h);
+                const trailHue = minHue + utils.random(0, hueRange);
+                const trailSaturation = utils.random(80, 100);
+                const trailLightness = utils.random(60, 80);
+                
                 let spiralTimeline = addSvgSpiralTrail("", {
                     svgContainer: svgOverlay,
                     centerX: targetX,
@@ -469,10 +551,10 @@ export function playMemnosphereAnimation(memnosphereData: { itemName: string, ra
                     rotations: utils.random(2, 6), // Fewer rotations for better convergence
                     duration: duration,
                     trailSpecificDelay: trailStagger, // Stagger start time of each trail
-                    color: `hsl(${utils.random(100, 170)}, 100%, ${utils.random(60, 80)}%)`, // Vibrant greens/cyans
+                    color: `hsl(${trailHue}, ${trailSaturation}%, ${trailLightness}%)`, // Dynamic colors based on palette
                     strokeWidth: utils.random(1, 7),
                     initialAngleOffset: utils.random(0, Math.PI * 2), // Random start angle for each trail
-                    pointsPerRotation: 48 // More points for smoother spirals
+                    pointsPerRotation: 48 // More points for smoother spirals                
                 });
 
                 let offset = utils.random(0, 1000)
