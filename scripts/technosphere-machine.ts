@@ -6,17 +6,18 @@ import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
 import { bindHeroicSkillPopup, bindMemnosphereSelectionToFlag, bindUUIDInput } from "./ui-bindings.js";
 import { playMemnosphereAnimation } from "./animations/memnosphere-animation.js";
 import { initializeAnimationDevMode, cleanupAnimationDevMode } from "./animations/animation-dev-manager.js";
+import { resolveCompendiumUUID } from "./uuid-utils.js";
 
 // Setup foundry hooks for memnospheres
 SetupMemnosphereHooks()
 
 async function rollClassUUID(rollTableUUID : UUID) {
-    let rollTable = fromUuidSync(rollTableUUID)
+    let rollTable = await resolveCompendiumUUID(rollTableUUID)
     if (!rollTable) {
         ui.notifications.error(`Invalid RollTable UUID provided: ${rollTableUUID}`);
         return;
     }
-    
+
     let tableRoll = await rollTableCustom(rollTable, {recursive: false})
     Log("Class Memnosphere Roll", tableRoll)
 

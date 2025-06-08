@@ -148,7 +148,7 @@ export async function createMemnosphereItemData(classUUID : UUID, description : 
     }
 
     const itemData = {
-        name: `Memnosphere V3- ${className}`,
+        name: `Mnemosphere - ${className}`,
         img: classImg,
         type: "treasure",
         system: {

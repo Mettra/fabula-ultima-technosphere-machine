@@ -19,3 +19,13 @@ export function parseUUIDLink(linkText: string): UUIDLink {
 export function createUUIDLink(link: UUIDLink): string {
     return `@UUID[${link.uuid}]{${link.name}}`;
 }
+
+export async function resolveCompendiumUUID(uuid : string) {
+    const result = await fromUuid(uuid)
+    if(result.pack !== "undefined") {
+        let pack = game.packs.get(result.pack)
+        return await pack.getDocument(result._id);
+    }
+
+    return result
+}
