@@ -5,3 +5,4 @@ node_modules
 out
 build
 fabula-ultima-technosphere-machine.zip
+packs/**/LOCK

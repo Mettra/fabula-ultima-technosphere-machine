@@ -23,5 +23,25 @@
             "path": "languages/en.json"
         }
     ],
+    "packs": [
+      {
+        "label": "Mnemosphere Rollable Tables",
+        "type": "RollTable",
+        "name": "mnemosphere-rollable-tables",
+        "path": "packs/mnemosphere-rollable-tables",
+        "system": "projectfu",
+        "ownership": {
+          "PLAYER": "OBSERVER",
+          "ASSISTANT": "OWNER"
+        },
+        "flags": {},
+        "package": "world",
+        "id": "world.mnemosphere-rollable-tables",
+        "packageType": "world",
+        "packageName": "fabula-test",
+        "index": [],
+        "folders": []
+      }
+    ],
     "minimumCoreVersion": "0.8.8"
   }
