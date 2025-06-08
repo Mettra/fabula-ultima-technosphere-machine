@@ -34,6 +34,7 @@ $OptionalItems = @(
     "assets",     # For images, audio, etc.
     "icons",      # For any specific icons
     "images",     # Alternative or additional image assets
+    "packs",
     "README.md",
     "LICENSE"
 )
