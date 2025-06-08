@@ -33,7 +33,7 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
     }
 
     roll = roll instanceof Roll ? roll : Roll.create(rollTable.formula);
-    let results = [];
+    let extra_results = [];
 
     // Custom rules processing from the RollTable description
     const paragraphs = extractParagraphsAsLines(rollTable.description)
@@ -52,11 +52,12 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
         else if(kv.key.toLowerCase() == "add") {
             let link = parseUUIDLink(kv.value)
             let doc = await fromUuid(link.uuid)
-            results.push({documentId : doc.id, documentCollection: doc.pack, type: doc.pack ? CONST.TABLE_RESULT_TYPES.COMPENDIUM : null, text : link.name})
+            extra_results.push({documentId : doc.id, documentCollection: doc.pack, type: doc.pack ? CONST.TABLE_RESULT_TYPES.COMPENDIUM : null, text : link.name})
         }
     }
 
     // Ensure that at least one non-drawn result remains
+    let results = [];
     const available = rollTable.results.filter(r => !r.drawn);
     if ( !available.length ) {
         ui.notifications.warn(game.i18n.localize("TABLE.NoAvailableResults"));
@@ -96,22 +97,27 @@ export async function rollTableCustom(rollTable: any, options: RollOptions = {})
     if ( recursive ) {
         let innerResults = [];
         for ( let result of results ) {
+            let pack;
             let documentName;
             if ( result.type === CONST.TABLE_RESULT_TYPES.DOCUMENT ) documentName = result.documentCollection;
-
+            else if ( result.type === CONST.TABLE_RESULT_TYPES.COMPENDIUM ) {
+            pack = game.packs.get(result.documentCollection);
+            documentName = pack?.documentName;
+            }
             if ( documentName === "RollTable" ) {
-                const innerTable = await getDocumentFromResult(result)
-                if (innerTable) {
-                    const innerRoll = await rollTableCustom(innerTable, {_depth: _depth + 1, initialAbility: initialAbility});
-                    innerResults = innerResults.concat(innerRoll.results);
-                }
+            const id = result.documentId;
+            const innerTable = pack ? await pack.getDocument(id) : game.tables.get(id);
+            if (innerTable) {
+                const innerRoll = await rollTableCustom(innerTable, {_depth: _depth + 1, initialAbility: initialAbility});
+                innerResults = innerResults.concat(innerRoll.results);
             }
-            else { 
-                innerResults.push(result);
             }
+            else innerResults.push(result);
         }
         results = innerResults;
     }
+
+    results = results.concat(extra_results)
 
     return { roll, results };
 }
