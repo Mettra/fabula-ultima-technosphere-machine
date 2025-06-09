@@ -181,7 +181,8 @@ export async function resolveSkills(skillUUIDs : UUID[]) {
 export async function filterMemnospheres(items: Item[]) {
     const skillsAndItems = items.map(i => { 
         const memnosphereId = Relations.Item.memnosphere.get(i.uuid as UUID);
-        if (!memnosphereId) return [undefined, undefined, i]; // Ensure item is always passed through
+        if (!memnosphereId) return null;
+        
         return [
             Relations.Memnosphere.skill.get(memnosphereId), 
             Relations.Memnosphere.heroicskill.get(memnosphereId), 
@@ -189,8 +190,7 @@ export async function filterMemnospheres(items: Item[]) {
         ];
     })
     
-
-    let validMemnosphereItems = skillsAndItems.filter(obj => Relations.Item.memnosphere.get(obj[2].uuid as UUID) !== undefined);
+    let validMemnosphereItems = skillsAndItems.filter(obj => obj != null);
 
     let result = validMemnosphereItems.map(
         async obj => {

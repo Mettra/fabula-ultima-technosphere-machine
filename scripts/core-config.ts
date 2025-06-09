@@ -5,14 +5,16 @@ export const SYSTEM = 'projectfu';
 export const MEMNOSPHERE_ROLL_COST = 500
 export const MEMNOSPHERE_SPLIT_KEY = "@ROLLTABLE"
 
+const IS_DEBUG = TS_DEBUG;
+
 // Development mode configuration
-export const DEV_MODE = true; // Set to false for production
+export const DEV_MODE = IS_DEBUG; // Set to false for production
 export const ANIMATION_TEST_KEY = 'KeyR';
 export const ANIMATION_RELOAD_KEY = 'KeyL'; // Changed from T to L to avoid browser tab conflict
 export const ANIMATION_DEV_MODIFIER = 'ctrlKey'; // Ctrl+R for testing, Ctrl+L for reloading
 
 // Debug configuration
-CONFIG.debug.hooks = true
+CONFIG.debug.hooks = IS_DEBUG
 
 // Conditional logging for debug purposes
 let Log: any;

@@ -5,13 +5,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build:main && npm run build:animation",
-    "build:main": "esbuild --bundle --format=esm --outdir=build scripts/technosphere-machine.ts",
-    "build:animation": "esbuild --bundle --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts",
+    "build:main": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outdir=build scripts/technosphere-machine.ts",
+    "build:animation": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts",
     "watch": "npm run watch:main",
-    "watch:main": "esbuild --bundle --format=esm --outdir=build scripts/technosphere-machine.ts --watch --sourcemap=inline",
-    "watch:animation": "esbuild --bundle --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts --watch --sourcemap=inline",
+    "watch:main": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outdir=build scripts/technosphere-machine.ts --watch --sourcemap=inline",
+    "watch:animation": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts --watch --sourcemap=inline",
     "watch:all": "concurrently \"npm run watch:main\" \"npm run watch:animation\"",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "publish": "esbuild --bundle --define:TS_DEBUG=false --minify --format=esm --outdir=build scripts/technosphere-machine.ts"
   },
   "type": "module",
   "author": "Mettra",

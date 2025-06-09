@@ -181,13 +181,13 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         let sphereItemUUID = getFlag(sheet, FLAG_EXISTINGSPHERE)
         
         // No memnosphere selected means generate a new one
-        if(sphereItemUUID == '') {
+        if(sphereItemUUID == null || sphereItemUUID == '') {
             const itemData = await generateNewMemnosphere(getFlag(sheet, FLAG_ROLLTABLE))
             // TODO: Get proper image URL and rarity for the animation
             await playMemnosphereAnimation({ itemName: itemData.name, rarity: "common", imageUrl: itemData.img }); // Added animation call
             sheet.actor.createEmbeddedDocuments("Item", [itemData])
-        }        else {
-            const item = await fromUuid(sphereItemUUID);
+        }
+        else {
             await addAbilityToMemnosphere(sphereItemUUID)
         }
         
