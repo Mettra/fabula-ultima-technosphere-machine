@@ -14,52 +14,56 @@ export const TEST_SCENARIOS: MemnosphereTestData[] = [
     {
         itemName: "Mnemosphere - Entropist",
         rarity: "common",
-        imageUrl: "modules/fabula-ultima-compendium/images/classes/Entropist.png",
+        imageUrl:
+            "modules/fabula-ultima-compendium/images/classes/Entropist.png",
         effects: ["sparkle"],
-        description: "A basic test scenario with common rarity"
+        description: "A basic test scenario with common rarity",
     },
     {
         itemName: "Mnemosphere - Chanter",
         rarity: "rare",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Chanter.png",
         effects: ["glow", "pulse"],
-        description: "A rare item with multiple effects"
+        description: "A rare item with multiple effects",
     },
     {
         itemName: "Mnemosphere - Darkblade",
         rarity: "epic",
-        imageUrl: "modules/fabula-ultima-compendium/images/classes/Darkblade.png",
+        imageUrl:
+            "modules/fabula-ultima-compendium/images/classes/Darkblade.png",
         effects: ["shimmer", "burst", "glow"],
-        description: "An epic item with complex effects"
+        description: "An epic item with complex effects",
     },
     {
         itemName: "Mnemosphere - Guardian",
         rarity: "legendary",
-        imageUrl: "modules/fabula-ultima-compendium/images/classes/Guardian.png",
+        imageUrl:
+            "modules/fabula-ultima-compendium/images/classes/Guardian.png",
         effects: ["explosion", "rainbow", "sparkle", "glow"],
-        description: "The ultimate legendary item with all effects"
+        description: "The ultimate legendary item with all effects",
     },
     {
         itemName: "Mnemosphere - Weaponmaster",
         rarity: "mythic",
-        imageUrl: "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
+        imageUrl:
+            "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
         effects: ["void", "reality-warp", "cosmic"],
-        description: "A mythic item that bends reality"
+        description: "A mythic item that bends reality",
     },
     {
         itemName: "Mnemosphere - Esper",
         rarity: "rare",
         imageUrl: "modules/fabula-ultima-compendium/images/classes/Esper.png",
         effects: ["glow"],
-        description: "Testing long item names for UI layout"
+        description: "Testing long item names for UI layout",
     },
     {
         itemName: "No Image Test",
         rarity: "epic",
         imageUrl: null,
         effects: ["sparkle"],
-        description: "Testing behavior when no image is provided"
-    }
+        description: "Testing behavior when no image is provided",
+    },
 ];
 
 let currentScenarioIndex = 0;
@@ -92,8 +96,12 @@ export function currentTestScenarios(): MemnosphereTestData {
 /**
  * Get test scenario by name
  */
-export function getTestScenarioByName(name: string): MemnosphereTestData | null {
-    const scenario = TEST_SCENARIOS.find(s => s.itemName.toLowerCase().includes(name.toLowerCase()));
+export function getTestScenarioByName(
+    name: string
+): MemnosphereTestData | null {
+    const scenario = TEST_SCENARIOS.find((s) =>
+        s.itemName.toLowerCase().includes(name.toLowerCase())
+    );
     return scenario ? { ...scenario } : null;
 }
 
@@ -101,7 +109,7 @@ export function getTestScenarioByName(name: string): MemnosphereTestData | null 
  * Get test scenario by rarity
  */
 export function getTestScenarioByRarity(rarity: string): MemnosphereTestData {
-    const scenarios = TEST_SCENARIOS.filter(s => s.rarity === rarity);
+    const scenarios = TEST_SCENARIOS.filter((s) => s.rarity === rarity);
     if (scenarios.length === 0) {
         return getRandomTestScenario();
     }
@@ -112,11 +120,15 @@ export function getTestScenarioByRarity(rarity: string): MemnosphereTestData {
 /**
  * Get the current scenario index for UI display
  */
-export function getCurrentScenarioInfo(): { index: number; total: number; scenario: MemnosphereTestData } {
+export function getCurrentScenarioInfo(): {
+    index: number;
+    total: number;
+    scenario: MemnosphereTestData;
+} {
     return {
         index: currentScenarioIndex,
         total: TEST_SCENARIOS.length,
-        scenario: { ...TEST_SCENARIOS[currentScenarioIndex] }
+        scenario: { ...TEST_SCENARIOS[currentScenarioIndex] },
     };
 }
 

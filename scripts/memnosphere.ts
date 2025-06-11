@@ -1,67 +1,74 @@
 // Memnosphere class and related functionality
 
 import { Log, MEMNOSPHERE_SPLIT_KEY, ModuleName } from "./core-config.js";
-import { extractKVPairsFromLines, extractParagraphsAsLines, splitArray } from "./parsing-utils.js";
+import {
+    extractKVPairsFromLines,
+    extractParagraphsAsLines,
+    splitArray,
+} from "./parsing-utils.js";
 import { Memnosphere_ID, Relations } from "./relation.js";
 import { parseUUIDLink, createUUIDLink, type UUIDLink } from "./uuid-utils.js";
 
-export const MemnosphereHeader = "<p>@MEMNOSPHERE</p>"
+export const MemnosphereHeader = "<p>@MEMNOSPHERE</p>";
 
 export function SetupMemnosphereHooks() {
-
-    async function MemnosphereFromDescription(id : Memnosphere_ID, description : string) {
-        Relations.Memnosphere.ClearRelations(id)
+    async function MemnosphereFromDescription(
+        id: Memnosphere_ID,
+        description: string
+    ) {
+        Relations.Memnosphere.ClearRelations(id);
 
         let lines = extractParagraphsAsLines(description);
 
-        for(let i = 1; i < lines.length; ++i) {
+        for (let i = 1; i < lines.length; ++i) {
             const link = parseUUIDLink(lines[i]);
-            if (!link.uuid) continue; 
+            if (!link.uuid) continue;
 
             let doc = await fromUuid(link.uuid);
-            if(doc == null) continue;
+            if (doc == null) continue;
 
             // fromUuid should handle compendium linking, so direct resolution might be redundant
             // if (doc.pack) { // This check might be overly specific or handled by fromUuid
-            //     doc = await fromUuid(doc.uuid); 
+            //     doc = await fromUuid(doc.uuid);
             //     if(doc == null) continue;
             // }
 
-            Log(`Memnosphere ${id} adding`, doc)
+            Log(`Memnosphere ${id} adding`, doc);
 
             if (doc.documentName === "RollTable") {
                 Relations.Memnosphere.class.define(id, doc.uuid);
-            }
-            else if (doc.type === "skill") {
+            } else if (doc.type === "skill") {
                 Relations.Memnosphere.skill.define(id, doc.uuid);
-            }
-            else if (doc.type === "heroic") {
+            } else if (doc.type === "heroic") {
                 Relations.Memnosphere.heroicskill.define(id, doc.uuid);
-            }
-            else {
+            } else {
                 Relations.Memnosphere.uuid.define(id, doc.uuid);
             }
         }
 
-        Log(`Memnosphere ${id} done!`)
+        Log(`Memnosphere ${id} done!`);
         return id;
     }
 
     // Memnosphere data hooks
     Hooks.on("ready", async () => {
-        async function processItems(items, _ctx) { 
-            items.forEach(async item => { // Added async here
-                if(item.system.description?.startsWith(MemnosphereHeader)) {
+        async function processItems(items, _ctx) {
+            items.forEach(async (item) => {
+                // Added async here
+                if (item.system.description?.startsWith(MemnosphereHeader)) {
                     let memnosphereId = Relations.Memnosphere.GetNextId();
                     Relations.Item.memnosphere.define(item.uuid, memnosphereId);
-                    await MemnosphereFromDescription(memnosphereId, item.system.description);
+                    await MemnosphereFromDescription(
+                        memnosphereId,
+                        item.system.description
+                    );
                 }
             });
         }
 
         // After the game is fully initialized
         await processItems(game.items, null);
-        game.actors.forEach(async v => {
+        game.actors.forEach(async (v) => {
             await processItems(v.items, v);
         });
 
@@ -69,75 +76,84 @@ export function SetupMemnosphereHooks() {
     });
 
     Hooks.on("createItem", async (item, options, userId) => {
-        Log("createItem", item, options, userId)
+        Log("createItem", item, options, userId);
         // We only care about updates to the description, since that's where memnosphere data exists
         if (item.system?.description === undefined) return;
         const description = item.system.description;
-        const descriptionIsMemnosphere = description?.startsWith(MemnosphereHeader);
-        if(!descriptionIsMemnosphere) return
+        const descriptionIsMemnosphere =
+            description?.startsWith(MemnosphereHeader);
+        if (!descriptionIsMemnosphere) return;
 
         let memnosphereId = Relations.Memnosphere.GetNextId();
         Relations.Item.memnosphere.define(item.uuid, memnosphereId);
         await MemnosphereFromDescription(memnosphereId, description);
     });
 
-
     Hooks.on("updateItem", async (item, changes, options, userId) => {
-        Log("updateItem", item, options, userId)
+        Log("updateItem", item, options, userId);
         // We only care about updates to the description, since that's where memnosphere data exists
         if (changes.system?.description === undefined) return;
         const description = changes.system.description;
-        const descriptionIsMemnosphere = description?.startsWith(MemnosphereHeader);
+        const descriptionIsMemnosphere =
+            description?.startsWith(MemnosphereHeader);
 
         // Do we already know about this item as a memnosphere?
         let existingMemnosphereId = Relations.Item.memnosphere.get(item.uuid);
-        if(existingMemnosphereId == undefined) {
+        if (existingMemnosphereId == undefined) {
             // If we didn't have an entry and it's not a memnosphere, nothing to do
-            if(!descriptionIsMemnosphere) return;
+            if (!descriptionIsMemnosphere) return;
 
             // Otherwise, link up the relation and generate the data
             let memnosphereId = Relations.Memnosphere.GetNextId();
             Relations.Item.memnosphere.define(item.uuid, memnosphereId);
             await MemnosphereFromDescription(memnosphereId, description);
-            Log(`Generated new memnosphere ${memnosphereId}`)
-            return
-        }
-        else {
+            Log(`Generated new memnosphere ${memnosphereId}`);
+            return;
+        } else {
             // For an update we always remove the memnosphere data
-            Relations.Memnosphere.ClearRelations(existingMemnosphereId)
+            Relations.Memnosphere.ClearRelations(existingMemnosphereId);
 
-            if(!descriptionIsMemnosphere) {
+            if (!descriptionIsMemnosphere) {
                 // If a memnosphere we were tracking lost the underlying data, remove the link
-                Relations.Item.memnosphere.remove(item.uuid)
-                Log(`Removed memnosphere ${item.uuid}`)
-            }
-            else {
+                Relations.Item.memnosphere.remove(item.uuid);
+                Log(`Removed memnosphere ${item.uuid}`);
+            } else {
                 // Otherwise, re-populate the data from the item description
-                await MemnosphereFromDescription(existingMemnosphereId, description);
-                Log(`Updated memnosphere ${existingMemnosphereId}`)
+                await MemnosphereFromDescription(
+                    existingMemnosphereId,
+                    description
+                );
+                Log(`Updated memnosphere ${existingMemnosphereId}`);
             }
         }
     });
 }
 
-export async function createMemnosphereDescriptionBody(uuids : UUID[]) {
-    let description = ""
+export async function createMemnosphereDescriptionBody(uuids: UUID[]) {
+    let description = "";
 
     for (const uuid of uuids) {
         const doc = await fromUuid(uuid);
-        if (doc) description += `<p>${createUUIDLink({ uuid: uuid as UUID, name: doc.name })}</p>`;
+        if (doc)
+            description += `<p>${createUUIDLink({
+                uuid: uuid as UUID,
+                name: doc.name,
+            })}</p>`;
     }
 
-    return description
-}
-
-export async function createMemnosphereDescription(uuids : UUID[]) {
-    let description = MemnosphereHeader;
-    description += await createMemnosphereDescriptionBody(uuids)    
     return description;
 }
 
-export async function createMemnosphereItemData(classUUID : UUID, description : string) {
+export async function createMemnosphereDescription(uuids: UUID[]) {
+    let description = MemnosphereHeader;
+    description += await createMemnosphereDescriptionBody(uuids);
+    return description;
+}
+
+export async function createMemnosphereItemData(
+    classUUID: UUID,
+    description: string
+) {
     let className = "Unnamed Memnosphere";
     let classImg = "icons/svg/item-bag.svg";
 
@@ -152,82 +168,83 @@ export async function createMemnosphereItemData(classUUID : UUID, description : 
         img: classImg,
         type: "treasure",
         system: {
-            description: description
+            description: description,
         },
     };
     return itemData;
 }
 
-export async function resolveSkills(skillUUIDs : UUID[]) {
-    let skills = {}
+export async function resolveSkills(skillUUIDs: UUID[]) {
+    let skills = {};
 
-    for(let uuid of skillUUIDs) {
-        let skillDoc = await fromUuid(uuid)
+    for (let uuid of skillUUIDs) {
+        let skillDoc = await fromUuid(uuid);
 
         skills[uuid] ??= {
-            name : skillDoc.name,
-            img : skillDoc.img,
+            name: skillDoc.name,
+            img: skillDoc.img,
             uuid: skillDoc.uuid,
             maxRank: skillDoc.system.level.max,
             rank: 0,
         };
 
-        skills[uuid].rank += 1
+        skills[uuid].rank += 1;
     }
 
-    return skills
+    return skills;
 }
 
 export async function filterMemnospheres(items: Item[]) {
-    const skillsAndItems = items.map(i => { 
+    const skillsAndItems = items.map((i) => {
         const memnosphereId = Relations.Item.memnosphere.get(i.uuid as UUID);
         if (!memnosphereId) return null;
-        
+
         return [
-            Relations.Memnosphere.skill.get(memnosphereId), 
-            Relations.Memnosphere.heroicskill.get(memnosphereId), 
-            i
+            Relations.Memnosphere.skill.get(memnosphereId),
+            Relations.Memnosphere.heroicskill.get(memnosphereId),
+            i,
         ];
-    })
-    
-    let validMemnosphereItems = skillsAndItems.filter(obj => obj != null);
+    });
 
-    let result = validMemnosphereItems.map(
-        async obj => {
-            const skillUUIDs = (obj[0] || []) as UUID[];
-            const heroicSkillUUID = obj[1] as UUID | undefined;
-            const item = obj[2] as Item;
+    let validMemnosphereItems = skillsAndItems.filter((obj) => obj != null);
 
-            const skills = await resolveSkills(skillUUIDs);
-            let heroicSkill = null;
-            if (heroicSkillUUID) {
-                const heroicSkillDoc = await fromUuid(heroicSkillUUID);
-                if (heroicSkillDoc) {
-                    heroicSkill = {
-                        name: heroicSkillDoc.name,
-                        img: heroicSkillDoc.img,
-                        uuid: heroicSkillUUID
-                    };
-                }
-            }
+    let result = validMemnosphereItems.map(async (obj) => {
+        const skillUUIDs = (obj[0] || []) as UUID[];
+        const heroicSkillUUID = obj[1] as UUID | undefined;
+        const item = obj[2] as Item;
 
-            return {
-                name: item.name,
-                img: item.img,
-                uuid : item.uuid,
-                abilities : skills,
-                heroicSkill: heroicSkill,
-
-                get totalSkillRanks() {
-                    return Object.values(this.abilities).reduce((total, skill: any) => total + skill.rank, 0);
-                },
-
-                get canChooseHeroicSkill() {
-                    return this.totalSkillRanks >= 5
-                }
+        const skills = await resolveSkills(skillUUIDs);
+        let heroicSkill = null;
+        if (heroicSkillUUID) {
+            const heroicSkillDoc = await fromUuid(heroicSkillUUID);
+            if (heroicSkillDoc) {
+                heroicSkill = {
+                    name: heroicSkillDoc.name,
+                    img: heroicSkillDoc.img,
+                    uuid: heroicSkillUUID,
+                };
             }
         }
-    );
+
+        return {
+            name: item.name,
+            img: item.img,
+            uuid: item.uuid,
+            abilities: skills,
+            heroicSkill: heroicSkill,
+
+            get totalSkillRanks() {
+                return Object.values(this.abilities).reduce(
+                    (total, skill: any) => total + skill.rank,
+                    0
+                );
+            },
+
+            get canChooseHeroicSkill() {
+                return this.totalSkillRanks >= 5;
+            },
+        };
+    });
 
     return await Promise.all(result);
 }
