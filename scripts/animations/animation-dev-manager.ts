@@ -2,6 +2,7 @@ import { Log, DEV_MODE, ANIMATION_TEST_KEY, ANIMATION_RELOAD_KEY, ANIMATION_DEV_
 import { cycleTestScenarios, getRandomTestScenario, getCurrentScenarioInfo, resetScenarioCycle, MemnosphereTestData, currentTestScenarios } from "./animation-test-data.js";
 import { reloadAnimationModule, getCurrentAnimationFunction, cleanupAnimationState, initializeHotReload, fallbackReload } from "./animation-hot-reload.js";
 import { playMemnosphereAnimation } from "./memnosphere-animation.js";
+import { testParticleCapabilities, runVisualParticleTest } from "./particle-test.js";
 
 /**
  * Development manager for animation testing and hot reloading
@@ -41,7 +42,7 @@ export class AnimationDevManager {
         this.isInitialized = true;
         Log("Animation Development Manager initialized");        // Show initialization notification
         if (typeof ui !== 'undefined' && ui.notifications) {
-            ui.notifications.info("Animation Dev Mode Active! Ctrl+R = Test, Ctrl+L = Reload");
+            ui.notifications.info("Animation Dev Mode Active! Ctrl+R = Test, Ctrl+L = Reload, Ctrl+P = Particles");
         }
     }
 
@@ -59,17 +60,21 @@ export class AnimationDevManager {
             if (event.code === ANIMATION_TEST_KEY || event.code === ANIMATION_RELOAD_KEY) {
                 event.preventDefault();
                 event.stopPropagation();
-            }
-
-            switch (event.code) {
+            }            switch (event.code) {
                 case ANIMATION_TEST_KEY: // Ctrl+R
                     this.runAnimationTest();
-                    break;                case ANIMATION_RELOAD_KEY: // Ctrl+L
+                    break;
+                
+                case ANIMATION_RELOAD_KEY: // Ctrl+L
                     this.reloadAnimation();
+                    break;
+                
+                case 'KeyP': // Ctrl+P for particle test
+                    this.runParticleTest();
                     break;
             }
         };        document.addEventListener('keydown', this.keyHandler, true);
-        Log("Keyboard handlers registered (Ctrl+R for test, Ctrl+L for reload)");
+        Log("Keyboard handlers registered (Ctrl+R for test, Ctrl+L for reload, Ctrl+P for particle test)");
     }    /**
      * Run animation test with cycling scenarios
      */
@@ -156,6 +161,7 @@ export class AnimationDevManager {
             <div class="drag-handle" style="font-weight: bold; margin-bottom: 5px; cursor: move; padding: 2px; border-radius: 3px; user-select: none;">🎬 Animation Dev Mode</div>
             <div style="margin-bottom: 3px;">Ctrl+R: Test Animation</div>
             <div style="margin-bottom: 3px;">Ctrl+L: Reload Module</div>
+            <div style="margin-bottom: 3px;">Ctrl+P: Test Particles</div>
             <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 5px;">
                 <div class="current-scenario">Scenario: Ready</div>
                 <div class="reload-status">Status: Initialized</div>
@@ -163,12 +169,14 @@ export class AnimationDevManager {
             <div style="margin-top: 5px;">
                 <button class="test-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Test</button>
                 <button class="reload-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Reload</button>
-                <button class="cycle-btn" style="padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Cycle</button>
+                <button class="cycle-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Cycle</button>
+                <button class="particle-btn" style="padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Particles</button>
             </div>
         `;        // Add click handlers for buttons
         const testBtn = this.debugOverlay.querySelector('.test-btn');
         const reloadBtn = this.debugOverlay.querySelector('.reload-btn');
         const cycleBtn = this.debugOverlay.querySelector('.cycle-btn');
+        const particleBtn = this.debugOverlay.querySelector('.particle-btn');
 
         testBtn?.addEventListener('click', () => this.runAnimationTest());
         reloadBtn?.addEventListener('click', () => this.reloadAnimation());
@@ -176,6 +184,7 @@ export class AnimationDevManager {
             const scenario = cycleTestScenarios();
             this.updateDebugOverlay(scenario);
         });
+        particleBtn?.addEventListener('click', () => this.runParticleTest());
 
         // Add drag functionality
         this.setupDragFunctionality();
@@ -380,6 +389,39 @@ export class AnimationDevManager {
             hasDebugOverlay: !!this.debugOverlay,
             hasKeyHandler: !!this.keyHandler
         };
+    }
+
+    /**
+     * Run particle system test
+     */
+    public async runParticleTest(): Promise<void> {
+        try {
+            Log("Running particle system test...");
+            
+            // Run capability test first
+            const capabilities = await testParticleCapabilities();
+            Log("Particle capabilities:", capabilities);
+            
+            if (typeof ui !== 'undefined' && ui.notifications) {
+                ui.notifications.info(`Particle test: ${capabilities.recommendedSystem} available (${capabilities.testDuration.toFixed(1)}ms)`);
+            }
+            
+            // Run visual test if any system is available
+            if (capabilities.webgpuAvailable || capabilities.cssAvailable) {
+                Log("Running visual particle test...");
+                await runVisualParticleTest(5000); // 5 second test
+            } else {
+                Log("No particle systems available for visual test");
+                if (typeof ui !== 'undefined' && ui.notifications) {
+                    ui.notifications.warn("No particle systems available on this device");
+                }
+            }
+        } catch (error) {
+            console.error("Particle test failed:", error);
+            if (typeof ui !== 'undefined' && ui.notifications) {
+                ui.notifications.error("Particle test failed. Check console for details.");
+            }
+        }
     }
 }
 
