@@ -6,3 +6,4 @@ out
 build
 fabula-ultima-technosphere-machine.zip
 packs/**/LOCK
+foundry-config.json
