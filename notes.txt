@@ -1,0 +1,26 @@
+
+
+
+
+
+Inherited ability is max(ability)
+
+
+"Sphere" suffix
+
+
+Sphere name ability.
+
+Summary at bottom of inherited abilities.
+See what spheres grant what ability.
+
+
+
+Phase 2:
+
+Config with Origin
+    - Location name
+    - Rollable table of possible technosphere names
+    - Rollable table of images
+
+Choose origin to roll from in GM
