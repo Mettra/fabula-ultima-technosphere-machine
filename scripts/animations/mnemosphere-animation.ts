@@ -9,7 +9,6 @@ import {
 import { DEV_MODE, Log } from "../core-config.js";
 import { easing } from "jquery";
 import { getPixelArtColors } from "./utils/image-colors.js";
-import { WebGPUAnimationParticles } from "./webgpu-animation-particles.js";
 
 class PathWindowAnimator {
     path: any;
@@ -271,25 +270,6 @@ export function playMnemosphereAnimation(MnemosphereData: {
             animationContainer.addEventListener("click", clickHandler, {
                 once: true,
             });
-        } // --- Initialize WebGPU Particles Background ---
-        let webgpuParticles: WebGPUAnimationParticles | null = null;
-
-        try {
-            // Initialize WebGPU particles
-            webgpuParticles = new WebGPUAnimationParticles();
-            const particlesInitialized = await webgpuParticles.init(
-                animationContainer
-            );
-            if (particlesInitialized) {
-                webgpuParticles.start();
-                Log("WebGPU particles started for Mnemosphere animation");
-            } else {
-                webgpuParticles = null;
-                Log("WebGPU particles failed to initialize");
-            }
-        } catch (error) {
-            Log("Particle system initialization failed:", error);
-            webgpuParticles = null;
         }
 
         // --- Helper function to create basic elements ---
@@ -597,13 +577,6 @@ export function playMnemosphereAnimation(MnemosphereData: {
                             duration: 500,
                             ease: "linear",
                             onComplete: () => {
-                                // Clean up particle systems before removing container content
-                                if (webgpuParticles) {
-                                    webgpuParticles.destroy();
-                                    webgpuParticles = null;
-                                    Log("WebGPU particles cleaned up");
-                                }
-
                                 animationContainer.style.display = "none";
                                 animationContainer.style.pointerEvents = "none";
                                 animationContainer.innerHTML = ""; // Clean up

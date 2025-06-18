@@ -21,10 +21,6 @@ import {
     fallbackReload,
 } from "./animation-hot-reload.js";
 import { playMnemosphereAnimation } from "./mnemosphere-animation.js";
-import {
-    testParticleCapabilities,
-    runVisualParticleTest,
-} from "./particle-test.js";
 
 /**
  * Development manager for animation testing and hot reloading
@@ -201,7 +197,6 @@ export class AnimationDevManager {
             <div class="drag-handle" style="font-weight: bold; margin-bottom: 5px; cursor: move; padding: 2px; border-radius: 3px; user-select: none;">🎬 Animation Dev Mode</div>
             <div style="margin-bottom: 3px;">Ctrl+R: Test Animation</div>
             <div style="margin-bottom: 3px;">Ctrl+L: Reload Module</div>
-            <div style="margin-bottom: 3px;">Ctrl+P: Test Particles</div>
             <div style="margin-bottom: 5px; border-top: 1px solid #444; padding-top: 5px;">
                 <div class="current-scenario">Scenario: Ready</div>
                 <div class="reload-status">Status: Initialized</div>
@@ -209,8 +204,7 @@ export class AnimationDevManager {
             <div style="margin-top: 5px;">
                 <button class="test-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Test</button>
                 <button class="reload-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Reload</button>
-                <button class="cycle-btn" style="margin-right: 5px; padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Cycle</button>
-                <button class="particle-btn" style="padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Particles</button>
+                <button class="cycle-btn" style="padding: 2px 6px; background: #333; color: white; border: 1px solid #666; border-radius: 3px; cursor: pointer;">Cycle</button>
             </div>
         `; // Add click handlers for buttons
         const testBtn = this.debugOverlay.querySelector(".test-btn");
