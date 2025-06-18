@@ -7,6 +7,7 @@ import {
     ModuleName,
     SetFlagWithoutRender,
     DEV_MODE,
+    getItemDisplayData,
 } from "./core-config.js";
 import {
     createMnemosphereDescription,
@@ -35,6 +36,42 @@ import { resolveCompendiumUUID } from "./uuid-utils.js";
 
 // Setup foundry hooks for Mnemospheres
 SetupMnemosphereHooks();
+
+// Helper functions for Mnemosphere equipment management
+function getEquippedMnemospheres(actor: any): string[] {
+    return actor.getFlag(ModuleName, "equipped-mnemospheres") || [];
+}
+
+function setEquippedMnemospheres(
+    actor: any,
+    equippedList: string[]
+): Promise<any> {
+    return actor.setFlag(ModuleName, "equipped-mnemospheres", equippedList);
+}
+
+function isMnemosphereEquipped(actor: any, itemUuid: string): boolean {
+    const equipped = getEquippedMnemospheres(actor);
+    return equipped.includes(itemUuid);
+}
+
+async function toggleMnemosphereEquipped(
+    actor: any,
+    itemUuid: string
+): Promise<void> {
+    const equipped = getEquippedMnemospheres(actor);
+    const isCurrentlyEquipped = equipped.includes(itemUuid);
+
+    let newEquipped: string[];
+    if (isCurrentlyEquipped) {
+        // Unequip - remove from list
+        newEquipped = equipped.filter((uuid) => uuid !== itemUuid);
+    } else {
+        // Equip - add to list
+        newEquipped = [...equipped, itemUuid];
+    }
+
+    await setEquippedMnemospheres(actor, newEquipped);
+}
 
 async function rollClassUUID(rollTableUUID: UUID) {
     let rollTable = await resolveCompendiumUUID(rollTableUUID);
@@ -308,6 +345,109 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
 
     // Bind UI elements
     bindUUIDInput(sheet, html, "ts-baseSheet", FLAG_BASESHEET, "ActorSheet");
+    // Get all treasure items and separate Mnemospheres from regular treasures
+    const actor = sheet.object;
+    const allTreasures = Array.from(actor.items).filter(
+        (item: any) => item.type === "treasure"
+    );
+    const mnemospheres: any[] = [];
+    const regularTreasures: any[] = [];
+    for (const item of allTreasures) {
+        const itemAny = item as any;
+        const mnemosphereId = Relations.Item.Mnemosphere.get(
+            itemAny.uuid as UUID
+        );
+        if (mnemosphereId) {
+            // This is a Mnemosphere - create a proper object with the necessary properties
+            const isEquipped = isMnemosphereEquipped(actor, itemAny.uuid);
+            const itemData = getItemDisplayData(itemAny);
+            mnemospheres.push({
+                _id: itemAny._id,
+                uuid: itemAny.uuid,
+                name: itemAny.name,
+                img: itemAny.img,
+                type: itemAny.type,
+                system: itemAny.system,
+                quality: itemData.qualityString,
+                enrichedHtml: itemAny.enrichedHtml,
+                isEquipped: isEquipped,
+            });
+        } else {
+            // Regular treasure
+            regularTreasures.push(itemAny);
+        }
+    }
+
+    // Remove Mnemospheres from the existing treasure list
+    const treasureSection = html
+        .find('.tab[data-tab="items"] ol.items-list')
+        .has('li .item-name:contains("Treasures")');
+    if (treasureSection.length > 0) {
+        // Remove Mnemosphere items from treasure section
+        mnemospheres.forEach((mnemosphere) => {
+            treasureSection
+                .find(`li[data-item-id="${mnemosphere._id}"]`)
+                .remove();
+        });
+    }
+
+    // Add Mnemosphere section if there are any Mnemospheres
+    if (mnemospheres.length > 0) {
+        const mnemosphereSection = await renderTemplate(
+            "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/mnemosphere-section.hbs",
+            {
+                mnemospheres: mnemospheres,
+                actor: actor,
+                _expandedIds: sheet._expandedIds || [],
+            }
+        );
+
+        // Insert the Mnemosphere section after the treasure section
+        if (treasureSection.length > 0) {
+            treasureSection.after(mnemosphereSection);
+        } else {
+            // If no treasure section exists, add it to the items tab
+            const itemsTab = html.find('.tab[data-tab="items"]');
+            itemsTab.append(mnemosphereSection);
+        }
+    }
+
+    // Handle Mnemosphere equip/unequip button clicks
+    html.find(".mnemosphere-equip-toggle")
+        .unbind("click")
+        .bind("click", async (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const button = $(event.currentTarget);
+            const itemUuid = button.data("item-uuid");
+
+            try {
+                await toggleMnemosphereEquipped(actor, itemUuid); // Update icon appearance to match standard equip pattern
+                const isNowEquipped = isMnemosphereEquipped(actor, itemUuid);
+                const icon = button.find("i");
+                const tooltipText = isNowEquipped
+                    ? "Unequip Mnemosphere"
+                    : "Equip Mnemosphere";
+
+                button.attr("data-tooltip", tooltipText);
+
+                if (isNowEquipped) {
+                    icon.removeClass("far").addClass("fas");
+                } else {
+                    icon.removeClass("fas").addClass("far");
+                }
+
+                ui.notifications.info(
+                    `Mnemosphere ${isNowEquipped ? "equipped" : "unequipped"}.`
+                );
+            } catch (error) {
+                console.error("Error toggling Mnemosphere equipment:", error);
+                ui.notifications.error(
+                    "Failed to update Mnemosphere equipment status."
+                );
+            }
+        });
 
     // Handle Apply Technosphere button
     html.find(".technosphere-apply")
@@ -346,11 +486,10 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
 
 Hooks.once("init", async () => {
     // Register socket events
-    // game.socket.on(getEventName("rollMnemosphere"), socketFn(rollMnemosphere))
-
-    // Load templates
+    // game.socket.on(getEventName("rollMnemosphere"), socketFn(rollMnemosphere))    // Load templates
     await loadTemplates([
         "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs",
+        "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/mnemosphere-section.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs",
     ]);

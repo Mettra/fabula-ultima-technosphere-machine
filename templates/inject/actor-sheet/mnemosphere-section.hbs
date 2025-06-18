@@ -1,0 +1,50 @@
+{{#if mnemospheres}}
+<ol class="items-list">
+	<li class="item flexrow items-header">
+		<div class="item-name">Mnemospheres</div>
+		<div class="item-full start">{{localize "FU.Effect"}}</div>
+		<div class="item-xs">{{localize "FU.Quantity"}}</div>
+		<div class="item-xs">Equip?</div>
+		<div class="item-m end"></div>
+	</li>
+	{{#each mnemospheres as |item id|}}
+		<li class="item" data-item-id="{{ item._id }}">
+			<div class="flexrow">
+				{{!-- Item Name--}}
+				{{> "systems/projectfu/templates/actor/partials/actor-item-name.hbs" item=item}}
+				{{!-- Effect --}}
+				<div class="item-full start"><span class="description-effect">{{ item.quality }}</span></div>
+				{{!-- Equip Status --}}
+				<div class="item-xs equipped-icon-container">
+					<a class="item-control item-equip mnemosphere-equip-toggle" data-item-uuid="{{ item.uuid }}"
+					   data-tooltip="{{#if item.isEquipped}}Unequip Mnemosphere{{else}}Equip Mnemosphere{{/if}}">
+						<i class="{{#if item.isEquipped}}ra ra-doubled{{else}}far fa-circle{{/if}} ra-1xh"></i>
+					</a>
+				</div>
+				{{!-- Item Control--}}
+				<div class="item-sm end">
+					<!-- Favorite -->
+					{{#if @root.actor.isCharacterType}}
+						<a class="item-control item-favored" data-item-id="{{item._id}}"
+						   data-tooltip="{{#if item.system.isFavored.value}}{{ localize 'FU.FavoriteRemove' }}{{else}}{{ localize 'FU.Favorite' }}{{/if}}">
+							<i class="{{#if item.system.isFavored.value}}fas active{{else}}far{{/if}} fa-star button-style"></i>
+						</a>
+					{{/if}}
+					
+					<a class="item-control item-edit" data-item-id="{{item._id}}" data-tooltip="{{ localize 'FU.Edit' }}">
+						<i class="fas fa-edit button-style"></i>
+					</a>
+					<a class="item-control item-option" data-item-id="{{item._id}}" data-tooltip="{{ localize 'FU.Settings' }}">
+						<i class="fas fa-bars button-style"></i>
+					</a>
+				</div>
+			</div>
+			<div class="individual-description align-left {{#unless (inArray _id @root._expandedIds)}}hidden{{/unless}}">
+				{{#if item.enrichedHtml.description}}
+					{{{item.enrichedHtml.description}}}
+				{{/if}}
+			</div>
+		</li>
+	{{/each}}
+</ol>
+{{/if}}

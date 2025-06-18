@@ -1,12 +1,15 @@
 
 
 
+Complete:
 
 {Class} Sphere
 
 Mnemosphere - Skill {Rank}
 Mnemosphere - Focused 1
 
+
+Next: Add Mnemosphere to class
 
 Inherited ability is max(ability)
 

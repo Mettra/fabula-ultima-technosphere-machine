@@ -26,4 +26,30 @@
     color: #eee;
 }
 
+/* Mnemosphere equip/unequip icon styles - using standard equip pattern */
+.mnemosphere-equip-toggle {
+    cursor: pointer;
+}
+
+.mnemosphere-equip-toggle i.fa-circle {
+    transition: color 0.2s ease;
+}
+
+.mnemosphere-equip-toggle i.fa-circle.far {
+    color: #666;
+}
+
+.mnemosphere-equip-toggle i.fa-circle.fas {
+    color: #4a7c21;
+}
+
+.mnemosphere-equip-toggle:hover i.fa-circle {
+    opacity: 0.8;
+}
+
+/* Mnemosphere section styling */
+.mnemosphere-section {
+    margin-top: 10px;
+}
+
 

@@ -68,3 +68,31 @@ export async function SetFlagWithoutRender(
         }
     );
 }
+
+/**
+ * Get the display data for an item.
+ * @returns {object|boolean} An object containing item display information, or false if this is not an item.
+ * @property {string} qualityString - The item's summary.
+ */
+export function getItemDisplayData(item) {
+    const relevantTypes = ["consumable", "treasure", "rule"];
+    if (!relevantTypes.includes(item.type)) {
+        return false;
+    }
+
+    // Retrieve and process the item's summary
+    const summary = item.system.summary.value?.trim() || "";
+    let qualityString = game.i18n.localize("FU.SummaryNone");
+
+    // Parse the summary if it exists and is not empty
+    if (summary) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(summary, "text/html");
+        qualityString =
+            doc.body.textContent || game.i18n.localize("FU.SummaryNone");
+    }
+
+    return {
+        qualityString,
+    };
+}
