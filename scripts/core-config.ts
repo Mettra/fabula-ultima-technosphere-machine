@@ -2,8 +2,8 @@
 
 export const ModuleName = "fabula-ultima-technosphere-machine";
 export const SYSTEM = "projectfu";
-export const MEMNOSPHERE_ROLL_COST = 500;
-export const MEMNOSPHERE_SPLIT_KEY = "@ROLLTABLE";
+export const Mnemosphere_ROLL_COST = 500;
+export const Mnemosphere_SPLIT_KEY = "@ROLLTABLE";
 
 const IS_DEBUG = TS_DEBUG;
 

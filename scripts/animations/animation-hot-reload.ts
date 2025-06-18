@@ -13,7 +13,7 @@ let animationModuleUrl: string | null = null;
  */
 export function cleanupAnimationState(): void {
     const container = document.getElementById(
-        "memnosphere-animation-container"
+        "Mnemosphere-animation-container"
     );
     if (container) {
         // Stop any running animations
@@ -32,7 +32,7 @@ export function cleanupAnimationState(): void {
  */
 export function preserveAnimationContainer(): HTMLElement | null {
     const container = document.getElementById(
-        "memnosphere-animation-container"
+        "Mnemosphere-animation-container"
     );
     if (container) {
         // Store current visibility state
@@ -48,7 +48,7 @@ export function preserveAnimationContainer(): HTMLElement | null {
  */
 export function restoreAnimationContainer(): void {
     const container = document.getElementById(
-        "memnosphere-animation-container"
+        "Mnemosphere-animation-container"
     );
     if (container && container.dataset.wasVisible === "true") {
         // Don't automatically restore visibility - let the animation control it
@@ -110,9 +110,9 @@ export async function reloadAnimationModule(): Promise<any> {
 export function getCurrentAnimationFunction(): Function | null {
     if (
         currentAnimationModule &&
-        currentAnimationModule.playMemnosphereAnimation
+        currentAnimationModule.playMnemosphereAnimation
     ) {
-        return currentAnimationModule.playMemnosphereAnimation;
+        return currentAnimationModule.playMnemosphereAnimation;
     }
     return null;
 }

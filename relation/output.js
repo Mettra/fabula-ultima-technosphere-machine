@@ -1,42 +1,42 @@
 /**
- * A unique identifier for a Memnosphere.
- * @typedef {number} MemnosphereID
+ * A unique identifier for a Mnemosphere.
+ * @typedef {number} MnemosphereID
  */
 
-// Refactored Memnosphere Relation Tables
-let Next_Memnosphere_ID = 1;
-function createMemnosphereID() {
-    return Next_Memnosphere_ID++;
+// Refactored Mnemosphere Relation Tables
+let Next_Mnemosphere_ID = 1;
+function createMnemosphereID() {
+    return Next_Mnemosphere_ID++;
 }
 
 const Relations = {
-    Memnosphere: {
+    Mnemosphere: {
         class: {
             tbl: {},
             /**
-             * Defines a relationship between a Memnosphere and a Class.
-             * @param {MemnosphereID} id - The unique ID of the Memnosphere.
+             * Defines a relationship between a Mnemosphere and a Class.
+             * @param {MnemosphereID} id - The unique ID of the Mnemosphere.
              * @param {string} classUUID - The UUID of the Class.
              */
-            define: function(id, classUUID) {
+            define: function (id, classUUID) {
                 if (!id || !classUUID) {
-                    console.warn("Invalid Memnosphere ID or Class UUID.");
+                    console.warn("Invalid Mnemosphere ID or Class UUID.");
                     return;
                 }
                 this.tbl[id] = classUUID;
-            }
+            },
         },
         skill: {
             tbl: {},
             /**
-             * Defines a relationship between a Memnosphere and a Skill.
-             * Enforces a maximum of 5 skills per Memnosphere.
-             * @param {MemnosphereID} id - The unique ID of the Memnosphere.
+             * Defines a relationship between a Mnemosphere and a Skill.
+             * Enforces a maximum of 5 skills per Mnemosphere.
+             * @param {MnemosphereID} id - The unique ID of the Mnemosphere.
              * @param {string} skillUUID - The UUID of the Skill.
              */
-            define: function(id, skillUUID) {
+            define: function (id, skillUUID) {
                 if (!id || !skillUUID) {
-                    console.warn("Invalid Memnosphere ID or Skill UUID.");
+                    console.warn("Invalid Mnemosphere ID or Skill UUID.");
                     return;
                 }
 
@@ -47,23 +47,25 @@ const Relations = {
                 const list = this.tbl[id];
 
                 if (list.length >= 5) {
-                    ErrorHandler.notifyError("A Memnosphere can only have a max of 5 skills!");
+                    ErrorHandler.notifyError(
+                        "A Mnemosphere can only have a max of 5 skills!"
+                    );
                     return;
                 }
 
                 list.push(skillUUID);
-            }
+            },
         },
         feature: {
             tbl: {},
             /**
-             * Defines a relationship between a Memnosphere and a Feature.
-             * @param {MemnosphereID} id - The unique ID of the Memnosphere.
+             * Defines a relationship between a Mnemosphere and a Feature.
+             * @param {MnemosphereID} id - The unique ID of the Mnemosphere.
              * @param {string} featureUUID - The UUID of the Feature.
              */
-            define: function(id, featureUUID) {
+            define: function (id, featureUUID) {
                 if (!id || !featureUUID) {
-                    console.warn("Invalid Memnosphere ID or Feature UUID.");
+                    console.warn("Invalid Mnemosphere ID or Feature UUID.");
                     return;
                 }
 
@@ -72,48 +74,48 @@ const Relations = {
                 }
 
                 this.tbl[id].push(featureUUID);
-            }
+            },
         },
         /**
-         * Removes all relationships for a given Memnosphere.
-         * @param {MemnosphereID} memnosphereId - The unique ID of the Memnosphere.
+         * Removes all relationships for a given Mnemosphere.
+         * @param {MnemosphereID} MnemosphereId - The unique ID of the Mnemosphere.
          */
-        removeRelations: function(memnosphereId) {
-            if (!memnosphereId) {
-                console.warn("Invalid Memnosphere ID.");
+        removeRelations: function (MnemosphereId) {
+            if (!MnemosphereId) {
+                console.warn("Invalid Mnemosphere ID.");
                 return;
             }
-            this.class.tbl[memnosphereId] = null;
-            this.skill.tbl[memnosphereId] = null;
-            this.feature.tbl[memnosphereId] = null;
-        }
+            this.class.tbl[MnemosphereId] = null;
+            this.skill.tbl[MnemosphereId] = null;
+            this.feature.tbl[MnemosphereId] = null;
+        },
     },
     Item: {
-        memnosphere: {
+        Mnemosphere: {
             tbl: {},
             /**
-             * Defines a relationship between an Item and a Memnosphere.
+             * Defines a relationship between an Item and a Mnemosphere.
              * @param {string} itemId - The unique ID of the Item.
-             * @param {MemnosphereID} memnosphereId - The unique ID of the Memnosphere.
+             * @param {MnemosphereID} MnemosphereId - The unique ID of the Mnemosphere.
              */
-            define: function(itemId, memnosphereId) {
-                if (!itemId || !memnosphereId) {
-                    console.warn("Invalid Item ID or Memnosphere ID.");
+            define: function (itemId, MnemosphereId) {
+                if (!itemId || !MnemosphereId) {
+                    console.warn("Invalid Item ID or Mnemosphere ID.");
                     return;
                 }
-                this.tbl[itemId] = memnosphereId;
-            }
-        }
-    }
+                this.tbl[itemId] = MnemosphereId;
+            },
+        },
+    },
 };
 
 // Centralized error-handling interface
 const ErrorHandler = {
-    notifyError: function(message) {
+    notifyError: function (message) {
         console.error(message); // Log to console
         // If Foundry VTT's `ui.notifications` is available, use it
-        if (typeof ui !== 'undefined' && ui.notifications) {
+        if (typeof ui !== "undefined" && ui.notifications) {
             ui.notifications.error(message);
         }
-    }
+    },
 };

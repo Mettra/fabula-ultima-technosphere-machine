@@ -1,16 +1,16 @@
 // Tokenizer, Parser, and Generator for relations.txt
 
 function splitStringArrayByComma(arr) {
-  const newArr = [];
-  for (const str of arr) {
-    if (str.includes(',')) {
-      const splitStrings = str.split(',');
-      newArr.push(...splitStrings);
-    } else {
-      newArr.push(str);
+    const newArr = [];
+    for (const str of arr) {
+        if (str.includes(",")) {
+            const splitStrings = str.split(",");
+            newArr.push(...splitStrings);
+        } else {
+            newArr.push(str);
+        }
     }
-  }
-  return newArr;
+    return newArr;
 }
 
 /**
@@ -32,33 +32,34 @@ function tokenize(input) {
         // Split the line into parts based on known patterns
         const parts = trimmed.split(/\s+/);
         const concept = parts[0];
-        
+
         if (parts[1] === "::") {
             // Handle type definitions (e.g., Concept :: ID)
             const parsedType = parts[2];
-            const type = parsedType == "ID" ? null : parsedType
+            const type = parsedType == "ID" ? null : parsedType;
 
             tokens.push({ token: "definition" });
             tokens.push({ token: "concept", value: concept });
             tokens.push({ token: "type", value: type });
-
-        } else if ((parts[1] === "->" || parts[1] === "->>")) {
-            // Handle relationships (e.g., Memnosphere -> Class)
-            const blocks = splitStringArrayByComma(parts.slice(2))
-            const target = blocks[0]
+        } else if (parts[1] === "->" || parts[1] === "->>") {
+            // Handle relationships (e.g., Mnemosphere -> Class)
+            const blocks = splitStringArrayByComma(parts.slice(2));
+            const target = blocks[0];
 
             tokens.push({ token: "relation", value: parts[1] });
             tokens.push({ token: "concept", value: concept });
             tokens.push({ token: "target", value: target });
 
-            let blockIdx = 1
+            let blockIdx = 1;
             while (blockIdx < blocks.length) {
-                if(blocks[blockIdx] == "limit") {
-                    tokens.push({ token: "limit", value: blocks[blockIdx + 1] });
-                    blockIdx += 2
-                }
-                else {
-                    ++blockIdx
+                if (blocks[blockIdx] == "limit") {
+                    tokens.push({
+                        token: "limit",
+                        value: blocks[blockIdx + 1],
+                    });
+                    blockIdx += 2;
+                } else {
+                    ++blockIdx;
                 }
             }
         } else {
@@ -85,7 +86,9 @@ function parse(tokens) {
         const currentToken = tokens[i];
 
         if (!currentToken || !currentToken.token) {
-            console.warn(`[Parser] Invalid or undefined token at index ${i}. Skipping.`);
+            console.warn(
+                `[Parser] Invalid or undefined token at index ${i}. Skipping.`
+            );
             i++;
             continue;
         }
@@ -96,12 +99,19 @@ function parse(tokens) {
             const conceptName = conceptToken.value;
             const typeValue = typeToken.value;
 
-            if (typeValue && typeValue.startsWith("`") && typeValue.endsWith("`")) {
-                const externalType = typeValue.slice(1, -1); 
+            if (
+                typeValue &&
+                typeValue.startsWith("`") &&
+                typeValue.endsWith("`")
+            ) {
+                const externalType = typeValue.slice(1, -1);
                 ast.externalTypes[conceptName] = externalType;
             } else {
                 if (!ast.concepts[conceptName]) {
-                    ast.concepts[conceptName] = { type: typeValue, relations: [] };
+                    ast.concepts[conceptName] = {
+                        type: typeValue,
+                        relations: [],
+                    };
                 } else {
                     ast.concepts[conceptName].type = typeValue; // Update type if concept already exists (e.g., from a relation)
                 }
@@ -110,7 +120,11 @@ function parse(tokens) {
         } else if (currentToken.token === "relation") {
             // This indicates a relation definition: Concept -> Target or Concept ->> Target
             if (i + 2 >= tokens.length) {
-                console.warn(`[Parser] Incomplete relation. Expected 'relation' and 'target' tokens after 'concept'. Tokens remaining: ${JSON.stringify(tokens.slice(i))}`);
+                console.warn(
+                    `[Parser] Incomplete relation. Expected 'relation' and 'target' tokens after 'concept'. Tokens remaining: ${JSON.stringify(
+                        tokens.slice(i)
+                    )}`
+                );
                 break;
             }
 
@@ -118,23 +132,39 @@ function parse(tokens) {
             const conceptName = tokens[i + 1].value;
             const targetToken = tokens[i + 2];
 
-            if (typeof conceptName !== 'string') {
-                console.warn(`[Parser] Invalid value type for concept in relation: '${conceptName}'. Skipping relation.`);
+            if (typeof conceptName !== "string") {
+                console.warn(
+                    `[Parser] Invalid value type for concept in relation: '${conceptName}'. Skipping relation.`
+                );
                 i += 1; // Advance past current concept token
                 continue;
             }
-            if (!relationToken || relationToken.token !== "relation" || !targetToken || targetToken.token !== "target") {
-                console.warn(`[Parser] Invalid token sequence for relation for concept '${conceptName}'. Expected 'relation' then 'target'. Got: ${relationToken?.token}, ${targetToken?.token}.`);
+            if (
+                !relationToken ||
+                relationToken.token !== "relation" ||
+                !targetToken ||
+                targetToken.token !== "target"
+            ) {
+                console.warn(
+                    `[Parser] Invalid token sequence for relation for concept '${conceptName}'. Expected 'relation' then 'target'. Got: ${relationToken?.token}, ${targetToken?.token}.`
+                );
                 i += 1; // Advance past current concept token
                 continue;
             }
-            
+
             const relationValue = relationToken.value;
             // targetToken.value is an array, e.g., ["ClassName"] from tokenize step
-            if ( typeof targetToken.value !== 'string' || targetToken.value.length === 0) {
-                 console.warn(`[Parser] Invalid target value for relation from concept '${conceptName}'. Expected string. Got: ${JSON.stringify(targetToken.value)}.`);
-                 i += 3; // Skip concept, relation, target
-                 continue;
+            if (
+                typeof targetToken.value !== "string" ||
+                targetToken.value.length === 0
+            ) {
+                console.warn(
+                    `[Parser] Invalid target value for relation from concept '${conceptName}'. Expected string. Got: ${JSON.stringify(
+                        targetToken.value
+                    )}.`
+                );
+                i += 3; // Skip concept, relation, target
+                continue;
             }
             const targetName = targetToken.value;
 
@@ -143,14 +173,21 @@ function parse(tokens) {
 
             if (i + 3 < tokens.length && tokens[i + 3]?.token === "limit") {
                 const limitToken = tokens[i + 3];
-                if (limitToken.value !== undefined && typeof limitToken.value === 'string') {
+                if (
+                    limitToken.value !== undefined &&
+                    typeof limitToken.value === "string"
+                ) {
                     limit = parseInt(limitToken.value, 10);
                     if (isNaN(limit)) {
-                        console.warn(`[Parser] Invalid limit value '${limitToken.value}' for ${conceptName} ${relationValue} ${targetName}. Limit ignored.`);
+                        console.warn(
+                            `[Parser] Invalid limit value '${limitToken.value}' for ${conceptName} ${relationValue} ${targetName}. Limit ignored.`
+                        );
                         limit = null;
                     }
                 } else {
-                     console.warn(`[Parser] Limit token found but has invalid or missing value for ${conceptName} ${relationValue} ${targetName}. Limit ignored.`);
+                    console.warn(
+                        `[Parser] Limit token found but has invalid or missing value for ${conceptName} ${relationValue} ${targetName}. Limit ignored.`
+                    );
                 }
                 consumedTokens = 4;
             }
@@ -158,17 +195,20 @@ function parse(tokens) {
             ast.concepts[conceptName].relations.push({
                 relation: relationValue,
                 target: targetName,
-                limit: limit
+                limit: limit,
             });
             i += consumedTokens;
         } else {
-            console.warn(`[Parser] Unexpected token encountered: ${JSON.stringify(currentToken)}. Skipping.`);
-            i++; 
+            console.warn(
+                `[Parser] Unexpected token encountered: ${JSON.stringify(
+                    currentToken
+                )}. Skipping.`
+            );
+            i++;
         }
     }
     return ast;
 }
-
 
 /**
  * Generates JavaScript code from the AST.
@@ -177,12 +217,14 @@ function parse(tokens) {
  */
 function generate(ast) {
     let output = `
-type ID = number & { readonly __brand: "ID" };`
+type ID = number & { readonly __brand: "ID" };`;
 
     // Generate ID interfaces
     for (const [concept, data] of Object.entries(ast.concepts)) {
         output += `
-export type ${concept}_ID = ${data.type || `number & { readonly __brand: "${concept}" }`} ;`
+export type ${concept}_ID = ${
+            data.type || `number & { readonly __brand: "${concept}" }`
+        } ;`;
     }
 
     output += `
@@ -206,7 +248,10 @@ const Relations = {
 
         for (const relation of data.relations) {
             const { relation: relType, target, limit } = relation;
-            const targetType = ast.concepts[target]?.type || ast.externalTypes[target] || `${target}_ID`;
+            const targetType =
+                ast.concepts[target]?.type ||
+                ast.externalTypes[target] ||
+                `${target}_ID`;
 
             if (relType === "->") {
                 output += `
@@ -224,7 +269,11 @@ const Relations = {
 
                     define: function(id : ${concept}_ID, value : ${targetType}) {
                         if (!this.tbl[id]) this.tbl[id] = [];
-                        ${limit ? `if (this.tbl[id].length >= ${limit}) RelationErrorHandler.notifyError('Limit exceeded');` : ""}
+                        ${
+                            limit
+                                ? `if (this.tbl[id].length >= ${limit}) RelationErrorHandler.notifyError('Limit exceeded');`
+                                : ""
+                        }
                         this.tbl[id].push(value);
                     },
 
@@ -245,16 +294,15 @@ const Relations = {
              * @param {${concept}_ID} id - The unique ID of the ${concept}.
              */
             ClearRelations(id) {
-`
+`;
         for (const relation of data.relations) {
             const { relation: relType, target, limit } = relation;
             output += `                delete this.${target.toLowerCase()}.tbl[id];
-`
+`;
         }
         output += `
             }
-`
-        
+`;
 
         output += `         },
 `;
@@ -277,9 +325,8 @@ const Relations = {
     logAllFunctionBody += `        console.log("--- End of Relation Tables ---");
     },
 `;
-    
-    output += logAllFunctionBody;
 
+    output += logAllFunctionBody;
 
     output += `}
 `;

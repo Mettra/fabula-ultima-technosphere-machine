@@ -3,7 +3,7 @@ export type Skill_ID = UUID;
 export type Class_ID = UUID;
 export type Item_ID = UUID;
 export type HeroicSkill_ID = UUID;
-export type Memnosphere_ID = number & { readonly __brand: "Memnosphere" };
+export type Mnemosphere_ID = number & { readonly __brand: "Mnemosphere" };
 
 const Relations = {
     Item: {
@@ -13,12 +13,12 @@ const Relations = {
             return this.NextId++ as any;
         },
 
-        memnosphere: {
-            tbl: {} as { [key: Item_ID]: Memnosphere_ID },
-            define: function (id: Item_ID, value: Memnosphere_ID) {
+        Mnemosphere: {
+            tbl: {} as { [key: Item_ID]: Mnemosphere_ID },
+            define: function (id: Item_ID, value: Mnemosphere_ID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Item_ID): Memnosphere_ID | undefined {
+            get: function (id: Item_ID): Mnemosphere_ID | undefined {
                 return this.tbl[id];
             },
             remove: function (id: Item_ID) {
@@ -31,34 +31,34 @@ const Relations = {
          * @param {Item_ID} id - The unique ID of the Item.
          */
         ClearRelations(id) {
-            delete this.memnosphere.tbl[id];
+            delete this.Mnemosphere.tbl[id];
         },
     },
 
-    Memnosphere: {
+    Mnemosphere: {
         NextId: 0,
 
-        GetNextId(): Memnosphere_ID {
+        GetNextId(): Mnemosphere_ID {
             return this.NextId++ as any;
         },
 
         class: {
-            tbl: {} as { [key: Memnosphere_ID]: UUID },
-            define: function (id: Memnosphere_ID, value: UUID) {
+            tbl: {} as { [key: Mnemosphere_ID]: UUID },
+            define: function (id: Mnemosphere_ID, value: UUID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Memnosphere_ID): UUID | undefined {
+            get: function (id: Mnemosphere_ID): UUID | undefined {
                 return this.tbl[id];
             },
-            remove: function (id: Memnosphere_ID) {
+            remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
             },
         },
 
         skill: {
-            tbl: {} as { [key: Memnosphere_ID]: UUID[] },
+            tbl: {} as { [key: Mnemosphere_ID]: UUID[] },
 
-            define: function (id: Memnosphere_ID, value: UUID) {
+            define: function (id: Mnemosphere_ID, value: UUID) {
                 if (!this.tbl[id]) this.tbl[id] = [];
                 //if (this.tbl[id].length >= 5) RelationErrorHandler.notifyError('Limit exceeded');
                 this.tbl[id].push(value);
@@ -68,18 +68,18 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Memnosphere_ID): UUID[] | undefined {
+            get: function (id: Mnemosphere_ID): UUID[] | undefined {
                 return this.tbl[id];
             },
-            remove: function (id: Memnosphere_ID) {
+            remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
             },
         },
 
         uuid: {
-            tbl: {} as { [key: Memnosphere_ID]: string[] },
+            tbl: {} as { [key: Mnemosphere_ID]: string[] },
 
-            define: function (id: Memnosphere_ID, value: string) {
+            define: function (id: Mnemosphere_ID, value: string) {
                 if (!this.tbl[id]) this.tbl[id] = [];
 
                 this.tbl[id].push(value);
@@ -89,30 +89,30 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Memnosphere_ID): string[] | undefined {
+            get: function (id: Mnemosphere_ID): string[] | undefined {
                 return this.tbl[id];
             },
-            remove: function (id: Memnosphere_ID) {
+            remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
             },
         },
 
         heroicskill: {
-            tbl: {} as { [key: Memnosphere_ID]: UUID },
-            define: function (id: Memnosphere_ID, value: UUID) {
+            tbl: {} as { [key: Mnemosphere_ID]: UUID },
+            define: function (id: Mnemosphere_ID, value: UUID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Memnosphere_ID): UUID | undefined {
+            get: function (id: Mnemosphere_ID): UUID | undefined {
                 return this.tbl[id];
             },
-            remove: function (id: Memnosphere_ID) {
+            remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
             },
         },
 
         /**
          * Clear all relations for a specific instance.
-         * @param {Memnosphere_ID} id - The unique ID of the Memnosphere.
+         * @param {Mnemosphere_ID} id - The unique ID of the Mnemosphere.
          */
         ClearRelations(id) {
             delete this.class.tbl[id];
@@ -125,24 +125,24 @@ const Relations = {
     LogAll: function () {
         console.log("--- Logging All Relation Tables ---");
         console.log(
-            "Relations.Item.memnosphere.tbl:",
-            this.Item.memnosphere.tbl
+            "Relations.Item.Mnemosphere.tbl:",
+            this.Item.Mnemosphere.tbl
         );
         console.log(
-            "Relations.Memnosphere.class.tbl:",
-            this.Memnosphere.class.tbl
+            "Relations.Mnemosphere.class.tbl:",
+            this.Mnemosphere.class.tbl
         );
         console.log(
-            "Relations.Memnosphere.skill.tbl:",
-            this.Memnosphere.skill.tbl
+            "Relations.Mnemosphere.skill.tbl:",
+            this.Mnemosphere.skill.tbl
         );
         console.log(
-            "Relations.Memnosphere.uuid.tbl:",
-            this.Memnosphere.uuid.tbl
+            "Relations.Mnemosphere.uuid.tbl:",
+            this.Mnemosphere.uuid.tbl
         );
         console.log(
-            "Relations.Memnosphere.heroicskill.tbl:",
-            this.Memnosphere.heroicskill.tbl
+            "Relations.Mnemosphere.heroicskill.tbl:",
+            this.Mnemosphere.heroicskill.tbl
         );
         console.log("--- End of Relation Tables ---");
     },

@@ -1,12 +1,12 @@
-/* Styles for the Memnosphere Animation Overlay */
+/* Styles for the Mnemosphere Animation Overlay */
 
-#memnosphere-animation-container {
+#Mnemosphere-animation-container {
     /* Base styles are set inline for critical layout, but can be augmented */
     font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Development mode styles */
-#memnosphere-animation-container .animation-close-hint {
+#Mnemosphere-animation-container .animation-close-hint {
     opacity: 0.6;
     transition: opacity 0.3s ease;
     font-family: monospace;
@@ -16,7 +16,7 @@
     backdrop-filter: blur(4px);
 }
 
-#memnosphere-animation-container .animation-close-hint:hover {
+#Mnemosphere-animation-container .animation-close-hint:hover {
     opacity: 1;
 }
 
@@ -86,7 +86,7 @@
     will-change: transform;
 }
 
-.memnosphere-image-overlay {
+.Mnemosphere-image-overlay {
     position: absolute;
     top: 50%;
     left: 50%;

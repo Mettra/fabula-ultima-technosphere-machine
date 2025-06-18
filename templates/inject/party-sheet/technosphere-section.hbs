@@ -15,10 +15,10 @@
         <legend class="resource-label-m">
             Technosphere Machine
         </legend>
-        <div class="memnosphere-selection-area" style="margin: 5px 0;">
-            <div class="memnosphere-grid">
-                {{!-- "Create New Memnosphere" card --}}
-                <div class="memnosphere-card item-card interactive {{#unless existingSphere}}selected{{/unless}}" data-uuid="" data-action="selectMemnosphere" title="Create New Memnosphere">
+        <div class="Mnemosphere-selection-area" style="margin: 5px 0;">
+            <div class="Mnemosphere-grid">
+                {{!-- "Create New Mnemosphere" card --}}
+                <div class="Mnemosphere-card item-card interactive {{#unless existingSphere}}selected{{/unless}}" data-uuid="" data-action="selectMnemosphere" title="Create New Mnemosphere">
                     <div class="plate border">
                         <div class="name" style="text-align: center; font-weight: bold;">Create New</div>
                         <i class="fas fa-plus-circle" style="font-size: 2.5em; display: block; text-align: center; margin-top: 8px;"></i>
@@ -26,11 +26,11 @@
                 </div>
             </div>
 
-            {{#if characterMemnospheres}}
+            {{#if characterMnemospheres}}
             <label class="resource-label" style="display: block; margin-bottom: 8px; font-weight: bold;">Character Inventory</label>
-            <div class="memnosphere-grid">
-                {{#each characterMemnospheres}}
-                    {{> "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs"
+            <div class="Mnemosphere-grid">
+                {{#each characterMnemospheres}}
+                    {{> "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs"
                         this=this
                         selectedUUID=existingSphere
                     }}
@@ -38,11 +38,11 @@
             </div>
             {{/if}}
 
-            {{#if partyMemnospheres}}
+            {{#if partyMnemospheres}}
             <label class="resource-label" style="display: block; margin-bottom: 8px; font-weight: bold;">Party Inventory</label>
-            <div class="memnosphere-grid">
-                {{#each partyMemnospheres}}
-                    {{> "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs"
+            <div class="Mnemosphere-grid">
+                {{#each partyMnemospheres}}
+                    {{> "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs"
                         this=this
                         selectedUUID=existingSphere
                     }}
@@ -52,7 +52,7 @@
         </div>
         <div style="margin-top: 10px;">
             <button type="button" class="technosphere-roll button button-style" style="width: 100%;">
-                <i class="icon ra ra-dice-five"></i> Roll Memnosphere
+                <i class="icon ra ra-dice-five"></i> Roll Mnemosphere
             </button>
         </div>
     </fieldset>

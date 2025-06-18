@@ -35,7 +35,7 @@ This document describes the dynamic animation reloading and testing system imple
 4. **Cycle Scenarios**: Each `Ctrl+R` cycles to the next test scenario
 
 ### Hot Reloading
-1. **Make Changes**: Edit animation code in `memnosphere-animation.ts`
+1. **Make Changes**: Edit animation code in `Mnemosphere-animation.ts`
 2. **Build**: Run `npm run build` or use watch mode with `npm run watch`
 3. **Reload**: Press `Ctrl+L` to reload the animation module
 4. **Test**: Press `Ctrl+R` to test your changes
@@ -51,7 +51,7 @@ The development overlay appears in the top-right corner when dev mode is active:
 ### File Structure
 ```
 scripts/animations/
-├── memnosphere-animation.ts      # Main animation code
+├── Mnemosphere-animation.ts      # Main animation code
 ├── animation-dev-manager.ts      # Development system manager
 ├── animation-hot-reload.ts       # Hot reload functionality
 └── animation-test-data.ts        # Test scenarios and data
@@ -88,7 +88,7 @@ export const ANIMATION_DEV_MODIFIER = 'ctrlKey';
 #### Test Scenarios
 ```typescript
 // animation-test-data.ts
-export const TEST_SCENARIOS: MemnosphereTestData[] = [
+export const TEST_SCENARIOS: MnemosphereTestData[] = [
     {
         itemName: "Basic Crystal Shard",
         rarity: "common",

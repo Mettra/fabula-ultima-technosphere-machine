@@ -2,7 +2,7 @@
  * Test data and scenarios for animation development
  */
 
-export interface MemnosphereTestData {
+export interface MnemosphereTestData {
     itemName: string;
     rarity: string;
     imageUrl: string | null;
@@ -10,7 +10,7 @@ export interface MemnosphereTestData {
     description?: string;
 }
 
-export const TEST_SCENARIOS: MemnosphereTestData[] = [
+export const TEST_SCENARIOS: MnemosphereTestData[] = [
     {
         itemName: "Mnemosphere - Entropist",
         rarity: "common",
@@ -71,7 +71,7 @@ let currentScenarioIndex = 0;
 /**
  * Get a random test scenario
  */
-export function getRandomTestScenario(): MemnosphereTestData {
+export function getRandomTestScenario(): MnemosphereTestData {
     const randomIndex = Math.floor(Math.random() * TEST_SCENARIOS.length);
     return { ...TEST_SCENARIOS[randomIndex] };
 }
@@ -79,7 +79,7 @@ export function getRandomTestScenario(): MemnosphereTestData {
 /**
  * Cycle through test scenarios sequentially
  */
-export function cycleTestScenarios(): MemnosphereTestData {
+export function cycleTestScenarios(): MnemosphereTestData {
     const scenario = { ...TEST_SCENARIOS[currentScenarioIndex] };
     currentScenarioIndex = (currentScenarioIndex + 1) % TEST_SCENARIOS.length;
     return scenario;
@@ -88,7 +88,7 @@ export function cycleTestScenarios(): MemnosphereTestData {
 /**
  * Cycle through test scenarios sequentially
  */
-export function currentTestScenarios(): MemnosphereTestData {
+export function currentTestScenarios(): MnemosphereTestData {
     const scenario = { ...TEST_SCENARIOS[currentScenarioIndex] };
     return scenario;
 }
@@ -98,7 +98,7 @@ export function currentTestScenarios(): MemnosphereTestData {
  */
 export function getTestScenarioByName(
     name: string
-): MemnosphereTestData | null {
+): MnemosphereTestData | null {
     const scenario = TEST_SCENARIOS.find((s) =>
         s.itemName.toLowerCase().includes(name.toLowerCase())
     );
@@ -108,7 +108,7 @@ export function getTestScenarioByName(
 /**
  * Get test scenario by rarity
  */
-export function getTestScenarioByRarity(rarity: string): MemnosphereTestData {
+export function getTestScenarioByRarity(rarity: string): MnemosphereTestData {
     const scenarios = TEST_SCENARIOS.filter((s) => s.rarity === rarity);
     if (scenarios.length === 0) {
         return getRandomTestScenario();
@@ -123,7 +123,7 @@ export function getTestScenarioByRarity(rarity: string): MemnosphereTestData {
 export function getCurrentScenarioInfo(): {
     index: number;
     total: number;
-    scenario: MemnosphereTestData;
+    scenario: MnemosphereTestData;
 } {
     return {
         index: currentScenarioIndex,

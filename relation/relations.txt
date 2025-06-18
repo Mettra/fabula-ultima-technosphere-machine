@@ -7,18 +7,18 @@ Skill :: UUID
 Class :: UUID
 Item :: UUID
 HeroicSkill :: UUID
-Memnosphere :: ID
+Mnemosphere :: ID
 
-// One to One mapping from Memnosphere to Class
-Memnosphere -> Class
+// One to One mapping from Mnemosphere to Class
+Mnemosphere -> Class
 
-// One to Many mapping from Memnosphere to Skill. Limit of 5 relations between a unique Memnosphere and it's associated Skills.
-Memnosphere ->> Skill, limit 5
+// One to Many mapping from Mnemosphere to Skill. Limit of 5 relations between a unique Mnemosphere and it's associated Skills.
+Mnemosphere ->> Skill, limit 5
 
-// One to Many mapping from Memnosphere to UUID. No limit, so any number of relations are valid.
-Memnosphere ->> UUID
+// One to Many mapping from Mnemosphere to UUID. No limit, so any number of relations are valid.
+Mnemosphere ->> UUID
 
-Memnosphere -> HeroicSkill
+Mnemosphere -> HeroicSkill
 
-// One to One mapping from Item to Memnosphere
-Item -> Memnosphere
+// One to One mapping from Item to Mnemosphere
+Item -> Mnemosphere

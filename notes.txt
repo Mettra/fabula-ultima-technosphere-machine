@@ -2,6 +2,11 @@
 
 
 
+{Class} Sphere
+
+Mnemosphere - Skill {Rank}
+Mnemosphere - Focused 1
+
 
 Inherited ability is max(ability)
 

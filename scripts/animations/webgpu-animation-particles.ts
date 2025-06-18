@@ -16,7 +16,7 @@ declare var WebGPUParticles: {
 };
 
 /**
- * WebGPU particles system specifically designed for memnosphere animations.
+ * WebGPU particles system specifically designed for Mnemosphere animations.
  * Manages a canvas for particle rendering and integrates with the WebGPU particle system
  * provided by `webgpu.js`.
  * Renders particles behind HTML content with full-screen canvas overlay.

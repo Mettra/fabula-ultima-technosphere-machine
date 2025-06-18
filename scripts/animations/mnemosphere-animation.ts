@@ -90,18 +90,18 @@ class PathWindowAnimator {
 }
 
 /**
- * Plays the full-screen memnosphere gacha-style animation.
- * @param {object} memnosphereData - Data about the memnosphere being rolled.
+ * Plays the full-screen Mnemosphere gacha-style animation.
+ * @param {object} MnemosphereData - Data about the Mnemosphere being rolled.
  *                                 Example: { itemName: "Crystal Shard", rarity: "rare", imageUrl: "icons/crystal.png", effects: ["sparkle", "glow"] }
  */
-export function playMemnosphereAnimation(memnosphereData: {
+export function playMnemosphereAnimation(MnemosphereData: {
     itemName: string;
     rarity: string;
     imageUrl: string | null;
     effects?: string[];
 }): Promise<void> {
     return new Promise(async (resolve) => {
-        let colors = await getPixelArtColors(memnosphereData.imageUrl);
+        let colors = await getPixelArtColors(MnemosphereData.imageUrl);
 
         // --- Dynamic Color Palette Configuration ---
         // Define base palette colors - these can be easily changed to create different themes
@@ -225,12 +225,12 @@ export function playMemnosphereAnimation(memnosphereData: {
                     ColorPalette.hsl(SECONDARY_COLOR, 0, 0, 20, alpha),
             },
         };
-        const animationContainerId = "memnosphere-animation-container";
+        const animationContainerId = "Mnemosphere-animation-container";
         let animationContainer = document.getElementById(animationContainerId);
 
         if (!animationContainer) {
             console.error(
-                "Memnosphere animation container not found! Make sure it's in animation-overlay.hbs"
+                "Mnemosphere animation container not found! Make sure it's in animation-overlay.hbs"
             );
             resolve(); // Resolve the promise if container is not found
             return;
@@ -282,7 +282,7 @@ export function playMemnosphereAnimation(memnosphereData: {
             );
             if (particlesInitialized) {
                 webgpuParticles.start();
-                Log("WebGPU particles started for memnosphere animation");
+                Log("WebGPU particles started for Mnemosphere animation");
             } else {
                 webgpuParticles = null;
                 Log("WebGPU particles failed to initialize");
@@ -459,16 +459,16 @@ export function playMemnosphereAnimation(memnosphereData: {
         // Create the overlay image element (item itself, initially silhouetted)
         const imageOverlay = createElement(
             "div",
-            ["memnosphere-image-overlay"],
+            ["Mnemosphere-image-overlay"],
             {
                 // Styles are mostly handled by CSS class
-                // backgroundImage will be set based on memnosphereData.imageUrl
+                // backgroundImage will be set based on MnemosphereData.imageUrl
             },
             itemImageElement
         ); // Append as child of itemImageElement
 
-        if (memnosphereData.imageUrl) {
-            imageOverlay.style.backgroundImage = `url(${memnosphereData.imageUrl})`;
+        if (MnemosphereData.imageUrl) {
+            imageOverlay.style.backgroundImage = `url(${MnemosphereData.imageUrl})`;
         }
         // itemImageElement.src = "modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png" // Removed as it's a div now
 
@@ -508,7 +508,7 @@ export function playMemnosphereAnimation(memnosphereData: {
             textAlign: "center", // Centers text if it wraps to multiple lines
             textShadow: "0 0 5px black, 0 0 10px black",
         });
-        itemNameText.textContent = memnosphereData.itemName;
+        itemNameText.textContent = MnemosphereData.itemName;
 
         // Center glow element for Phase B end transition
         const centerGlow = createElement("div", ["animation-center-glow"], {
@@ -585,7 +585,7 @@ export function playMemnosphereAnimation(memnosphereData: {
             },
             onComplete: () => {
                 console.log(
-                    `Memnosphere animation complete for: ${memnosphereData.itemName}`
+                    `Mnemosphere animation complete for: ${MnemosphereData.itemName}`
                 );
                 // Optional: Add a slight delay before hiding, or a fade-out for the container itself
                 // Consider adding a "click to continue" or auto-advance after a few seconds
@@ -636,7 +636,7 @@ export function playMemnosphereAnimation(memnosphereData: {
                 {
                     opacity: [0, 0.6], // Example: fade in a subtle background texture or color wash
                     backgroundColor:
-                        memnosphereData.rarity === "legendary"
+                        MnemosphereData.rarity === "legendary"
                             ? "rgba(255,215,0,0.2)"
                             : "rgba(50,50,70,0.3)",
                     duration: 700,
@@ -752,11 +752,11 @@ export function playMemnosphereAnimation(memnosphereData: {
 
         // --- Glow Color Definition (moved up for particles and item glow) ---
         let glowColor = "rgba(255,255,255,0.7)"; // Default glow
-        if (memnosphereData.rarity.toLowerCase() === "rare")
+        if (MnemosphereData.rarity.toLowerCase() === "rare")
             glowColor = "rgba(0,191,255,0.7)"; // Deep sky blue
-        else if (memnosphereData.rarity.toLowerCase() === "epic")
+        else if (MnemosphereData.rarity.toLowerCase() === "epic")
             glowColor = "rgba(138,43,226,0.7)"; // Blue violet
-        else if (memnosphereData.rarity.toLowerCase() === "legendary")
+        else if (MnemosphereData.rarity.toLowerCase() === "legendary")
             glowColor = "rgba(255,165,0,0.8)"; // Orange
 
         // Phase C: Item Reveal
@@ -932,14 +932,14 @@ export function playMemnosphereAnimation(memnosphereData: {
 }
 
 // --- Example of how you might call this function ---
-// This would typically be called from your game logic when a memnosphere is rolled.
+// This would typically be called from your game logic when a Mnemosphere is rolled.
 // For testing, you could expose it globally or call it from another module.
 //
 // Example Usage (ensure this is called after the DOM is ready and Anime.js is loaded):
 //
 // document.addEventListener('DOMContentLoaded', () => {
 //   const testButton = document.createElement('button');
-//   testButton.textContent = "Test Memnosphere Animation";
+//   testButton.textContent = "Test Mnemosphere Animation";
 //   testButton.style.position = 'fixed';
 //   testButton.style.top = '10px';
 //   testButton.style.left = '10px';
@@ -947,7 +947,7 @@ export function playMemnosphereAnimation(memnosphereData: {
 //   document.body.appendChild(testButton);
 //
 //   testButton.onclick = () => {
-//     playMemnosphereAnimation({
+//     playMnemosphereAnimation({
 //       itemName: "Legendary Technocore",
 //       rarity: "legendary",
 //       imageUrl: "modules/fabula-ultima-technosphere-machine/assets/icons/items/technocore_legendary.webp", // Replace with an actual image path
@@ -961,7 +961,7 @@ export function playMemnosphereAnimation(memnosphereData: {
 // For example, if your icons are in 'modules/your-module-name/assets/icons/...'
 //
 // Also, ensure the animation container exists in your HTML (e.g., in animation-overlay.hbs)
-// <div id="memnosphere-animation-container" style="display: none;"></div>
+// <div id="Mnemosphere-animation-container" style="display: none;"></div>
 //
 // And the necessary CSS for .animation-item-image, .animation-item-name etc. in animation-overlay.css
 //
@@ -975,4 +975,4 @@ export function playMemnosphereAnimation(memnosphereData: {
 // }
 
 // Remember to export this function if it's part of a module system
-// export { playMemnosphereAnimation }; // Already done by 'export function'
+// export { playMnemosphereAnimation }; // Already done by 'export function'

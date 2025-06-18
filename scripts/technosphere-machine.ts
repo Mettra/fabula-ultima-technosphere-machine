@@ -3,37 +3,37 @@ import {
     getEventName,
     getFlag,
     Log,
-    MEMNOSPHERE_ROLL_COST,
+    Mnemosphere_ROLL_COST,
     ModuleName,
     SetFlagWithoutRender,
     DEV_MODE,
 } from "./core-config.js";
 import {
-    createMemnosphereDescription,
-    createMemnosphereDescriptionBody,
-    createMemnosphereItemData,
-    filterMemnospheres,
-    MemnosphereHeader,
+    createMnemosphereDescription,
+    createMnemosphereDescriptionBody,
+    createMnemosphereItemData,
+    filterMnemospheres,
+    MnemosphereHeader,
     resolveSkills,
-    SetupMemnosphereHooks,
-} from "./memnosphere.js";
-import { Memnosphere_ID, Relations } from "./relation.js";
+    SetupMnemosphereHooks,
+} from "./mnemosphere.js";
+import { Mnemosphere_ID, Relations } from "./relation.js";
 import { getDocumentFromResult, rollTableCustom } from "./roll-table-utils.js";
 import { recomputeTechnosphereSheet } from "./technosphere-recompute.js";
 import {
     bindHeroicSkillPopup,
-    bindMemnosphereSelectionToFlag,
+    bindMnemosphereSelectionToFlag,
     bindUUIDInput,
 } from "./ui-bindings.js";
-import { playMemnosphereAnimation } from "./animations/memnosphere-animation.js";
+import { playMnemosphereAnimation } from "./animations/mnemosphere-animation.js";
 import {
     initializeAnimationDevMode,
     cleanupAnimationDevMode,
 } from "./animations/animation-dev-manager.js";
 import { resolveCompendiumUUID } from "./uuid-utils.js";
 
-// Setup foundry hooks for memnospheres
-SetupMemnosphereHooks();
+// Setup foundry hooks for Mnemospheres
+SetupMnemosphereHooks();
 
 async function rollClassUUID(rollTableUUID: UUID) {
     let rollTable = await resolveCompendiumUUID(rollTableUUID);
@@ -45,11 +45,11 @@ async function rollClassUUID(rollTableUUID: UUID) {
     }
 
     let tableRoll = await rollTableCustom(rollTable, { recursive: false });
-    Log("Class Memnosphere Roll", tableRoll);
+    Log("Class Mnemosphere Roll", tableRoll);
 
     if (tableRoll.results.length != 1) {
         ui.notifications.error(
-            `The base memnosphere RollTable must only have one entry per possible result!`
+            `The base Mnemosphere RollTable must only have one entry per possible result!`
         );
         return;
     }
@@ -66,7 +66,7 @@ async function rollClassUUID(rollTableUUID: UUID) {
     return doc.uuid;
 }
 
-async function rollMemnosphereAbility(
+async function rollMnemosphereAbility(
     classTableUUID: UUID,
     { initialAbility = false }
 ) {
@@ -100,36 +100,36 @@ async function rollMemnosphereAbility(
     return rolledUUIDS;
 }
 
-async function generateNewMemnosphere(rollTableUUID: UUID) {
-    Log("Rolling new Memnosphere");
+async function generateNewMnemosphere(rollTableUUID: UUID) {
+    Log("Rolling new Mnemosphere");
     let classUUID = await rollClassUUID(rollTableUUID);
-    let initialAbilities = await rollMemnosphereAbility(classUUID, {
+    let initialAbilities = await rollMnemosphereAbility(classUUID, {
         initialAbility: true,
     });
 
-    let description = await createMemnosphereDescription([
+    let description = await createMnemosphereDescription([
         classUUID,
         ...initialAbilities,
     ]);
-    return await createMemnosphereItemData(classUUID, description);
+    return await createMnemosphereItemData(classUUID, description);
 }
 
-async function addAbilityToMemnosphere(sphereItemUUID: UUID) {
+async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
     const MAX_ITERATIONS = 100;
     let iter = 0;
     while (++iter < MAX_ITERATIONS) {
-        let sphereId = Relations.Item.memnosphere.get(sphereItemUUID);
-        let classUUID = Relations.Memnosphere.class.get(sphereId);
+        let sphereId = Relations.Item.Mnemosphere.get(sphereItemUUID);
+        let classUUID = Relations.Mnemosphere.class.get(sphereId);
         if (classUUID == null) {
             ui.notifications.error(
-                `Memnosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MemnosphereHeader} at the start of the description, and a link to the class RollTable.`
+                `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the description, and a link to the class RollTable.`
             );
         }
 
         let existingSkills = await resolveSkills(
-            Relations.Memnosphere.skill.get(sphereId) ?? []
+            Relations.Mnemosphere.skill.get(sphereId) ?? []
         );
-        let newAbilities = await rollMemnosphereAbility(classUUID, {
+        let newAbilities = await rollMnemosphereAbility(classUUID, {
             initialAbility: false,
         });
         let allValid = true;
@@ -146,7 +146,7 @@ async function addAbilityToMemnosphere(sphereItemUUID: UUID) {
             continue;
         }
 
-        let newAbillityLinks = await createMemnosphereDescriptionBody([
+        let newAbillityLinks = await createMnemosphereDescriptionBody([
             ...newAbilities,
         ]);
         let item = await fromUuid(sphereItemUUID);
@@ -171,22 +171,22 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
     // Add Technosphere tab
     html.find(".sheet-tabs").append(
         `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
-    ); // Gather Memnosphere items
-    let partyMemnospheres = [];
+    ); // Gather Mnemosphere items
+    let partyMnemospheres = [];
     try {
         const items = Array.from(sheet.actor?.items || []) as Item[];
-        partyMemnospheres = await filterMemnospheres(items);
+        partyMnemospheres = await filterMnemospheres(items);
     } catch (e) {
-        console.warn("Could not get Memnosphere items from party inventory", e);
+        console.warn("Could not get Mnemosphere items from party inventory", e);
     }
 
-    let characterMemnospheres = [];
+    let characterMnemospheres = [];
     try {
         const items = Array.from(game.user.character?.items || []);
-        characterMemnospheres = await filterMemnospheres(items);
+        characterMnemospheres = await filterMnemospheres(items);
     } catch (e) {
         console.warn(
-            "Could not get Memnosphere items from player's inventory",
+            "Could not get Mnemosphere items from player's inventory",
             e
         );
     }
@@ -194,7 +194,7 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
     let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE);
     if (
         existingSphereUUID &&
-        !partyMemnospheres.find((v) => v.uuid == existingSphereUUID)
+        !partyMnemospheres.find((v) => v.uuid == existingSphereUUID)
     ) {
         await SetFlagWithoutRender(
             sheet.document,
@@ -211,18 +211,18 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
             isGM: game.user.isGM,
             rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
             existingSphere: existingSphereUUID,
-            partyMemnospheres: partyMemnospheres,
-            characterMemnospheres: characterMemnospheres,
+            partyMnemospheres: partyMnemospheres,
+            characterMnemospheres: characterMnemospheres,
         }
     );
     html.find(".sheet-body").append(tsSection);
 
     // Bind UI elements
     bindUUIDInput(sheet, html, "ts-sphere-table", FLAG_ROLLTABLE, "RollTable");
-    bindMemnosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);
+    bindMnemosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);
 
     // Bind heroic skill popups
-    for (const sphere of [...partyMemnospheres, ...characterMemnospheres]) {
+    for (const sphere of [...partyMnemospheres, ...characterMnemospheres]) {
         if (sphere.canChooseHeroicSkill) {
             bindHeroicSkillPopup(sheet, html, sphere.uuid);
         }
@@ -244,35 +244,35 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
             }
 
             const currentZenit = actor.system.resources.zenit.value;
-            if (currentZenit < MEMNOSPHERE_ROLL_COST) {
+            if (currentZenit < Mnemosphere_ROLL_COST) {
                 ui.notifications.error(
-                    `You must have at least ${MEMNOSPHERE_ROLL_COST} ${game.i18n.localize(
+                    `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
                         "FU.Zenit"
-                    )} to create a new Memnosphere.`
+                    )} to create a new Mnemosphere.`
                 );
                 return;
             }
             await actor.update({
                 "system.resources.zenit.value":
-                    currentZenit - MEMNOSPHERE_ROLL_COST,
+                    currentZenit - Mnemosphere_ROLL_COST,
             } as any);
 
             let sphereItemUUID = getFlag(sheet, FLAG_EXISTINGSPHERE);
 
-            // No memnosphere selected means generate a new one
+            // No Mnemosphere selected means generate a new one
             if (sphereItemUUID == null || sphereItemUUID == "") {
-                const itemData = await generateNewMemnosphere(
+                const itemData = await generateNewMnemosphere(
                     getFlag(sheet, FLAG_ROLLTABLE)
                 );
                 // TODO: Get proper image URL and rarity for the animation
-                await playMemnosphereAnimation({
+                await playMnemosphereAnimation({
                     itemName: itemData.name,
                     rarity: "common",
                     imageUrl: itemData.img,
                 }); // Added animation call
                 sheet.actor.createEmbeddedDocuments("Item", [itemData]);
             } else {
-                await addAbilityToMemnosphere(sphereItemUUID);
+                await addAbilityToMnemosphere(sphereItemUUID);
             }
 
             sheet.activateTab("technosphere-machine");
@@ -334,11 +334,11 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
 
 Hooks.once("init", async () => {
     // Register socket events
-    // game.socket.on(getEventName("rollMemnosphere"), socketFn(rollMemnosphere))
+    // game.socket.on(getEventName("rollMnemosphere"), socketFn(rollMnemosphere))
 
     // Load templates
     await loadTemplates([
-        "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/memnosphere-card.hbs",
+        "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs",
     ]);

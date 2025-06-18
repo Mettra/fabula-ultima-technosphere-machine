@@ -10,7 +10,7 @@ import {
     getRandomTestScenario,
     getCurrentScenarioInfo,
     resetScenarioCycle,
-    MemnosphereTestData,
+    MnemosphereTestData,
     currentTestScenarios,
 } from "./animation-test-data.js";
 import {
@@ -20,7 +20,7 @@ import {
     initializeHotReload,
     fallbackReload,
 } from "./animation-hot-reload.js";
-import { playMemnosphereAnimation } from "./memnosphere-animation.js";
+import { playMnemosphereAnimation } from "./mnemosphere-animation.js";
 import {
     testParticleCapabilities,
     runVisualParticleTest,
@@ -33,7 +33,7 @@ export class AnimationDevManager {
     private keyHandler: ((event: KeyboardEvent) => void) | null = null;
     private isInitialized: boolean = false;
     private debugOverlay: HTMLElement | null = null;
-    private lastTestScenario: MemnosphereTestData | null = null;
+    private lastTestScenario: MnemosphereTestData | null = null;
     private setTranslate: ((xPos: number, yPos: number) => void) | null = null;
 
     /**
@@ -111,7 +111,7 @@ export class AnimationDevManager {
      * Run animation test with cycling scenarios
      */
     public async runAnimationTest(
-        scenario?: MemnosphereTestData
+        scenario?: MnemosphereTestData
     ): Promise<void> {
         try {
             const testData = scenario || currentTestScenarios();
@@ -134,7 +134,7 @@ export class AnimationDevManager {
                 await hotReloadedFunction(testData);
             } else {
                 Log("Using original animation function");
-                await playMemnosphereAnimation(testData);
+                await playMnemosphereAnimation(testData);
             }
 
             Log("Animation test completed");
@@ -379,7 +379,7 @@ export class AnimationDevManager {
     /**
      * Update debug overlay with current scenario info
      */
-    private updateDebugOverlay(scenario: MemnosphereTestData): void {
+    private updateDebugOverlay(scenario: MnemosphereTestData): void {
         if (!this.debugOverlay) return;
 
         const scenarioInfo = getCurrentScenarioInfo();

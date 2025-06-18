@@ -2,9 +2,9 @@
 
 import { Log, ModuleName, SetFlagWithoutRender } from "./core-config.js";
 import {
-    createMemnosphereDescriptionBody,
-    filterMemnospheres,
-} from "./memnosphere.js";
+    createMnemosphereDescriptionBody,
+    filterMnemospheres,
+} from "./mnemosphere.js";
 
 export function bindUUIDInput(
     sheet: any,
@@ -79,20 +79,20 @@ export function bindSelectToFlag(
     });
 }
 
-export function bindMemnosphereSelectionToFlag(
+export function bindMnemosphereSelectionToFlag(
     sheet: any,
     html: any,
     flag: string
 ): void {
-    const memnosphereCards = html.find('[data-action="selectMemnosphere"]');
-    memnosphereCards.on("click", async (event) => {
+    const MnemosphereCards = html.find('[data-action="selectMnemosphere"]');
+    MnemosphereCards.on("click", async (event) => {
         const selectedCard = $(event.currentTarget);
         const newUuid = selectedCard.data("uuid");
 
         await SetFlagWithoutRender(sheet.document, ModuleName, flag, newUuid);
 
         // Update visual selection
-        memnosphereCards.removeClass("selected");
+        MnemosphereCards.removeClass("selected");
         selectedCard.addClass("selected");
     });
 }
@@ -100,18 +100,18 @@ export function bindMemnosphereSelectionToFlag(
 export function bindHeroicSkillPopup(
     sheet: any,
     html: any,
-    memnosphereItemUUID: string
+    MnemosphereItemUUID: string
 ): void {
     const openButton = html.find(
-        `[data-uuid="${memnosphereItemUUID}"] .heroic-skill-button`
+        `[data-uuid="${MnemosphereItemUUID}"] .heroic-skill-button`
     );
     openButton.on("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        const memnosphereItem = (await fromUuid(memnosphereItemUUID)) as Item;
+        const MnemosphereItem = (await fromUuid(MnemosphereItemUUID)) as Item;
 
-        const sphere = (await filterMemnospheres([memnosphereItem]))[0];
+        const sphere = (await filterMnemospheres([MnemosphereItem]))[0];
         const content = await renderTemplate(
             "modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs",
             {
@@ -132,15 +132,15 @@ export function bindHeroicSkillPopup(
                         ev.originalEvent
                     ) as any;
                     if (data && data.type === "Item" && data.uuid) {
-                        if (memnosphereItem) {
+                        if (MnemosphereItem) {
                             let newAbillityLinks =
-                                await createMemnosphereDescriptionBody([
+                                await createMnemosphereDescriptionBody([
                                     data.uuid,
                                 ]);
-                            memnosphereItem.update({
+                            MnemosphereItem.update({
                                 system: {
                                     description:
-                                        memnosphereItem.system.description +
+                                        MnemosphereItem.system.description +
                                         newAbillityLinks,
                                 },
                             });

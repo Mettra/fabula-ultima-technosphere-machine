@@ -1,12 +1,12 @@
 /* styles/technosphere-party-sheet.css */
-.memnosphere-grid {
+.Mnemosphere-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); /* Adjust 120px to your desired card width */
     gap: 10px; /* Adjust gap as needed */
     padding: 5px;
 }
 
-.memnosphere-card {
+.Mnemosphere-card {
     cursor: pointer;
     border: 1px solid #ccc; /* Default border */
     border-radius: 5px;
@@ -15,7 +15,7 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.memnosphere-card .plate {
+.Mnemosphere-card .plate {
     position: relative; /* Add relative positioning to the plate */
     display: flex;
     flex-direction: column;
@@ -25,18 +25,18 @@
     text-align: center; /* Center text within the plate */
 }
 
-.memnosphere-card .name {
+.Mnemosphere-card .name {
     font-weight: bold;
     margin-bottom: 5px;
     word-break: break-word; /* Prevent long names from breaking layout */
 }
 
-.memnosphere-card img {
+.Mnemosphere-card img {
     width: 32px;
     height: 32px;
 }
 
-.memnosphere-card .abilities {
+.Mnemosphere-card .abilities {
     justify-content: center;
 
     display: grid;
@@ -98,16 +98,16 @@
     background-color: var(--color-text-dark-primary, #333333); /* Filled dot color */
 }
 
-.memnosphere-card.selected {
+.Mnemosphere-card.selected {
     border-color: var(--color-border-highlight, #ff6400); /* Highlight color for selected card */
     box-shadow: 0 0 8px var(--color-border-highlight, #ff6400);
 }
 
-.memnosphere-card:hover {
+.Mnemosphere-card:hover {
     border-color: var(--color-border-hover, #aaa);
 }
 
-.memnosphere-card .fa-plus-circle {
+.Mnemosphere-card .fa-plus-circle {
     font-size: 2.5em;
     display: block;
     text-align: center;
@@ -115,11 +115,11 @@
     color: var(--color-text-dark-primary, #4a4a4a);
 }
 
-.memnosphere-card.selected .fa-plus-circle {
+.Mnemosphere-card.selected .fa-plus-circle {
     color: var(--color-border-highlight, #ff6400);
 }
 
-.memnosphere-card:hover .fa-plus-circle {
+.Mnemosphere-card:hover .fa-plus-circle {
     color: var(--color-text-dark-primary, #2a2a2a);
 }
 

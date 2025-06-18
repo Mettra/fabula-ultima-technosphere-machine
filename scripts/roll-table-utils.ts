@@ -5,7 +5,7 @@ import {
     extractKVPairsFromLines,
     extractParagraphsAsLines,
 } from "./parsing-utils.js";
-import { Memnosphere_ID, Relations } from "./relation.js";
+import { Mnemosphere_ID, Relations } from "./relation.js";
 import { parseUUIDLink } from "./uuid-utils.js";
 
 export async function getDocumentFromResult(result: any): Promise<any | null> {

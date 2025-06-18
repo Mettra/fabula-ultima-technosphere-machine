@@ -1,22 +1,22 @@
-// Memnosphere class and related functionality
+// Mnemosphere class and related functionality
 
-import { Log, MEMNOSPHERE_SPLIT_KEY, ModuleName } from "./core-config.js";
+import { Log, Mnemosphere_SPLIT_KEY, ModuleName } from "./core-config.js";
 import {
     extractKVPairsFromLines,
     extractParagraphsAsLines,
     splitArray,
 } from "./parsing-utils.js";
-import { Memnosphere_ID, Relations } from "./relation.js";
+import { Mnemosphere_ID, Relations } from "./relation.js";
 import { parseUUIDLink, createUUIDLink, type UUIDLink } from "./uuid-utils.js";
 
-export const MemnosphereHeader = "<p>@MEMNOSPHERE</p>";
+export const MnemosphereHeader = "<p>@Mnemosphere</p>";
 
-export function SetupMemnosphereHooks() {
-    async function MemnosphereFromDescription(
-        id: Memnosphere_ID,
+export function SetupMnemosphereHooks() {
+    async function MnemosphereFromDescription(
+        id: Mnemosphere_ID,
         description: string
     ) {
-        Relations.Memnosphere.ClearRelations(id);
+        Relations.Mnemosphere.ClearRelations(id);
 
         let lines = extractParagraphsAsLines(description);
 
@@ -33,33 +33,33 @@ export function SetupMemnosphereHooks() {
             //     if(doc == null) continue;
             // }
 
-            Log(`Memnosphere ${id} adding`, doc);
+            Log(`Mnemosphere ${id} adding`, doc);
 
             if (doc.documentName === "RollTable") {
-                Relations.Memnosphere.class.define(id, doc.uuid);
+                Relations.Mnemosphere.class.define(id, doc.uuid);
             } else if (doc.type === "skill") {
-                Relations.Memnosphere.skill.define(id, doc.uuid);
+                Relations.Mnemosphere.skill.define(id, doc.uuid);
             } else if (doc.type === "heroic") {
-                Relations.Memnosphere.heroicskill.define(id, doc.uuid);
+                Relations.Mnemosphere.heroicskill.define(id, doc.uuid);
             } else {
-                Relations.Memnosphere.uuid.define(id, doc.uuid);
+                Relations.Mnemosphere.uuid.define(id, doc.uuid);
             }
         }
 
-        Log(`Memnosphere ${id} done!`);
+        Log(`Mnemosphere ${id} done!`);
         return id;
     }
 
-    // Memnosphere data hooks
+    // Mnemosphere data hooks
     Hooks.on("ready", async () => {
         async function processItems(items, _ctx) {
             items.forEach(async (item) => {
                 // Added async here
-                if (item.system.description?.startsWith(MemnosphereHeader)) {
-                    let memnosphereId = Relations.Memnosphere.GetNextId();
-                    Relations.Item.memnosphere.define(item.uuid, memnosphereId);
-                    await MemnosphereFromDescription(
-                        memnosphereId,
+                if (item.system.description?.startsWith(MnemosphereHeader)) {
+                    let MnemosphereId = Relations.Mnemosphere.GetNextId();
+                    Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+                    await MnemosphereFromDescription(
+                        MnemosphereId,
                         item.system.description
                     );
                 }
@@ -77,59 +77,59 @@ export function SetupMemnosphereHooks() {
 
     Hooks.on("createItem", async (item, options, userId) => {
         Log("createItem", item, options, userId);
-        // We only care about updates to the description, since that's where memnosphere data exists
+        // We only care about updates to the description, since that's where Mnemosphere data exists
         if (item.system?.description === undefined) return;
         const description = item.system.description;
-        const descriptionIsMemnosphere =
-            description?.startsWith(MemnosphereHeader);
-        if (!descriptionIsMemnosphere) return;
+        const descriptionIsMnemosphere =
+            description?.startsWith(MnemosphereHeader);
+        if (!descriptionIsMnemosphere) return;
 
-        let memnosphereId = Relations.Memnosphere.GetNextId();
-        Relations.Item.memnosphere.define(item.uuid, memnosphereId);
-        await MemnosphereFromDescription(memnosphereId, description);
+        let MnemosphereId = Relations.Mnemosphere.GetNextId();
+        Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+        await MnemosphereFromDescription(MnemosphereId, description);
     });
 
     Hooks.on("updateItem", async (item, changes, options, userId) => {
         Log("updateItem", item, options, userId);
-        // We only care about updates to the description, since that's where memnosphere data exists
+        // We only care about updates to the description, since that's where Mnemosphere data exists
         if (changes.system?.description === undefined) return;
         const description = changes.system.description;
-        const descriptionIsMemnosphere =
-            description?.startsWith(MemnosphereHeader);
+        const descriptionIsMnemosphere =
+            description?.startsWith(MnemosphereHeader);
 
-        // Do we already know about this item as a memnosphere?
-        let existingMemnosphereId = Relations.Item.memnosphere.get(item.uuid);
-        if (existingMemnosphereId == undefined) {
-            // If we didn't have an entry and it's not a memnosphere, nothing to do
-            if (!descriptionIsMemnosphere) return;
+        // Do we already know about this item as a Mnemosphere?
+        let existingMnemosphereId = Relations.Item.Mnemosphere.get(item.uuid);
+        if (existingMnemosphereId == undefined) {
+            // If we didn't have an entry and it's not a Mnemosphere, nothing to do
+            if (!descriptionIsMnemosphere) return;
 
             // Otherwise, link up the relation and generate the data
-            let memnosphereId = Relations.Memnosphere.GetNextId();
-            Relations.Item.memnosphere.define(item.uuid, memnosphereId);
-            await MemnosphereFromDescription(memnosphereId, description);
-            Log(`Generated new memnosphere ${memnosphereId}`);
+            let MnemosphereId = Relations.Mnemosphere.GetNextId();
+            Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+            await MnemosphereFromDescription(MnemosphereId, description);
+            Log(`Generated new Mnemosphere ${MnemosphereId}`);
             return;
         } else {
-            // For an update we always remove the memnosphere data
-            Relations.Memnosphere.ClearRelations(existingMemnosphereId);
+            // For an update we always remove the Mnemosphere data
+            Relations.Mnemosphere.ClearRelations(existingMnemosphereId);
 
-            if (!descriptionIsMemnosphere) {
-                // If a memnosphere we were tracking lost the underlying data, remove the link
-                Relations.Item.memnosphere.remove(item.uuid);
-                Log(`Removed memnosphere ${item.uuid}`);
+            if (!descriptionIsMnemosphere) {
+                // If a Mnemosphere we were tracking lost the underlying data, remove the link
+                Relations.Item.Mnemosphere.remove(item.uuid);
+                Log(`Removed Mnemosphere ${item.uuid}`);
             } else {
                 // Otherwise, re-populate the data from the item description
-                await MemnosphereFromDescription(
-                    existingMemnosphereId,
+                await MnemosphereFromDescription(
+                    existingMnemosphereId,
                     description
                 );
-                Log(`Updated memnosphere ${existingMemnosphereId}`);
+                Log(`Updated Mnemosphere ${existingMnemosphereId}`);
             }
         }
     });
 }
 
-export async function createMemnosphereDescriptionBody(uuids: UUID[]) {
+export async function createMnemosphereDescriptionBody(uuids: UUID[]) {
     let description = "";
 
     for (const uuid of uuids) {
@@ -144,17 +144,17 @@ export async function createMemnosphereDescriptionBody(uuids: UUID[]) {
     return description;
 }
 
-export async function createMemnosphereDescription(uuids: UUID[]) {
-    let description = MemnosphereHeader;
-    description += await createMemnosphereDescriptionBody(uuids);
+export async function createMnemosphereDescription(uuids: UUID[]) {
+    let description = MnemosphereHeader;
+    description += await createMnemosphereDescriptionBody(uuids);
     return description;
 }
 
-export async function createMemnosphereItemData(
+export async function createMnemosphereItemData(
     classUUID: UUID,
     description: string
 ) {
-    let className = "Unnamed Memnosphere";
+    let className = "Unnamed Mnemosphere";
     let classImg = "icons/svg/item-bag.svg";
 
     const classDoc = await fromUuid(classUUID);
@@ -194,21 +194,21 @@ export async function resolveSkills(skillUUIDs: UUID[]) {
     return skills;
 }
 
-export async function filterMemnospheres(items: Item[]) {
+export async function filterMnemospheres(items: Item[]) {
     const skillsAndItems = items.map((i) => {
-        const memnosphereId = Relations.Item.memnosphere.get(i.uuid as UUID);
-        if (!memnosphereId) return null;
+        const MnemosphereId = Relations.Item.Mnemosphere.get(i.uuid as UUID);
+        if (!MnemosphereId) return null;
 
         return [
-            Relations.Memnosphere.skill.get(memnosphereId),
-            Relations.Memnosphere.heroicskill.get(memnosphereId),
+            Relations.Mnemosphere.skill.get(MnemosphereId),
+            Relations.Mnemosphere.heroicskill.get(MnemosphereId),
             i,
         ];
     });
 
-    let validMemnosphereItems = skillsAndItems.filter((obj) => obj != null);
+    let validMnemosphereItems = skillsAndItems.filter((obj) => obj != null);
 
-    let result = validMemnosphereItems.map(async (obj) => {
+    let result = validMnemosphereItems.map(async (obj) => {
         const skillUUIDs = (obj[0] || []) as UUID[];
         const heroicSkillUUID = obj[1] as UUID | undefined;
         const item = obj[2] as Item;
@@ -250,7 +250,7 @@ export async function filterMemnospheres(items: Item[]) {
 }
 
 /*
-interface MemnosphereAbility {
+interface MnemosphereAbility {
     uuid: UUID;
     name: string;
     rank: number;
@@ -258,34 +258,34 @@ interface MemnosphereAbility {
     maxRank: number;
 }
 
-interface MemnosphereRollTableEntry {
+interface MnemosphereRollTableEntry {
     name: string;
     count: number;
 }
 
-interface MemnosphereClass {
+interface MnemosphereClass {
     uuid: UUID;
     name: string;
 }
 
-interface MemnosphereConfig {
-    abilities?: MemnosphereAbility[];
-    rollTable?: MemnosphereRollTableEntry[];
-    class?: MemnosphereClass;
+interface MnemosphereConfig {
+    abilities?: MnemosphereAbility[];
+    rollTable?: MnemosphereRollTableEntry[];
+    class?: MnemosphereClass;
 }
 
-export class Memnosphere {
-    abilities: MemnosphereAbility[];
-    rollTable: MemnosphereRollTableEntry[];
-    class: MemnosphereClass;
+export class Mnemosphere {
+    abilities: MnemosphereAbility[];
+    rollTable: MnemosphereRollTableEntry[];
+    class: MnemosphereClass;
 
-    constructor(config: MemnosphereConfig = {}) {
+    constructor(config: MnemosphereConfig = {}) {
         this.abilities = []
         this.rollTable = []
         this.class = { uuid: "" as UUID, name: "" }
         Object.assign(this, config);
-    }    static extractFromItem(item: any): Memnosphere | null {
-        let result = new Memnosphere()
+    }    static extractFromItem(item: any): Mnemosphere | null {
+        let result = new Mnemosphere()
 
         let description = item.system.description
         let lines = extractParagraphsAsLines(description)
@@ -300,7 +300,7 @@ export class Memnosphere {
         result.class = parseUUIDLink(classLine.key)
 
         // Split the remaining lines into abilities and roll table
-        const [abilitiesKV, rolltableKV] = splitArray(kvPairs, kv => kv.key == MEMNOSPHERE_SPLIT_KEY)
+        const [abilitiesKV, rolltableKV] = splitArray(kvPairs, kv => kv.key == Mnemosphere_SPLIT_KEY)
 
         // Populate abilities array
         for(let kv of abilitiesKV) {
@@ -335,25 +335,25 @@ export class Memnosphere {
         });
 
         return mergedArray
-    }    static mergeAbilities(baseAbilities: MemnosphereAbility[], mergeAbilities: MemnosphereAbility[]): MemnosphereAbility[] {
+    }    static mergeAbilities(baseAbilities: MnemosphereAbility[], mergeAbilities: MnemosphereAbility[]): MnemosphereAbility[] {
         return this.mergeArray(baseAbilities, mergeAbilities, 
             (b, v) => b.uuid === v.uuid,
             (b, v) => { b.rank += v.rank; }
         )
-    }    static mergeRollTable(baseRollTable: MemnosphereRollTableEntry[], mergeRollTable: MemnosphereRollTableEntry[]): MemnosphereRollTableEntry[] {
+    }    static mergeRollTable(baseRollTable: MnemosphereRollTableEntry[], mergeRollTable: MnemosphereRollTableEntry[]): MnemosphereRollTableEntry[] {
         return this.mergeArray(baseRollTable, mergeRollTable, 
             (b, v) => b.name === v.name,
             (b, v) => { b.count += v.count; }
         )
-    }    static merge(sphere_base: Memnosphere, sphere_merge: Memnosphere): Memnosphere | undefined {
+    }    static merge(sphere_base: Mnemosphere, sphere_merge: Mnemosphere): Mnemosphere | undefined {
         if(sphere_base.class.uuid != sphere_merge.class.uuid) {
-            ui.notifications.error(`You cannot merge memnospheres unless they have the same class! ${sphere_base.class.uuid} != ${sphere_merge.class.uuid}`);
+            ui.notifications.error(`You cannot merge Mnemospheres unless they have the same class! ${sphere_base.class.uuid} != ${sphere_merge.class.uuid}`);
             return
         }
 
-        const mergedRollTable = Memnosphere.mergeRollTable(sphere_base.rollTable, sphere_merge.rollTable)
-        const mergedAbilities = Memnosphere.mergeAbilities(sphere_base.abilities, sphere_merge.abilities)
-        return new Memnosphere({abilities: mergedAbilities, rollTable : mergedRollTable, class: sphere_base.class });
+        const mergedRollTable = Mnemosphere.mergeRollTable(sphere_base.rollTable, sphere_merge.rollTable)
+        const mergedAbilities = Mnemosphere.mergeAbilities(sphere_base.abilities, sphere_merge.abilities)
+        return new Mnemosphere({abilities: mergedAbilities, rollTable : mergedRollTable, class: sphere_base.class });
     }    createDescription(): string {
         let description = ""        // Add abilities with their ranks
         for(let ability of this.abilities) {
@@ -361,7 +361,7 @@ export class Memnosphere {
         }
 
         // Add the split key
-        description += `<p>${MEMNOSPHERE_SPLIT_KEY} :: 0</p>`
+        description += `<p>${Mnemosphere_SPLIT_KEY} :: 0</p>`
 
         // Add roll table entries with their counts
         for(let tbl of this.rollTable) {
@@ -374,7 +374,7 @@ export class Memnosphere {
         return description
     }    createItemData(): any {
         const itemData = {
-            name: `Memnosphere - ${this.class.name}`,
+            name: `Mnemosphere - ${this.class.name}`,
             img: this.class.uuid ? fromUuidSync(this.class.uuid)?.img || "icons/svg/item-bag.svg" : "icons/svg/item-bag.svg",
             type: "treasure",
             system: {
@@ -385,7 +385,7 @@ export class Memnosphere {
     }
 }
 
-export function filterMemnospheres(items: any[]): Array<{item: any, sphere: Memnosphere}> {
-    return items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Memnosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
+export function filterMnemospheres(items: any[]): Array<{item: any, sphere: Mnemosphere}> {
+    return items.filter(i => i.type === "treasure").map(i => {return {item: i, sphere: Mnemosphere.extractFromItem(i)} } ).filter(i => i.sphere != null);
 }
 */
