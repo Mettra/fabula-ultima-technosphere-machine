@@ -12,6 +12,7 @@ import {
     createMnemosphereDescription,
     createMnemosphereDescriptionBody,
     createMnemosphereItemData,
+    createMnemosphereSummary,
     filterMnemospheres,
     MnemosphereHeader,
     resolveSkills,
@@ -122,7 +123,7 @@ async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
         let classUUID = Relations.Mnemosphere.class.get(sphereId);
         if (classUUID == null) {
             ui.notifications.error(
-                `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the description, and a link to the class RollTable.`
+                `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the summary, and a link to the class RollTable.`
             );
         }
 
@@ -145,14 +146,25 @@ async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
         if (!allValid) {
             continue;
         }
-
         let newAbillityLinks = await createMnemosphereDescriptionBody([
             ...newAbilities,
         ]);
         let item = await fromUuid(sphereItemUUID);
         if (item && "system" in item) {
+            // Get all skills for summary
+            let allSkillUUIDs = Relations.Mnemosphere.skill.get(sphereId) ?? [];
+            let heroicSkillUUID =
+                Relations.Mnemosphere.heroicskill.get(sphereId);
+            let summary = await createMnemosphereSummary(
+                allSkillUUIDs,
+                heroicSkillUUID
+            );
+
             item.update({
                 system: {
+                    summary: {
+                        value: summary,
+                    },
                     description:
                         (item as any).system.description + newAbillityLinks,
                 },

@@ -62,7 +62,7 @@ export async function rollTableCustom(
                 }
             });
         } else if (kv.key.toLowerCase() == "add") {
-            let link = parseUUIDLink(kv.value);
+            let link = await parseUUIDLink(kv.value);
             let doc = await fromUuid(link.uuid);
             extra_results.push({
                 documentId: doc.id,
