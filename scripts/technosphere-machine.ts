@@ -40,12 +40,6 @@ import {
     cleanupMnemosphereCore,
 } from "./mnemosphere-core.js";
 
-// Setup foundry hooks for Mnemospheres
-SetupMnemosphereHooks();
-
-// Setup mnemosphere core functionality hooks
-setupMnemosphereCoreHooks();
-
 // Helper functions for Mnemosphere equipment management
 function getEquippedMnemospheres(actor: any): string[] {
     return actor.getFlag(ModuleName, "equipped-mnemospheres") || [];
@@ -557,8 +551,14 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
 });
 
 Hooks.once("init", async () => {
+    // Setup foundry hooks for Mnemospheres
+    SetupMnemosphereHooks();
+    
+    // Setup mnemosphere core functionality hooks
+    setupMnemosphereCoreHooks();
+    
     // Register socket events
-    // game.socket.on(getEventName("rollMnemosphere"), socketFn(rollMnemosphere))    // Load templates
+    // game.socket.on(getEventName("rollMnemosphere"), socketFn(rollMnemosphere))// Load templates
     await loadTemplates([
         "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/mnemosphere-section.hbs",
