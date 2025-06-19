@@ -73,56 +73,81 @@ export function SetupMnemosphereHooks() {
 
         Relations.LogAll();
     });
-
     Hooks.on("createItem", async (item, options, userId) => {
         Log("createItem", item, options, userId);
-        // We only care about updates to the description, since that's where Mnemosphere data exists
+        // Check if this item is a Mnemosphere by looking at the summary field (like the ready hook does)
+        if (!item.system.summary?.value?.startsWith(MnemosphereHeader)) return;
+
+        // We need the description for Mnemosphere data extraction
         if (item.system?.description === undefined) return;
         const description = item.system.description;
-        const descriptionIsMnemosphere =
-            description?.startsWith(MnemosphereHeader);
-        if (!descriptionIsMnemosphere) return;
 
         let MnemosphereId = Relations.Mnemosphere.GetNextId();
         Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
         await MnemosphereFromDescription(MnemosphereId, description);
     });
-
     Hooks.on("updateItem", async (item, changes, options, userId) => {
         Log("updateItem", item, options, userId);
-        // We only care about updates to the description, since that's where Mnemosphere data exists
-        if (changes.system?.description === undefined) return;
-        const description = changes.system.description;
-        const descriptionIsMnemosphere =
-            description?.startsWith(MnemosphereHeader);
+
+        // Check if this item is currently a Mnemosphere (by summary field)
+        const currentlyMnemosphere =
+            item.system.summary?.value?.startsWith(MnemosphereHeader);
+
+        // Check if summary is being updated to/from Mnemosphere status
+        const summaryChanging = changes.system?.summary?.value !== undefined;
+        const newSummaryIsMnemosphere =
+            changes.system?.summary?.value?.startsWith(MnemosphereHeader);
+
+        // Check if description is being updated (affects Mnemosphere data)
+        const descriptionChanging = changes.system?.description !== undefined;
 
         // Do we already know about this item as a Mnemosphere?
         let existingMnemosphereId = Relations.Item.Mnemosphere.get(item.uuid);
-        if (existingMnemosphereId == undefined) {
-            // If we didn't have an entry and it's not a Mnemosphere, nothing to do
-            if (!descriptionIsMnemosphere) return;
 
-            // Otherwise, link up the relation and generate the data
-            let MnemosphereId = Relations.Mnemosphere.GetNextId();
-            Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
-            await MnemosphereFromDescription(MnemosphereId, description);
-            Log(`Generated new Mnemosphere ${MnemosphereId}`);
-            return;
-        } else {
-            // For an update we always remove the Mnemosphere data
-            Relations.Mnemosphere.ClearRelations(existingMnemosphereId);
-
-            if (!descriptionIsMnemosphere) {
-                // If a Mnemosphere we were tracking lost the underlying data, remove the link
+        // Handle summary changes that affect Mnemosphere classification
+        if (summaryChanging) {
+            if (newSummaryIsMnemosphere && !existingMnemosphereId) {
+                // Item is becoming a Mnemosphere - create new relation
+                let MnemosphereId = Relations.Mnemosphere.GetNextId();
+                Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+                const description =
+                    changes.system?.description || item.system.description;
+                if (description) {
+                    await MnemosphereFromDescription(
+                        MnemosphereId,
+                        description
+                    );
+                }
+                Log(
+                    `Generated new Mnemosphere ${MnemosphereId} from summary update`
+                );
+                return;
+            } else if (!newSummaryIsMnemosphere && existingMnemosphereId) {
+                // Item is no longer a Mnemosphere - remove relation
+                Relations.Mnemosphere.ClearRelations(existingMnemosphereId);
                 Relations.Item.Mnemosphere.remove(item.uuid);
-                Log(`Removed Mnemosphere ${item.uuid}`);
-            } else {
-                // Otherwise, re-populate the data from the item description
+                Log(`Removed Mnemosphere ${item.uuid} due to summary change`);
+                return;
+            }
+        }
+
+        // Handle description changes for existing Mnemospheres
+        if (
+            descriptionChanging &&
+            currentlyMnemosphere &&
+            existingMnemosphereId
+        ) {
+            // For an existing Mnemosphere, update the data from new description
+            Relations.Mnemosphere.ClearRelations(existingMnemosphereId);
+            const newDescription = changes.system.description;
+            if (newDescription) {
                 await MnemosphereFromDescription(
                     existingMnemosphereId,
-                    description
+                    newDescription
                 );
-                Log(`Updated Mnemosphere ${existingMnemosphereId}`);
+                Log(
+                    `Updated Mnemosphere ${existingMnemosphereId} from description change`
+                );
             }
         }
     });
