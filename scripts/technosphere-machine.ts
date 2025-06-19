@@ -26,6 +26,7 @@ import {
     bindHeroicSkillPopup,
     bindMnemosphereSelectionToFlag,
     bindUUIDInput,
+    bindActorDropZone,
 } from "./ui-bindings.js";
 import { playMnemosphereAnimation } from "./animations/mnemosphere-animation.js";
 import {
@@ -330,21 +331,18 @@ Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
 });
 
 Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
-    const FLAG_BASESHEET = "technosphere-base-sheet";
-
-    // Add Technosphere settings
+    const FLAG_BASESHEET = "technosphere-base-sheet"; // Add Technosphere settings
     let settings = html.find(`.settings`);
     settings.prepend(
         await renderTemplate(
             "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/technosphere-settings.hbs",
             {
                 baseSheet: getFlag(sheet, FLAG_BASESHEET),
+                isGM: game.user.isGM,
             }
         )
-    );
-
-    // Bind UI elements
-    bindUUIDInput(sheet, html, "ts-baseSheet", FLAG_BASESHEET, "ActorSheet");
+    ); // Bind UI elements
+    bindActorDropZone(sheet, html, "ts-baseSheet", FLAG_BASESHEET);
     // Get all treasure items and separate Mnemospheres from regular treasures
     const actor = sheet.object;
     const allTreasures = Array.from(actor.items).filter(

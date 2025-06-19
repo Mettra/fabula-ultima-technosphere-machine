@@ -1,10 +1,21 @@
 <fieldset class="section-container title-fieldset desc affinities resource-content">
     <legend class="resource-label-m">
         {{localize 'TS.SettingsHeader'}}
-    </legend>
-
-    <div class="header-fields grid grid-9col" style="margin: 5px 0;">
-        <input type="text" name='ts-baseSheet' value="{{baseSheet}}" data-dtype="ActorSheet"/>
+    </legend>    
+    <div class="header-fields grid grid-9col" style="margin: 5px 0;">        <div class="actor-drop-zone" data-name="ts-baseSheet" style="min-height: 40px; border: 2px dashed #ccc; cursor: pointer; background-color: #f9f9f9;">
+            {{#if baseSheet}}
+                <a class="content-link" data-uuid="{{baseSheet}}" data-id="{{baseSheet}}" data-type="Actor" data-tooltip="{{baseSheet}}">
+                    <i class="fas fa-user"></i> Base Actor
+                </a>
+                {{#if isGM}}
+                    <button class="base-actor-remove-btn" type="button" title="Remove Base Actor">
+                        <i class="fas fa-times"></i>
+                    </button>
+                {{/if}}
+            {{else}}
+                <span class="drop-message">Drag an Actor here to set as base sheet</span>
+            {{/if}}
+        </div>
     </div>
 
     <a class="resource-label-m technosphere-apply">{{localize 'TS.SettingsButton'}}</a>
