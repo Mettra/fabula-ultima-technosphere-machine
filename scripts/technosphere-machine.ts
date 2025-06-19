@@ -37,6 +37,7 @@ import { resolveCompendiumUUID } from "./uuid-utils.js";
 import {
     setupMnemosphereCoreHooks,
     updateActorWithMnemosphereData,
+    cleanupMnemosphereCore,
 } from "./mnemosphere-core.js";
 
 // Setup foundry hooks for Mnemospheres
@@ -597,6 +598,16 @@ Hooks.on("hotReload", () => {
     if (DEV_MODE) {
         cleanupAnimationDevMode();
     }
+    // Clean up core timeout references
+    cleanupMnemosphereCore();
+});
+
+// Additional cleanup on module disable
+Hooks.once("quenchReady", () => {
+    // Register cleanup for when Foundry shuts down or module is disabled
+    window.addEventListener("beforeunload", () => {
+        cleanupMnemosphereCore();
+    });
 });
 
 Log("Technosphere Machine Initialized!");

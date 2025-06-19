@@ -856,6 +856,30 @@ export async function updateActorWithMnemosphereData(
 }
 
 /**
+ * Clean up any pending timeouts for an actor to prevent memory leaks
+ */
+export function cleanupActorTimeouts(actor: any): void {
+    if (actor._mnemosphereUpdateTimeout) {
+        clearTimeout(actor._mnemosphereUpdateTimeout);
+        delete actor._mnemosphereUpdateTimeout;
+        Log(`Cleaned up pending timeout for actor: ${actor.name}`);
+    }
+}
+
+/**
+ * Clean up all module-related timeouts and resources
+ */
+export function cleanupMnemosphereCore(): void {
+    // Clean up all actors with pending timeouts
+    if (typeof game !== "undefined" && game.actors) {
+        game.actors.forEach((actor: any) => {
+            cleanupActorTimeouts(actor);
+        });
+    }
+    Log("Mnemosphere core cleanup complete");
+}
+
+/**
  * Hook into mnemosphere equip/unequip events to trigger updates
  */
 export function setupMnemosphereCoreHooks(): void {
@@ -883,10 +907,22 @@ export function setupMnemosphereCoreHooks(): void {
                     ui.notifications.error(
                         "Failed to update character with mnemosphere data."
                     );
+                } finally {
+                    // Always clean up timeout reference, even on error
+                    delete actor._mnemosphereUpdateTimeout;
                 }
-                delete actor._mnemosphereUpdateTimeout;
             }, 500); // 500ms debounce
         }
+    });
+
+    // Clean up timeouts when actors are deleted to prevent memory leaks
+    Hooks.on("deleteActor", (actor, options, userId) => {
+        cleanupActorTimeouts(actor);
+    });
+
+    // Clean up all timeouts when module is reloaded/disabled
+    Hooks.on("hotReload", () => {
+        cleanupMnemosphereCore();
     });
 
     Log("Mnemosphere core hooks setup complete");

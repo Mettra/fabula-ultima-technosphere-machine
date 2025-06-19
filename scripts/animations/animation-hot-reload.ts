@@ -8,10 +8,40 @@ import { animate } from "animejs";
 let currentAnimationModule: any = null;
 let animationModuleUrl: string | null = null;
 
+// Track animation timeouts to prevent memory leaks
+const animationTimeouts = new Set<NodeJS.Timeout>();
+
+/**
+ * Safe setTimeout that tracks timeouts for cleanup
+ */
+export function createManagedTimeout(
+    callback: () => void,
+    delay: number
+): NodeJS.Timeout {
+    const timeoutId = setTimeout(() => {
+        animationTimeouts.delete(timeoutId);
+        callback();
+    }, delay);
+    animationTimeouts.add(timeoutId);
+    return timeoutId;
+}
+
+/**
+ * Clear all tracked animation timeouts
+ */
+export function clearAllAnimationTimeouts(): void {
+    animationTimeouts.forEach((id) => clearTimeout(id));
+    animationTimeouts.clear();
+    Log(`Cleared ${animationTimeouts.size} animation timeouts`);
+}
+
 /**
  * Clean up any running animations and reset container state
  */
 export function cleanupAnimationState(): void {
+    // Clear all tracked timeouts first
+    clearAllAnimationTimeouts();
+
     const container = document.getElementById(
         "Mnemosphere-animation-container"
     );

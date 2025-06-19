@@ -420,6 +420,9 @@ export class AnimationDevManager {
         // Clean up drag-related properties
         this.setTranslate = null;
 
+        // Clean up any animation state and timeouts
+        cleanupAnimationState();
+
         this.isInitialized = false;
         Log("Animation Development Manager cleaned up");
     }
