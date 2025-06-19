@@ -34,9 +34,19 @@ $OptionalItems = @(
     "assets",     # For images, audio, etc.
     "icons",      # For any specific icons
     "images",     # Alternative or additional image assets
-    "packs",
     "README.md",
     "LICENSE"
+)
+
+# Define files and directories to exclude (LevelDB files that may be locked by Foundry)
+$ExcludePatterns = @(
+    "*.ldb",
+    "*.log", 
+    "CURRENT",
+    "LOCK",
+    "LOG",
+    "LOG.old",
+    "MANIFEST-*"
 )
 
 # Combine essential items and any existing optional items
@@ -72,6 +82,48 @@ foreach ($itemPath in $ItemsToInclude) {
         # This check is more for optional items if they were added without Test-Path,
         # or if an essential item is unexpectedly missing.
         Write-Warning "  Item '$itemPath' not found, skipping."
+    }
+}
+
+# Handle packs directory separately to exclude locked LevelDB files
+if (Test-Path "packs") {
+    Write-Host "  Copying 'packs' (excluding locked database files)..."
+    $PacksDestination = Join-Path $StagingDir "packs"
+    New-Item -ItemType Directory -Path $PacksDestination -Force | Out-Null
+    
+    # Copy the packs directory structure but exclude problematic files
+    Get-ChildItem -Path "packs" -Recurse | ForEach-Object {
+        $relativePath = $_.FullName.Substring((Get-Item "packs").FullName.Length + 1)
+        $destinationPath = Join-Path $PacksDestination $relativePath
+        
+        # Check if this file should be excluded
+        $shouldExclude = $false
+        foreach ($pattern in $ExcludePatterns) {
+            if ($_.Name -like $pattern) {
+                $shouldExclude = $true
+                break
+            }
+        }
+        
+        if (-not $shouldExclude) {
+            if ($_.PSIsContainer) {
+                # Create directory
+                New-Item -ItemType Directory -Path $destinationPath -Force | Out-Null
+            } else {
+                try {
+                    # Copy file
+                    $destinationDir = Split-Path $destinationPath -Parent
+                    if (-not (Test-Path $destinationDir)) {
+                        New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
+                    }
+                    Copy-Item -Path $_.FullName -Destination $destinationPath -Force
+                } catch {
+                    Write-Warning "    Skipping locked file: $($_.Name)"
+                }
+            }
+        } else {
+            Write-Host "    Excluding: $($_.Name)"
+        }
     }
 }
 

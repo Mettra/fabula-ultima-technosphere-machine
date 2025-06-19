@@ -8,9 +8,8 @@
     "build:animation": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts",
     "watch": "npm run watch:main",
     "watch:main": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outdir=build scripts/technosphere-machine.ts --watch --sourcemap=inline",
-    "watch:animation": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts --watch --sourcemap=inline",
-    "watch:all": "concurrently \"npm run watch:main\" \"npm run watch:animation\"",    "lint": "eslint . --ext .ts",
-    "publish": "esbuild --bundle --define:TS_DEBUG=false --minify --format=esm --outdir=build scripts/technosphere-machine.ts",
+    "watch:animation": "esbuild --bundle --define:TS_DEBUG=true --format=esm --outfile=build/animations/animation-standalone.js scripts/animations/animation-standalone.ts --watch --sourcemap=inline",    "watch:all": "concurrently \"npm run watch:main\" \"npm run watch:animation\"",    "lint": "eslint . --ext .ts",
+    "publish": "esbuild --bundle --define:TS_DEBUG=false --minify --format=esm --outdir=build scripts/technosphere-machine.ts && powershell -ExecutionPolicy Bypass -File package-module.ps1",
     "foundry": "node -e \"const config = require('./foundry-config.json'); const { spawn } = require('child_process'); const path = require('path'); const appPath = config.foundryAppPath || config.foundryPath; if (!appPath) { console.error('No foundryAppPath or foundryPath found in config'); process.exit(1); } const foundryDir = path.dirname(appPath); spawn('node', [appPath, ...(config.args || [])], { stdio: 'inherit', cwd: foundryDir });\""
   },
   "type": "module",
