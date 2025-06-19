@@ -5,5 +5,13 @@ node_modules
 out
 build
 fabula-ultima-technosphere-machine.zip
+
+# LevelDB files that change when Foundry opens the database
 packs/**/LOCK
+packs/**/CURRENT
+packs/**/LOG
+packs/**/LOG.old
+packs/**/MANIFEST-*
+packs/**/*.log
+
 foundry-config.json
