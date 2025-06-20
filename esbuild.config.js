@@ -1,4 +1,4 @@
-import { build } from "esbuild";
+import { build, context } from "esbuild";
 import { copyFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 
@@ -22,37 +22,54 @@ const baseConfig = {
     ],
     ...(isProduction && { minify: false }),
     ...(process.argv.includes("--watch") && {
-        watch: {
-            onRebuild(error) {
-                if (error) console.error("Build failed:", error);
-                else console.log("Build succeeded");
-            },
-        },
         sourcemap: "inline",
     }),
 };
 
+const watchOptions = process.argv.includes("--watch")
+    ? {
+          onRebuild(error) {
+              if (error) console.error("Build failed:", error);
+              else console.log("Build succeeded");
+          },
+      }
+    : undefined;
+
 // Main module build
 if (
     process.argv.includes("--main") ||
-    (!process.argv.includes("--animation") &&
-        !process.argv.includes("--watch-animation"))
+    (!process.argv.includes("--animation") && !process.argv.includes("--watch"))
 ) {
-    build({
-        ...baseConfig,
-        entryPoints: ["scripts/technosphere-machine.ts"],
-        outdir: "build",
-    }).catch(() => process.exit(1));
+    if (watchOptions) {
+        const ctx = await context({
+            ...baseConfig,
+            entryPoints: ["scripts/technosphere-machine.ts"],
+            outdir: "build",
+        });
+        await ctx.watch();
+    } else {
+        await build({
+            ...baseConfig,
+            entryPoints: ["scripts/technosphere-machine.ts"],
+            outdir: "build",
+        });
+    }
 }
 
 // Animation standalone build
-if (
-    process.argv.includes("--animation") ||
-    process.argv.includes("--watch-animation")
-) {
-    build({
-        ...baseConfig,
-        entryPoints: ["scripts/animations/animation-standalone.ts"],
-        outfile: "build/animations/animation-standalone.js",
-    }).catch(() => process.exit(1));
+if (process.argv.includes("--animation") || process.argv.includes("--watch")) {
+    if (watchOptions) {
+        const ctx = await context({
+            ...baseConfig,
+            entryPoints: ["scripts/animations/animation-standalone.ts"],
+            outfile: "build/animations/animation-standalone.js",
+        });
+        await ctx.watch();
+    } else {
+        await build({
+            ...baseConfig,
+            entryPoints: ["scripts/animations/animation-standalone.ts"],
+            outfile: "build/animations/animation-standalone.js",
+        });
+    }
 }

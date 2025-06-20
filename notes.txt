@@ -1,24 +1,6 @@
 
 
 
-Complete:
-
-{Class} Sphere
-
-Mnemosphere - Skill {Rank}
-Mnemosphere - Focused 1
-
-
-Next: Add Mnemosphere to class
-
-Inherited ability is max(ability)
-
-
-"Sphere" suffix
-
-
-Sphere name ability.
-
 Summary at bottom of inherited abilities.
 See what spheres grant what ability.
 
