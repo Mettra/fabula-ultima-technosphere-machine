@@ -5,19 +5,19 @@
       "module": "esnext",
       "outDir": "out",
       "sourceMap": true,
-      "declaration": true,
+      "declaration": true,      
       "paths": {
         "fu-system/*": [
-          "C:/Users/Wes/AppData/Local/FoundryVTT/Data/systems/FoundryVTT-Fabula-Ultima/module/*"
+          "../systems/FoundryVTT-Fabula-Ultima/module/*"
         ]
       },
       "moduleResolution": "bundler"
     },
-    "exclude": ["node_modules", "**/node_modules/*"],
+    "exclude": ["node_modules", "**/node_modules/*"],    
     "include": [
       "scripts/**/*.ts",
       "types/**/*.d.ts",
-      "C:/Users/Wes/AppData/Local/FoundryVTT/Data/systems/FoundryVTT-Fabula-Ultima/module/**/*.mjs"
+      "../systems/FoundryVTT-Fabula-Ultima/module/**/*.mjs"
     ],
     "typeAcquisition": {
       "include": ["jquery", "Handlebars"]
