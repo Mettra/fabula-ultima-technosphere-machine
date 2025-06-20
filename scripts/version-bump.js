@@ -100,11 +100,7 @@ class VersionManager {
         console.log("📝 Creating git commit and tag...");
 
         await this.runCommand("git", ["add", "package.json", "module.json"]);
-        await this.runCommand("git", [
-            "commit",
-            "-m",
-            `chore: bump version to ${version}`,
-        ]);
+        await this.runCommand("git", ["commit", "-m", `"${version}"`]);
         await this.runCommand("git", ["tag", `v${version}`]);
         await this.runCommand("git", ["push"]);
         await this.runCommand("git", ["push", "--tags"]);
