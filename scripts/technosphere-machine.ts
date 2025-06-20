@@ -503,10 +503,6 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
                 } else {
                     icon.removeClass("fas").addClass("far");
                 }
-
-                ui.notifications.info(
-                    `Mnemosphere ${isNowEquipped ? "equipped" : "unequipped"}.`
-                );
             } catch (error) {
                 console.error("Error toggling Mnemosphere equipment:", error);
                 ui.notifications.error(

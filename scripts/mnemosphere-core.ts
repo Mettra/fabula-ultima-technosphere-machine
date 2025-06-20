@@ -48,6 +48,8 @@ interface MnemosphereCombinationResult {
     spells: CombinedSpell[]; // NEW
 }
 
+type MnemosphereItemType = "skill" | "feature" | "spell";
+
 /**
  * Get all equipped mnemospheres for an actor
  */
@@ -56,91 +58,55 @@ function getEquippedMnemospheres(actor: any): string[] {
 }
 
 /**
- * Extract skills from equipped mnemospheres
+ * A generic function to extract items (skills, features, spells) from equipped mnemospheres.
+ * This reduces code duplication by handling the common logic for all item types.
+ * OMG-DESIGN-2: Less is more
  */
-async function extractSkillsFromMnemospheres(
-    equippedMnemosphereUuids: string[]
+async function extractItemsFromMnemospheres(
+    equippedMnemosphereUuids: string[],
+    itemType: MnemosphereItemType
 ): Promise<Map<string, SkillContribution[]>> {
-    const skillMap = new Map<string, SkillContribution[]>();
+    const itemMap = new Map<string, SkillContribution[]>();
 
     for (const mnemosphereUuid of equippedMnemosphereUuids) {
         try {
             const mnemosphereItem = await fromUuid(mnemosphereUuid as UUID);
             if (!mnemosphereItem) continue;
 
-            // Get mnemosphere data from relations
             const mnemosphereId = Relations.Item.mnemosphere.get(
                 mnemosphereUuid as UUID
             );
             if (!mnemosphereId) continue;
 
-            const skillUuids =
-                Relations.Mnemosphere.skill.get(mnemosphereId) || [];
+            let itemUuids: string[] = [];
 
-            for (const skillUuid of skillUuids) {
-                if (!skillMap.has(skillUuid)) {
-                    skillMap.set(skillUuid, []);
-                }
-
-                skillMap.get(skillUuid)!.push({
-                    level: 1, // Each instance adds 1 level
-                    sourceUuid: mnemosphereUuid,
-                    sourceName: (mnemosphereItem as any).name,
-                });
-            }
-        } catch (error) {
-            Log(`Failed to process mnemosphere ${mnemosphereUuid}:`, error);
-        }
-    }
-
-    return skillMap;
-}
-
-/**
- * Extract features from equipped mnemospheres
- */
-async function extractFeaturesFromMnemospheres(
-    equippedMnemosphereUuids: string[]
-): Promise<Map<string, SkillContribution[]>> {
-    const featureMap = new Map<string, SkillContribution[]>();
-
-    for (const mnemosphereUuid of equippedMnemosphereUuids) {
-        try {
-            const mnemosphereItem = await fromUuid(mnemosphereUuid as UUID);
-            if (!mnemosphereItem) continue;
-
-            // Get mnemosphere data from relations
-            const mnemosphereId = Relations.Item.mnemosphere.get(
-                mnemosphereUuid as UUID
-            );
-            if (!mnemosphereId) continue;
-
-            // Get heroic skills
-            const heroicSkillUuid =
-                Relations.Mnemosphere.heroicskill.get(mnemosphereId);
-            if (heroicSkillUuid) {
-                const featureIdentifier = heroicSkillUuid;
-                if (!featureMap.has(featureIdentifier)) {
-                    featureMap.set(featureIdentifier, []);
-                }
-
-                featureMap.get(featureIdentifier)!.push({
-                    level: 1, // Each instance adds 1 level
-                    sourceUuid: mnemosphereUuid,
-                    sourceName: (mnemosphereItem as any).name,
-                });
+            switch (itemType) {
+                case "skill":
+                    itemUuids =
+                        Relations.Mnemosphere.skill.get(mnemosphereId) || [];
+                    break;
+                case "spell":
+                    itemUuids =
+                        Relations.Mnemosphere.spell.get(mnemosphereId) || [];
+                    break;
+                case "feature":
+                    const heroicSkillUuid =
+                        Relations.Mnemosphere.heroicskill.get(mnemosphereId);
+                    if (heroicSkillUuid) {
+                        itemUuids.push(heroicSkillUuid);
+                    }
+                    const features =
+                        Relations.Mnemosphere.feature.get(mnemosphereId) || [];
+                    itemUuids.push(...features);
+                    break;
             }
 
-            // Extract features
-            const features =
-                Relations.Mnemosphere.feature.get(mnemosphereId) || [];
-            for (const featureUuid of features) {
-                const featureIdentifier = featureUuid;
-                if (!featureMap.has(featureIdentifier)) {
-                    featureMap.set(featureIdentifier, []);
+            for (const itemUuid of itemUuids) {
+                if (!itemMap.has(itemUuid)) {
+                    itemMap.set(itemUuid, []);
                 }
 
-                featureMap.get(featureIdentifier)!.push({
+                itemMap.get(itemUuid)!.push({
                     level: 1, // Each instance adds 1 level
                     sourceUuid: mnemosphereUuid,
                     sourceName: (mnemosphereItem as any).name,
@@ -148,55 +114,59 @@ async function extractFeaturesFromMnemospheres(
             }
         } catch (error) {
             Log(
-                `Failed to process mnemosphere features ${mnemosphereUuid}:`,
+                `Failed to process mnemosphere ${mnemosphereUuid} for ${itemType}s:`,
                 error
             );
         }
     }
 
-    return featureMap;
+    return itemMap;
 }
 
 /**
- * Extract spells from equipped mnemospheres
+ * Helper to resolve a document from a UUID, returning null if not found.
+ * OMG-DESIGN-3: Keep it simple - Fail fast rather than creating fallbacks.
  */
-async function extractSpellsFromMnemospheres(
-    equippedMnemosphereUuids: string[]
-): Promise<Map<string, SkillContribution[]>> {
-    const spellMap = new Map<string, SkillContribution[]>();
-
-    for (const mnemosphereUuid of equippedMnemosphereUuids) {
-        try {
-            const mnemosphereItem = await fromUuid(mnemosphereUuid as UUID);
-            if (!mnemosphereItem) continue;
-
-            const mnemosphereId = Relations.Item.mnemosphere.get(
-                mnemosphereUuid as UUID
-            );
-            if (!mnemosphereId) continue;
-
-            const spellUuids =
-                Relations.Mnemosphere.spell.get(mnemosphereId) || [];
-
-            for (const spellUuid of spellUuids) {
-                if (!spellMap.has(spellUuid)) {
-                    spellMap.set(spellUuid, []);
-                }
-                spellMap.get(spellUuid)!.push({
-                    level: 1,
-                    sourceUuid: mnemosphereUuid,
-                    sourceName: (mnemosphereItem as any).name,
-                });
-            }
-        } catch (error) {
-            Log(
-                `Failed to process mnemosphere spells ${mnemosphereUuid}:`,
-                error
-            );
+async function resolveDocument(
+    identifier: string,
+    type: MnemosphereItemType
+): Promise<{ doc: any; uuid: string } | null> {
+    try {
+        const doc = await fromUuid(identifier as UUID);
+        if (doc) {
+            return { doc, uuid: identifier };
         }
+    } catch (e) {
+        Log(
+            `Identifier '${identifier}' is not a valid UUID for ${type}, skipping.`
+        );
     }
 
-    return spellMap;
+    Log(`Failed to resolve ${type} document for identifier: ${identifier}`);
+    return null;
+}
+
+/**
+ * Helper to safely extract an item's description.
+ * OMG-DESIGN-3: Keep it simple - Centralizes complex/defensive access patterns.
+ */
+function getOriginalDescription(
+    doc: any,
+    identifier: string,
+    type: string
+): string {
+    try {
+        // Try direct system access first, then getter, then nested data
+        return (
+            doc.system?.description ||
+            doc.description ||
+            doc.system?.data?.description ||
+            ""
+        );
+    } catch (error) {
+        Log(`Failed to access description for ${type} ${identifier}:`, error);
+        return "";
+    }
 }
 
 /**
@@ -208,34 +178,13 @@ async function combineSkills(
     const combinedSkills: CombinedSkill[] = [];
     for (const [skillIdentifier, contributions] of allSkillContributions) {
         try {
-            // Try to resolve as UUID first, if that fails, treat as skill name
-            let skillDoc: any = null;
-            let skillUuid = skillIdentifier;
-
-            try {
-                skillDoc = await fromUuid(skillIdentifier as UUID);
-            } catch (e) {
-                // If not a valid UUID, this is likely a skill name
-                Log(
-                    `Skill identifier '${skillIdentifier}' is not a UUID, treating as skill name`
-                );
+            const resolvedDoc = await resolveDocument(skillIdentifier, "skill");
+            if (!resolvedDoc) {
+                Log(`Skipping unresolved skill: ${skillIdentifier}`);
+                continue;
             }
 
-            if (!skillDoc) {
-                // Create a basic skill structure using the name
-                skillDoc = {
-                    name: skillIdentifier,
-                    img: "icons/skills/melee/hand-grip-sword-orange.webp", // Default icon
-                    system: {
-                        level: { max: 5 },
-                        class: "",
-                        description: `Combined skill: ${skillIdentifier}`,
-                    },
-                };
-                skillUuid = `skill-${skillIdentifier
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`;
-            }
+            const { doc: skillDoc, uuid: skillUuid } = resolvedDoc;
 
             // Calculate total level (sum of all contributions, not max)
             const totalLevel = contributions.reduce(
@@ -270,34 +219,11 @@ async function combineSkills(
                 sourcesText += `<p><strong>SL ${level}</strong> - ${sourceLinks}</p>`;
             }
 
-            // Handle description access - try multiple ways since items may have getter properties
-            let originalDescription = "";
-            try {
-                // Try direct system access first
-                originalDescription =
-                    (skillDoc as any).system?.description || "";
-
-                // If that's empty or undefined, try accessing description as a getter
-                if (!originalDescription && (skillDoc as any).description) {
-                    originalDescription = (skillDoc as any).description;
-                }
-
-                // If still empty, try system.data.description for skills
-                if (
-                    !originalDescription &&
-                    (skillDoc as any).system?.data?.description
-                ) {
-                    originalDescription = (skillDoc as any).system.data
-                        .description;
-                }
-            } catch (error) {
-                Log(
-                    `Failed to access description for skill ${skillIdentifier}:`,
-                    error
-                );
-                originalDescription = "";
-            }
-
+            const originalDescription = getOriginalDescription(
+                skillDoc,
+                skillIdentifier,
+                "skill"
+            );
             const fullDescription = originalDescription + sourcesText;
 
             combinedSkills.push({
@@ -328,31 +254,16 @@ async function combineFeatures(
 
     for (const [featureIdentifier, contributions] of allFeatureContributions) {
         try {
-            // Try to resolve as UUID first
-            let featureDoc: any = null;
-            let featureUuid = featureIdentifier;
-
-            try {
-                featureDoc = await fromUuid(featureIdentifier as UUID);
-            } catch (e) {
-                Log(
-                    `Feature identifier '${featureIdentifier}' is not a UUID, treating as feature name`
-                );
+            const resolvedDoc = await resolveDocument(
+                featureIdentifier,
+                "feature"
+            );
+            if (!resolvedDoc) {
+                Log(`Skipping unresolved feature: ${featureIdentifier}`);
+                continue;
             }
 
-            if (!featureDoc) {
-                // Create a basic feature structure using the name
-                featureDoc = {
-                    name: featureIdentifier,
-                    img: "icons/magic/symbols/rune-sigil-blue.webp", // Default icon
-                    system: {
-                        description: `Combined feature: ${featureIdentifier}`,
-                    },
-                };
-                featureUuid = `feature-${featureIdentifier
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`;
-            }
+            const { doc: featureDoc, uuid: featureUuid } = resolvedDoc;
 
             // Build sources text with HTML formatting
             let sourcesText = "<hr><h3>Sources:</h3>";
@@ -380,34 +291,11 @@ async function combineFeatures(
                 sourcesText += `<p>${sourceEntries.join(", ")}</p>`;
             }
 
-            // Handle description access - try multiple ways since features may have getter properties
-            let originalDescription = "";
-            try {
-                // Try direct system access first
-                originalDescription =
-                    (featureDoc as any).system?.description || "";
-
-                // If that's empty or undefined, try accessing description as a getter
-                if (!originalDescription && (featureDoc as any).description) {
-                    originalDescription = (featureDoc as any).description;
-                }
-
-                // If still empty, try system.data.description for class features
-                if (
-                    !originalDescription &&
-                    (featureDoc as any).system?.data?.description
-                ) {
-                    originalDescription = (featureDoc as any).system.data
-                        .description;
-                }
-            } catch (error) {
-                Log(
-                    `Failed to access description for feature ${featureIdentifier}:`,
-                    error
-                );
-                originalDescription = "";
-            }
-
+            const originalDescription = getOriginalDescription(
+                featureDoc,
+                featureIdentifier,
+                "feature"
+            );
             const fullDescription = originalDescription + sourcesText;
 
             combinedFeatures.push({
@@ -435,45 +323,24 @@ async function combineSpells(
 
     for (const [spellIdentifier, contributions] of allSpellContributions) {
         try {
-            let spellDoc: any = null;
-            let spellUuid = spellIdentifier;
-
-            try {
-                spellDoc = await fromUuid(spellIdentifier as UUID);
-            } catch (e) {
-                Log(
-                    `Spell identifier '${spellIdentifier}' is not a UUID, treating as name`
-                );
+            const resolvedDoc = await resolveDocument(spellIdentifier, "spell");
+            if (!resolvedDoc) {
+                Log(`Skipping unresolved spell: ${spellIdentifier}`);
+                continue;
             }
 
-            if (!spellDoc) {
-                spellDoc = {
-                    name: spellIdentifier,
-                    img: "icons/magic/fire/flame-burning-embers.webp",
-                    system: {
-                        description: `Combined spell: ${spellIdentifier}`,
-                    },
-                };
-                spellUuid = `spell-${spellIdentifier
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`;
-            }
+            const { doc: spellDoc, uuid: spellUuid } = resolvedDoc;
 
             // Sources
             const sourcesText = contributions
                 .map((c) => `@UUID[${c.sourceUuid}]{${c.sourceName}}`)
                 .join(", ");
 
-            let originalDescription = "";
-            try {
-                originalDescription =
-                    (spellDoc as any).system?.description ||
-                    (spellDoc as any).description ||
-                    (spellDoc as any).system?.data?.description ||
-                    "";
-            } catch {
-                originalDescription = "";
-            }
+            const originalDescription = getOriginalDescription(
+                spellDoc,
+                spellIdentifier,
+                "spell"
+            );
 
             const fullDescription =
                 originalDescription +
@@ -507,24 +374,27 @@ export async function combineMnemosphereData(
     Log("Equipped mnemospheres:", equippedMnemosphereUuids);
 
     // Extract skill contributions from mnemospheres
-    const skillContributions = await extractSkillsFromMnemospheres(
-        equippedMnemosphereUuids
+    const skillContributions = await extractItemsFromMnemospheres(
+        equippedMnemosphereUuids,
+        "skill"
     );
 
     // Combine mnemosphere skills into sphere skills
     const sphereSkills = await combineSkills(skillContributions);
 
     // Extract feature contributions from mnemospheres
-    const featureContributions = await extractFeaturesFromMnemospheres(
-        equippedMnemosphereUuids
+    const featureContributions = await extractItemsFromMnemospheres(
+        equippedMnemosphereUuids,
+        "feature"
     );
 
     // Combine mnemosphere features into sphere features
     const sphereFeatures = await combineFeatures(featureContributions);
 
     // Extract spells
-    const spellContributions = await extractSpellsFromMnemospheres(
-        equippedMnemosphereUuids
+    const spellContributions = await extractItemsFromMnemospheres(
+        equippedMnemosphereUuids,
+        "spell"
     );
 
     // Combine
@@ -559,6 +429,169 @@ function getHighestContributingMnemosphere(
     });
 
     return sorted[0];
+}
+
+/**
+ * Helper to safely resolve a document and convert it to JSON data.
+ * OMG-DESIGN-3: Keep it simple - Centralizes document resolution logic.
+ */
+async function resolveDocumentToJson(
+    uuid: string,
+    itemName: string
+): Promise<any | null> {
+    try {
+        const doc = await fromUuid(uuid as UUID);
+        if (doc) {
+            return (doc as any).toJSON();
+        }
+    } catch (error) {
+        Log(`Failed to resolve UUID for ${itemName}:`, error);
+    }
+    return null;
+}
+
+/**
+ * Helper to safely set description on item data with multiple fallback paths.
+ * OMG-DESIGN-3: Keep it simple - Centralizes complex description setting logic.
+ */
+function setItemDescription(
+    itemData: any,
+    description: string,
+    itemName: string
+): void {
+    try {
+        if (!itemData.system) {
+            itemData.system = {};
+        }
+
+        itemData.system.description = description;
+
+        // Special case for class features that may store description in system.data
+        if (itemData.type === "classFeature") {
+            if (!itemData.system.data) {
+                itemData.system.data = {};
+            }
+            itemData.system.data.description = description;
+        }
+    } catch (error) {
+        Log(`Failed to set description for ${itemName}:`, error);
+        // Ensure we have at least a basic system structure
+        itemData.system = itemData.system || {};
+        itemData.system.description = description;
+    }
+}
+
+/**
+ * Helper to add module-specific flags to item data.
+ * OMG-DESIGN-4: Explicit is better than implicit - Makes flagging consistent.
+ */
+function addModuleFlags(
+    itemData: any,
+    itemType: "skill" | "feature" | "spell"
+): void {
+    itemData.flags = itemData.flags || {};
+    itemData.flags[ModuleName] = {
+        "generated-by-mnemosphere": true,
+        [`is-sphere-${itemType}`]: true,
+    };
+}
+
+/**
+ * Helper to create skill item data from combined skill.
+ * OMG-DESIGN-2: Less is more - Extracts skill-specific creation logic.
+ */
+async function createSkillItemData(skill: CombinedSkill): Promise<any> {
+    const itemData = await resolveDocumentToJson(skill.uuid, skill.name);
+
+    if (!itemData) {
+        Log(`Failed to resolve skill item data for: ${skill.name}, skipping`);
+        throw new Error(`Unable to resolve skill item data for ${skill.name}`);
+    }
+
+    // Update existing structure
+    itemData.name = skill.name;
+    itemData.system.level.value = skill.level;
+
+    const highestContributor = getHighestContributingMnemosphere(
+        skill.contributions
+    );
+    if (highestContributor) {
+        itemData.system.class = {
+            value: highestContributor.sourceName,
+        };
+    }
+
+    setItemDescription(itemData, skill.description, skill.name);
+    addModuleFlags(itemData, "skill");
+    return itemData;
+}
+
+/**
+ * Helper to create feature item data from combined feature.
+ * OMG-DESIGN-2: Less is more - Extracts feature-specific creation logic.
+ */
+async function createFeatureItemData(feature: CombinedFeature): Promise<any> {
+    const itemData = await resolveDocumentToJson(feature.uuid, feature.name);
+
+    if (!itemData) {
+        Log(
+            `Failed to resolve feature item data for: ${feature.name}, skipping`
+        );
+        throw new Error(
+            `Unable to resolve feature item data for ${feature.name}`
+        );
+    }
+
+    itemData.name = feature.name;
+    setItemDescription(itemData, feature.description, feature.name);
+    addModuleFlags(itemData, "feature");
+    return itemData;
+}
+
+/**
+ * Helper to create spell item data from combined spell.
+ * OMG-DESIGN-2: Less is more - Extracts spell-specific creation logic.
+ */
+async function createSpellItemData(spell: CombinedSpell): Promise<any> {
+    const itemData = await resolveDocumentToJson(spell.uuid, spell.name);
+
+    if (!itemData) {
+        Log(`Failed to resolve spell item data for: ${spell.name}, skipping`);
+        throw new Error(`Unable to resolve spell item data for ${spell.name}`);
+    }
+
+    itemData.name = spell.name;
+    setItemDescription(itemData, spell.description, spell.name);
+    addModuleFlags(itemData, "spell");
+    return itemData;
+}
+
+/**
+ * Helper to safely create item data with error handling.
+ * OMG-DESIGN-2: Less is more - Centralizes error handling for item creation.
+ */
+async function safeCreateItemData<T>(
+    items: T[],
+    createFunction: (item: T) => Promise<any>,
+    itemTypeName: string
+): Promise<any[]> {
+    const itemsToCreate: any[] = [];
+
+    for (const item of items) {
+        try {
+            const itemData = await createFunction(item);
+            itemsToCreate.push(itemData);
+        } catch (error) {
+            Log(
+                `Failed to create ${itemTypeName} item for ${
+                    (item as any).name
+                }:`,
+                error
+            );
+        }
+    }
+
+    return itemsToCreate;
 }
 
 /**
@@ -598,218 +631,34 @@ export async function updateActorWithMnemosphereData(
             Log("Deleted old sphere items:", itemsToDelete.length);
         }
 
-        // Create new items
-        const itemsToCreate = [];
+        // Create new items using helper functions
+        const skillItems = await safeCreateItemData(
+            combinedData.skills,
+            createSkillItemData,
+            "skill"
+        );
 
-        // Add sphere skills (combined mnemosphere skills)
-        for (const skill of combinedData.skills) {
-            try {
-                let itemData: any;
+        const featureItems = await safeCreateItemData(
+            combinedData.features,
+            createFeatureItemData,
+            "feature"
+        );
 
-                // Try to get the source skill document
-                try {
-                    const skillDoc = await fromUuid(skill.uuid as UUID);
-                    if (skillDoc) {
-                        itemData = (skillDoc as any).toJSON();
-                    }
-                } catch (e) {
-                    // If UUID resolution fails, create a basic skill structure
-                    Log(`Creating basic skill structure for: ${skill.name}`);
-                }
+        const spellItems = await safeCreateItemData(
+            combinedData.spells,
+            createSpellItemData,
+            "spell"
+        );
 
-                // If we couldn't get a source document, create a basic skill
-                if (!itemData) {
-                    itemData = {
-                        name: skill.name,
-                        type: "skill",
-                        img: skill.img,
-                        system: {
-                            level: {
-                                value: skill.level,
-                                max: skill.maxLevel,
-                            },
-                            class: skill.classType,
-                            description: skill.description,
-                        },
-                        flags: {},
-                    };
-                } else {
-                    // Update the existing structure
-                    itemData.name = skill.name;
-                    itemData.system.level.value = skill.level;
-                    itemData.system.class = {
-                        value: getHighestContributingMnemosphere(
-                            skill.contributions
-                        ).sourceName,
-                    };
+        const allItemsToCreate = [
+            ...skillItems,
+            ...featureItems,
+            ...spellItems,
+        ];
 
-                    // Handle description setting with error handling
-                    try {
-                        if (itemData.system) {
-                            itemData.system.description = skill.description;
-                        } else {
-                            itemData.system = {
-                                description: skill.description,
-                            };
-                        }
-                    } catch (error) {
-                        Log(
-                            `Failed to set description for skill ${skill.name}:`,
-                            error
-                        );
-                        // Fallback to basic system structure
-                        itemData.system = itemData.system || {};
-                        itemData.system.description = skill.description;
-                    }
-                }
-
-                // Ensure proper flagging
-                itemData.flags = itemData.flags || {};
-                itemData.flags[ModuleName] = {
-                    "generated-by-mnemosphere": true,
-                    "is-sphere-skill": true,
-                };
-                itemsToCreate.push(itemData);
-            } catch (error) {
-                Log(
-                    `Failed to create sphere skill item for ${skill.name}:`,
-                    error
-                );
-            }
-        }
-
-        // Add sphere features (combined mnemosphere features)
-        for (const feature of combinedData.features) {
-            try {
-                let itemData: any;
-
-                // Try to get the source feature document
-                try {
-                    const featureDoc = await fromUuid(feature.uuid as UUID);
-                    if (featureDoc) {
-                        itemData = (featureDoc as any).toJSON();
-                    }
-                } catch (e) {
-                    // If UUID resolution fails, create a basic feature structure
-                    Log(
-                        `Creating basic feature structure for: ${feature.name}`
-                    );
-                }
-
-                // If we couldn't get a source document, create a basic feature
-                if (!itemData) {
-                    itemData = {
-                        name: feature.name,
-                        type: "feature", // Default to feature type
-                        img: feature.img,
-                        system: {
-                            description: feature.description,
-                        },
-                        flags: {},
-                    };
-                } else {
-                    // Update the existing structure
-                    itemData.name = feature.name;
-
-                    // Handle description setting - try multiple paths since different item types may store it differently
-                    try {
-                        if (itemData.system) {
-                            itemData.system.description = feature.description;
-                        } else {
-                            itemData.system = {
-                                description: feature.description,
-                            };
-                        }
-
-                        // For class features, also try setting it in system.data.description
-                        if (
-                            itemData.type === "classFeature" &&
-                            itemData.system.data
-                        ) {
-                            itemData.system.data.description =
-                                feature.description;
-                        }
-                    } catch (error) {
-                        Log(
-                            `Failed to set description for feature ${feature.name}:`,
-                            error
-                        );
-                        // Fallback to basic system structure
-                        itemData.system = itemData.system || {};
-                        itemData.system.description = feature.description;
-                    }
-                }
-
-                // Ensure proper flagging
-                itemData.flags = itemData.flags || {};
-                itemData.flags[ModuleName] = {
-                    "generated-by-mnemosphere": true,
-                    "is-sphere-feature": true,
-                };
-                itemsToCreate.push(itemData);
-            } catch (error) {
-                Log(
-                    `Failed to create sphere feature item for ${feature.name}:`,
-                    error
-                );
-            }
-        }
-
-        // Add sphere spells
-        for (const spell of combinedData.spells) {
-            try {
-                let itemData: any;
-
-                try {
-                    const spellDoc = await fromUuid(spell.uuid as UUID);
-                    if (spellDoc) {
-                        itemData = (spellDoc as any).toJSON();
-                    }
-                } catch {
-                    Log(`Creating basic spell structure for: ${spell.name}`);
-                }
-
-                if (!itemData) {
-                    itemData = {
-                        name: spell.name,
-                        type: "spell",
-                        img: spell.img,
-                        system: { description: spell.description },
-                        flags: {},
-                    };
-                } else {
-                    itemData.name = spell.name;
-                    try {
-                        if (itemData.system) {
-                            itemData.system.description = spell.description;
-                        } else {
-                            itemData.system = {
-                                description: spell.description,
-                            };
-                        }
-                    } catch {
-                        itemData.system = itemData.system || {};
-                        itemData.system.description = spell.description;
-                    }
-                }
-
-                itemData.flags = itemData.flags || {};
-                itemData.flags[ModuleName] = {
-                    "generated-by-mnemosphere": true,
-                    "is-sphere-spell": true,
-                };
-                itemsToCreate.push(itemData);
-            } catch (error) {
-                Log(
-                    `Failed to create sphere spell item for ${spell.name}:`,
-                    error
-                );
-            }
-        }
-
-        if (itemsToCreate.length > 0) {
-            await actor.createEmbeddedDocuments("Item", itemsToCreate);
-            Log("Created new sphere items:", itemsToCreate.length);
+        if (allItemsToCreate.length > 0) {
+            await actor.createEmbeddedDocuments("Item", allItemsToCreate);
+            Log("Created new sphere items:", allItemsToCreate.length);
         }
 
         Log("Successfully updated actor with mnemosphere data");
