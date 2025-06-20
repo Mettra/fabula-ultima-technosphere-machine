@@ -1,6 +1,6 @@
 {
   "name": "fabula-ultima-technosphere-machine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "out/scripts/technosphere-machine.js",  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build:main && npm run build:animation",
@@ -11,8 +11,11 @@
     "watch:animation": "node esbuild.config.js --animation --watch-animation",
     "watch:all": "concurrently \"npm run watch:main\" \"npm run watch:animation\"",
     "lint": "eslint . --ext .ts",
-    "publish": "node esbuild.config.js --main --production && powershell -ExecutionPolicy Bypass -File package-module.ps1",
-    "foundry": "node -e \"const config = require('./foundry-config.json'); const { spawn } = require('child_process'); const path = require('path'); const appPath = config.foundryAppPath || config.foundryPath; if (!appPath) { console.error('No foundryAppPath or foundryPath found in config'); process.exit(1); } const foundryDir = path.dirname(appPath); spawn('node', [appPath, ...(config.args || [])], { stdio: 'inherit', cwd: foundryDir });\""
+    "publish": "node esbuild.config.js --main --production && powershell -ExecutionPolicy Bypass -File package-module.ps1",    "foundry": "node -e \"const config = require('./foundry-config.json'); const { spawn } = require('child_process'); const path = require('path'); const appPath = config.foundryAppPath || config.foundryPath; if (!appPath) { console.error('No foundryAppPath or foundryPath found in config'); process.exit(1); } const foundryDir = path.dirname(appPath); spawn('node', [appPath, ...(config.args || [])], { stdio: 'inherit', cwd: foundryDir });\"",
+    "release:patch": "node scripts/version-bump.js patch",
+    "release:minor": "node scripts/version-bump.js minor",
+    "release:major": "node scripts/version-bump.js major",
+    "release:check": "node scripts/check-setup.js"
   },
   "type": "module",
   "author": "Mettra",
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@octokit/rest": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.33.1",
     "@typescript-eslint/parser": "^8.33.1",
     "concurrently": "^7.6.0",
@@ -32,6 +36,7 @@
     "eslint": "^9.28.0",
     "eslint-plugin-no-floating-promise": "^2.0.0",
     "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@^12.331.5",
+    "semver": "^7.7.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.1"
   }
