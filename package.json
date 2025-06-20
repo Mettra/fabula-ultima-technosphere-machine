@@ -1,7 +1,8 @@
 {
   "name": "fabula-ultima-technosphere-machine",
-  "version": "1.1.0",
-  "main": "out/scripts/technosphere-machine.js",  "scripts": {
+  "version": "1.2.0",
+  "main": "out/scripts/technosphere-machine.js",
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build:main && npm run build:animation",
     "build:main": "node esbuild.config.js --main",
@@ -11,7 +12,7 @@
     "watch:animation": "node esbuild.config.js --animation --watch-animation",
     "watch:all": "concurrently \"npm run watch:main\" \"npm run watch:animation\"",
     "lint": "eslint . --ext .ts",
-    "publish": "node esbuild.config.js --main --production && powershell -ExecutionPolicy Bypass -File package-module.ps1",    
+    "publish": "node esbuild.config.js --main --production && powershell -ExecutionPolicy Bypass -File package-module.ps1",
     "foundry": "node -e \"const config = require('./foundry-config.json'); const { spawn } = require('child_process'); const path = require('path'); const appPath = config.foundryAppPath || config.foundryPath; if (!appPath) { console.error('No foundryAppPath or foundryPath found in config'); process.exit(1); } const foundryDir = path.dirname(appPath); spawn('node', [appPath, ...(config.args || [])], { stdio: 'inherit', cwd: foundryDir });\"",
     "release:patch": "node scripts/version-bump.js patch",
     "release:minor": "node scripts/version-bump.js minor",

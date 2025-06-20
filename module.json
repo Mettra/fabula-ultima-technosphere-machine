@@ -1,55 +1,55 @@
 {
-    "name": "fabula-ultima-technosphere-machine",
-    "title": "Fabula Ultime Technosphere Machine",
-    "description": "A module that adds a Technosphere gatcha machine!",
-    "authors": [
-      {
-        "name": "Mettra"
-      }
-    ],
-    "version": "1.1.0",
-    "scripts": [
-        "build/technosphere-machine.js"
-    ],
-    "styles": [
-        "styles/technosphere-machine.css",
-        "styles/technosphere-party-sheet.css",
-        "styles/animations/animation-overlay.css"
-    ],
-    "languages": [
-        {
-            "lang": "en",
-            "name": "English",
-            "path": "languages/en.json"
-        }
-    ],
-    "url": "https://github.com/Mettra/fabula-ultima-technosphere-machine",
-    "manifest": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/latest/download/module.json",
-    "download": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/download/1.1.0/fabula-ultima-technosphere-machine.zip",
-    "packs": [
-      {
-        "label": "Mnemosphere Rollable Tables",
-        "type": "RollTable",
-        "name": "mnemosphere-rollable-tables",
-        "path": "packs/mnemosphere-rollable-tables",
-        "system": "projectfu",
-        "ownership": {
-          "PLAYER": "OBSERVER",
-          "ASSISTANT": "OWNER"
-        },
-        "flags": {},
-        "package": "world",
-        "id": "world.mnemosphere-rollable-tables",
-        "packageType": "world",
-        "packageName": "fabula-test",
-        "index": [],
-        "folders": []      
-      }
-    ],
-    "compatibility": {
-        "minimum": "12",
-        "verified": "12.331",
-        "maximum": "13"
-    },
-    "minimumCoreVersion": "12.0.0"
-  }
+  "name": "fabula-ultima-technosphere-machine",
+  "title": "Fabula Ultime Technosphere Machine",
+  "description": "A module that adds a Technosphere gatcha machine!",
+  "authors": [
+    {
+      "name": "Mettra"
+    }
+  ],
+  "version": "1.2.0",
+  "scripts": [
+    "build/technosphere-machine.js"
+  ],
+  "styles": [
+    "styles/technosphere-machine.css",
+    "styles/technosphere-party-sheet.css",
+    "styles/animations/animation-overlay.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
+  "url": "https://github.com/Mettra/fabula-ultima-technosphere-machine",
+  "manifest": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/latest/download/module.json",
+  "download": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/download/1.2.0/fabula-ultima-technosphere-machine.zip",
+  "packs": [
+    {
+      "label": "Mnemosphere Rollable Tables",
+      "type": "RollTable",
+      "name": "mnemosphere-rollable-tables",
+      "path": "packs/mnemosphere-rollable-tables",
+      "system": "projectfu",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {},
+      "package": "world",
+      "id": "world.mnemosphere-rollable-tables",
+      "packageType": "world",
+      "packageName": "fabula-test",
+      "index": [],
+      "folders": []
+    }
+  ],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12.331",
+    "maximum": "13"
+  },
+  "minimumCoreVersion": "12.0.0"
+}
