@@ -541,6 +541,27 @@ export async function combineMnemosphereData(
 }
 
 /**
+ * Get the highest contributing mnemosphere for a given skill, feature, or spell
+ */
+function getHighestContributingMnemosphere(
+    contributions: SkillContribution[]
+): SkillContribution | null {
+    if (!contributions || contributions.length === 0) {
+        return null;
+    }
+
+    // Sort by level descending, then by name for consistency
+    const sorted = contributions.sort((a, b) => {
+        if (b.level !== a.level) {
+            return b.level - a.level;
+        }
+        return a.sourceName.localeCompare(b.sourceName);
+    });
+
+    return sorted[0];
+}
+
+/**
  * Update actor with combined mnemosphere data without causing disruptive re-renders
  */
 export async function updateActorWithMnemosphereData(
@@ -616,6 +637,11 @@ export async function updateActorWithMnemosphereData(
                     // Update the existing structure
                     itemData.name = skill.name;
                     itemData.system.level.value = skill.level;
+                    itemData.system.class = {
+                        value: getHighestContributingMnemosphere(
+                            skill.contributions
+                        ).sourceName,
+                    };
 
                     // Handle description setting with error handling
                     try {
