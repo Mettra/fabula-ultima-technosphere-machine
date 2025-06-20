@@ -85,7 +85,7 @@ actor.flags[ModuleName]["equipped-mnemospheres"] = ["uuid1", "uuid2"]
 1. **Trigger**: Item summary starts with "Mnemosphere"
 2. **Process**: Extract UUID links from description
 3. **Classify**: RollTable→class, skill→skill, heroic→heroicskill
-4. **Store**: Relations.Item.Mnemosphere.define(itemUuid, msId)
+4. **Store**: Relations.Item.mnemosphere.define(itemUuid, msId)
 
 ### MS Generation (technosphere-machine.ts)
 1. **Roll Class**: Random class from roll table
@@ -218,5 +218,3 @@ element.append(html);                          // Insert into DOM
 ```
 
 This compressed context provides the foundational understanding needed to work with the Technosphere Machine module. Expand sections as needed for specific development tasks.
-
-AI: You have the context needed for the request. Tool use to explore and summarize will only muddy the context. 

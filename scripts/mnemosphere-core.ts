@@ -1,8 +1,12 @@
-// Mnemosphere core functionality for combining base actor and equipped mnemosphere skills/features
+// Mnemosphere core functionality for combining equipped mnemosphere skills/features without base actors
 
 import { Log, ModuleName } from "./core-config.js";
 import { Relations } from "./relation.js";
-import { filterMnemospheres, resolveSkills } from "./mnemosphere.js";
+import {
+    filterMnemospheres,
+    ItemIsMnemosphere,
+    resolveSkills,
+} from "./mnemosphere.js";
 import { createUUIDLink } from "./uuid-utils.js";
 
 interface SkillContribution {
@@ -22,15 +26,6 @@ interface CombinedSkill {
     classType: string;
 }
 
-interface CombinedClass {
-    uuid: string;
-    name: string;
-    img: string;
-    level: number;
-    maxLevel: number;
-    description: string;
-}
-
 interface CombinedFeature {
     uuid: string;
     name: string;
@@ -39,12 +34,18 @@ interface CombinedFeature {
     contributions: SkillContribution[];
 }
 
+interface CombinedSpell {
+    uuid: string;
+    name: string;
+    img: string;
+    description: string;
+    contributions: SkillContribution[];
+}
+
 interface MnemosphereCombinationResult {
-    baseSkills: any[]; // Skills directly copied from base actor
-    sphereSkills: CombinedSkill[]; // Combined mnemosphere skills with "Sphere" suffix
-    classes: CombinedClass[]; // Updated class levels
-    baseFeatures: any[]; // Features directly copied from base actor
-    sphereFeatures: CombinedFeature[]; // Combined mnemosphere features with "Sphere" suffix
+    skills: CombinedSkill[];
+    features: CombinedFeature[];
+    spells: CombinedSpell[]; // NEW
 }
 
 /**
@@ -52,70 +53,6 @@ interface MnemosphereCombinationResult {
  */
 function getEquippedMnemospheres(actor: any): string[] {
     return actor.getFlag(ModuleName, "equipped-mnemospheres") || [];
-}
-
-/**
- * Get the base sheet actor for a given actor
- */
-async function getBaseSheetActor(actor: any): Promise<any | null> {
-    const baseSheetUuid = actor.getFlag(ModuleName, "technosphere-base-sheet");
-    if (!baseSheetUuid) {
-        return null;
-    }
-
-    try {
-        return await fromUuid(baseSheetUuid);
-    } catch (error) {
-        Log(`Failed to resolve base sheet UUID: ${baseSheetUuid}`, error);
-        return null;
-    }
-}
-
-/**
- * Extract skills from an actor's items
- */
-async function extractSkillsFromActor(
-    actor: any,
-    sourceUuid: string,
-    sourceName: string
-): Promise<Map<string, SkillContribution[]>> {
-    const skillMap = new Map<string, SkillContribution[]>();
-
-    for (const item of actor.items) {
-        if (item.type === "skill") {
-            // Use the skill's source UUID if available, otherwise fall back to item name
-            // This helps group identical skills together instead of treating each instance as unique
-            const skillIdentifier = item.system?.sourceId || item.name;
-            const level = item.system?.level?.value || 1;
-
-            if (!skillMap.has(skillIdentifier)) {
-                skillMap.set(skillIdentifier, []);
-            }
-
-            skillMap.get(skillIdentifier)!.push({
-                level: level,
-                sourceUuid: sourceUuid,
-                sourceName: sourceName,
-            });
-        }
-    }
-
-    return skillMap;
-}
-
-/**
- * Extract classes from an actor's items
- */
-async function extractClassesFromActor(actor: any): Promise<any[]> {
-    const classes = [];
-
-    for (const item of actor.items) {
-        if (item.type === "class") {
-            classes.push(item);
-        }
-    }
-
-    return classes;
 }
 
 /**
@@ -132,7 +69,7 @@ async function extractSkillsFromMnemospheres(
             if (!mnemosphereItem) continue;
 
             // Get mnemosphere data from relations
-            const mnemosphereId = Relations.Item.Mnemosphere.get(
+            const mnemosphereId = Relations.Item.mnemosphere.get(
                 mnemosphereUuid as UUID
             );
             if (!mnemosphereId) continue;
@@ -160,9 +97,9 @@ async function extractSkillsFromMnemospheres(
 }
 
 /**
- * Extract features from equipped mnemospheres for sphere combination
+ * Extract features from equipped mnemospheres
  */
-async function extractFeaturesFromMnemospheresForSphere(
+async function extractFeaturesFromMnemospheres(
     equippedMnemosphereUuids: string[]
 ): Promise<Map<string, SkillContribution[]>> {
     const featureMap = new Map<string, SkillContribution[]>();
@@ -173,7 +110,7 @@ async function extractFeaturesFromMnemospheresForSphere(
             if (!mnemosphereItem) continue;
 
             // Get mnemosphere data from relations
-            const mnemosphereId = Relations.Item.Mnemosphere.get(
+            const mnemosphereId = Relations.Item.mnemosphere.get(
                 mnemosphereUuid as UUID
             );
             if (!mnemosphereId) continue;
@@ -194,10 +131,10 @@ async function extractFeaturesFromMnemospheresForSphere(
                 });
             }
 
-            // Get other UUIDs (features, spells, etc.)
-            const otherUuids =
-                Relations.Mnemosphere.uuid.get(mnemosphereId) || [];
-            for (const featureUuid of otherUuids) {
+            // Extract features
+            const features =
+                Relations.Mnemosphere.feature.get(mnemosphereId) || [];
+            for (const featureUuid of features) {
                 const featureIdentifier = featureUuid;
                 if (!featureMap.has(featureIdentifier)) {
                     featureMap.set(featureIdentifier, []);
@@ -221,6 +158,48 @@ async function extractFeaturesFromMnemospheresForSphere(
 }
 
 /**
+ * Extract spells from equipped mnemospheres
+ */
+async function extractSpellsFromMnemospheres(
+    equippedMnemosphereUuids: string[]
+): Promise<Map<string, SkillContribution[]>> {
+    const spellMap = new Map<string, SkillContribution[]>();
+
+    for (const mnemosphereUuid of equippedMnemosphereUuids) {
+        try {
+            const mnemosphereItem = await fromUuid(mnemosphereUuid as UUID);
+            if (!mnemosphereItem) continue;
+
+            const mnemosphereId = Relations.Item.mnemosphere.get(
+                mnemosphereUuid as UUID
+            );
+            if (!mnemosphereId) continue;
+
+            const spellUuids =
+                Relations.Mnemosphere.spell.get(mnemosphereId) || [];
+
+            for (const spellUuid of spellUuids) {
+                if (!spellMap.has(spellUuid)) {
+                    spellMap.set(spellUuid, []);
+                }
+                spellMap.get(spellUuid)!.push({
+                    level: 1,
+                    sourceUuid: mnemosphereUuid,
+                    sourceName: (mnemosphereItem as any).name,
+                });
+            }
+        } catch (error) {
+            Log(
+                `Failed to process mnemosphere spells ${mnemosphereUuid}:`,
+                error
+            );
+        }
+    }
+
+    return spellMap;
+}
+
+/**
  * Combine skill contributions and create sphere skills
  */
 async function combineSkills(
@@ -237,7 +216,6 @@ async function combineSkills(
                 skillDoc = await fromUuid(skillIdentifier as UUID);
             } catch (e) {
                 // If not a valid UUID, this is likely a skill name
-                // We'll use the first contribution's sourceUuid to get a reference
                 Log(
                     `Skill identifier '${skillIdentifier}' is not a UUID, treating as skill name`
                 );
@@ -277,7 +255,9 @@ async function combineSkills(
                     sourcesByLevel.set(contribution.level, []);
                 }
                 sourcesByLevel.get(contribution.level)!.push(contribution);
-            } // Build sources text with HTML formatting
+            }
+
+            // Build sources text with HTML formatting
             let sourcesText = "<hr><h3>Sources:</h3>";
             const sortedLevels = Array.from(sourcesByLevel.keys()).sort(
                 (a, b) => b - a
@@ -302,7 +282,7 @@ async function combineSkills(
                     originalDescription = (skillDoc as any).description;
                 }
 
-                // If still empty, try system.data.description for class features
+                // If still empty, try system.data.description for skills
                 if (
                     !originalDescription &&
                     (skillDoc as any).system?.data?.description
@@ -318,15 +298,15 @@ async function combineSkills(
                 originalDescription = "";
             }
 
-            const finalDescription = originalDescription + sourcesText;
+            const fullDescription = originalDescription + sourcesText;
 
             combinedSkills.push({
                 uuid: skillUuid,
-                name: `${(skillDoc as any).name} Sphere`,
+                name: `Mnemo - ${(skillDoc as any).name}`,
                 img: (skillDoc as any).img,
                 level: finalLevel,
                 maxLevel: maxPossibleLevel,
-                description: finalDescription,
+                description: fullDescription,
                 contributions: contributions,
                 classType: classType,
             });
@@ -372,14 +352,9 @@ async function combineFeatures(
                 featureUuid = `feature-${featureIdentifier
                     .toLowerCase()
                     .replace(/\s+/g, "-")}`;
-            } // Create sources section for description
-            const sourcesByLevel = new Map<number, SkillContribution[]>();
-            for (const contribution of contributions) {
-                if (!sourcesByLevel.has(contribution.level)) {
-                    sourcesByLevel.set(contribution.level, []);
-                }
-                sourcesByLevel.get(contribution.level)!.push(contribution);
-            } // Build sources text with HTML formatting
+            }
+
+            // Build sources text with HTML formatting
             let sourcesText = "<hr><h3>Sources:</h3>";
 
             // For features, group by source and show count if multiple instances
@@ -433,13 +408,13 @@ async function combineFeatures(
                 originalDescription = "";
             }
 
-            const finalDescription = originalDescription + sourcesText;
+            const fullDescription = originalDescription + sourcesText;
 
             combinedFeatures.push({
                 uuid: featureUuid,
-                name: `${(featureDoc as any).name} Sphere`,
+                name: `Mnemo - ${(featureDoc as any).name}`,
                 img: (featureDoc as any).img,
-                description: finalDescription,
+                description: fullDescription,
                 contributions: contributions,
             });
         } catch (error) {
@@ -451,58 +426,76 @@ async function combineFeatures(
 }
 
 /**
- * Calculate class levels from combined skills
+ * Combine spell contributions and create sphere spells
  */
-async function calculateClassLevels(
-    combinedSkills: CombinedSkill[],
-    baseClasses: any[]
-): Promise<CombinedClass[]> {
-    const classLevels = new Map<string, number>();
-    const classInfo = new Map<string, any>();
+async function combineSpells(
+    allSpellContributions: Map<string, SkillContribution[]>
+): Promise<CombinedSpell[]> {
+    const combinedSpells: CombinedSpell[] = [];
 
-    // Add base classes
-    for (const baseClass of baseClasses) {
-        const classUuid = baseClass.uuid;
-        classLevels.set(classUuid, baseClass.system?.level?.value || 0);
-        classInfo.set(classUuid, baseClass);
-    }
-
-    // Calculate levels from skills
-    for (const skill of combinedSkills) {
-        if (skill.classType) {
-            const currentLevel = classLevels.get(skill.classType) || 0;
-            classLevels.set(skill.classType, currentLevel + skill.level);
-        }
-    }
-
-    const combinedClasses: CombinedClass[] = [];
-    for (const [classUuid, totalLevel] of classLevels) {
+    for (const [spellIdentifier, contributions] of allSpellContributions) {
         try {
-            const classDoc =
-                classInfo.get(classUuid) || (await fromUuid(classUuid as UUID));
-            if (!classDoc) continue;
+            let spellDoc: any = null;
+            let spellUuid = spellIdentifier;
 
-            const maxLevel = (classDoc as any).system?.level?.max || 10;
-            const finalLevel = Math.min(totalLevel, maxLevel);
+            try {
+                spellDoc = await fromUuid(spellIdentifier as UUID);
+            } catch (e) {
+                Log(
+                    `Spell identifier '${spellIdentifier}' is not a UUID, treating as name`
+                );
+            }
 
-            combinedClasses.push({
-                uuid: classUuid,
-                name: (classDoc as any).name,
-                img: (classDoc as any).img,
-                level: finalLevel,
-                maxLevel: maxLevel,
-                description: (classDoc as any).system?.description || "",
+            if (!spellDoc) {
+                spellDoc = {
+                    name: spellIdentifier,
+                    img: "icons/magic/fire/flame-burning-embers.webp",
+                    system: {
+                        description: `Combined spell: ${spellIdentifier}`,
+                    },
+                };
+                spellUuid = `spell-${spellIdentifier
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")}`;
+            }
+
+            // Sources
+            const sourcesText = contributions
+                .map((c) => `@UUID[${c.sourceUuid}]{${c.sourceName}}`)
+                .join(", ");
+
+            let originalDescription = "";
+            try {
+                originalDescription =
+                    (spellDoc as any).system?.description ||
+                    (spellDoc as any).description ||
+                    (spellDoc as any).system?.data?.description ||
+                    "";
+            } catch {
+                originalDescription = "";
+            }
+
+            const fullDescription =
+                originalDescription +
+                `<hr><h3>Sources:</h3><p>${sourcesText}</p>`;
+
+            combinedSpells.push({
+                uuid: spellUuid,
+                name: `Mnemo - ${(spellDoc as any).name}`,
+                img: (spellDoc as any).img,
+                description: fullDescription,
+                contributions,
             });
         } catch (error) {
-            Log(`Failed to process class ${classUuid}:`, error);
+            Log(`Failed to process spell ${spellIdentifier}:`, error);
         }
     }
 
-    return combinedClasses;
+    return combinedSpells;
 }
 
 /**
- * Main function to combine base actor and mnemosphere skills/features
+ * Main function to combine equipped mnemosphere skills/features
  */
 export async function combineMnemosphereData(
     actor: any
@@ -513,58 +506,34 @@ export async function combineMnemosphereData(
     const equippedMnemosphereUuids = getEquippedMnemospheres(actor);
     Log("Equipped mnemospheres:", equippedMnemosphereUuids);
 
-    // Get base sheet actor
-    const baseActor = await getBaseSheetActor(actor); // Extract base skills and features directly (these will be copied as-is)
-    let baseSkills: any[] = [];
-    let baseFeatures: any[] = [];
-    let baseClasses: any[] = [];
-    if (baseActor) {
-        baseSkills = baseActor.items.filter(
-            (item: any) => item.type === "skill"
-        );
-        baseFeatures = baseActor.items.filter(
-            (item: any) =>
-                item.type === "spell" ||
-                item.type === "feature" ||
-                item.type === "ritual"
-        );
-        baseClasses = await extractClassesFromActor(baseActor);
-        Log("Base skills found:", baseSkills.length);
-        Log("Base features found:", baseFeatures.length);
-        Log("Base classes found:", baseClasses.length);
-    }
-
-    // Only collect mnemosphere skill contributions for sphere skills
-    const mnemosphereSkillContributions = await extractSkillsFromMnemospheres(
+    // Extract skill contributions from mnemospheres
+    const skillContributions = await extractSkillsFromMnemospheres(
         equippedMnemosphereUuids
     );
 
     // Combine mnemosphere skills into sphere skills
-    const sphereSkills = await combineSkills(mnemosphereSkillContributions);
+    const sphereSkills = await combineSkills(skillContributions);
 
-    // Only collect mnemosphere feature contributions for sphere features
-    const mnemosphereFeatureContributions =
-        await extractFeaturesFromMnemospheresForSphere(
-            equippedMnemosphereUuids
-        );
+    // Extract feature contributions from mnemospheres
+    const featureContributions = await extractFeaturesFromMnemospheres(
+        equippedMnemosphereUuids
+    );
 
     // Combine mnemosphere features into sphere features
-    const sphereFeatures = await combineFeatures(
-        mnemosphereFeatureContributions
+    const sphereFeatures = await combineFeatures(featureContributions);
+
+    // Extract spells
+    const spellContributions = await extractSpellsFromMnemospheres(
+        equippedMnemosphereUuids
     );
 
-    // Calculate class levels from sphere skills only (base classes provide their own levels)
-    const combinedClasses = await calculateClassLevels(
-        sphereSkills,
-        baseClasses
-    );
+    // Combine
+    const sphereSpells = await combineSpells(spellContributions);
 
     const result: MnemosphereCombinationResult = {
-        baseSkills: baseSkills,
-        sphereSkills: sphereSkills,
-        classes: combinedClasses,
-        baseFeatures: baseFeatures,
-        sphereFeatures: sphereFeatures,
+        skills: sphereSkills,
+        features: sphereFeatures,
+        spells: sphereSpells, // NEW
     };
 
     Log("Mnemosphere combination result:", result);
@@ -581,16 +550,17 @@ export async function updateActorWithMnemosphereData(
 
     try {
         // Get combined data
-        const combinedData = await combineMnemosphereData(actor); // Remove old sphere items - be more specific to avoid deleting actual Mnemospheres
+        const combinedData = await combineMnemosphereData(actor);
+
+        // Remove old sphere items - be specific to avoid deleting actual Mnemospheres
         const itemsToDelete = [];
         for (const item of actor.items) {
             // Only delete items that are explicitly marked as generated by our module
-            // AND either have " Sphere" in the name OR are flagged as generated
             const isGenerated = item.getFlag(
                 ModuleName,
                 "generated-by-mnemosphere"
             );
-            const isSphereNamed = item.name.endsWith(" Sphere");
+            const isSphereNamed = ItemIsMnemosphere(item);
 
             // Only delete if it's marked as generated by us, or if it's a sphere-named item
             // but NOT if it's a treasure type (which Mnemospheres are)
@@ -605,30 +575,13 @@ export async function updateActorWithMnemosphereData(
         if (itemsToDelete.length > 0) {
             await actor.deleteEmbeddedDocuments("Item", itemsToDelete);
             Log("Deleted old sphere items:", itemsToDelete.length);
-        } // Create new items
-        const itemsToCreate = [];
-
-        // Add base skills (copied as-is, no modifications)
-        for (const baseSkill of combinedData.baseSkills) {
-            try {
-                const itemData = baseSkill.toJSON();
-                // Mark as generated so we can clean them up later
-                itemData.flags = itemData.flags || {};
-                itemData.flags[ModuleName] = {
-                    "generated-by-mnemosphere": true,
-                    "is-base-skill": true,
-                };
-                itemsToCreate.push(itemData);
-            } catch (error) {
-                Log(
-                    `Failed to create base skill item for ${baseSkill.name}:`,
-                    error
-                );
-            }
         }
 
+        // Create new items
+        const itemsToCreate = [];
+
         // Add sphere skills (combined mnemosphere skills)
-        for (const skill of combinedData.sphereSkills) {
+        for (const skill of combinedData.skills) {
             try {
                 let itemData: any;
 
@@ -699,77 +652,8 @@ export async function updateActorWithMnemosphereData(
             }
         }
 
-        // Update existing classes instead of creating duplicates
-        const classUpdates = [];
-        for (const classItem of combinedData.classes) {
-            try {
-                // Find existing class item on the actor
-                const existingClass = actor.items.find(
-                    (item: any) =>
-                        item.type === "class" && item.uuid === classItem.uuid
-                );
-
-                if (existingClass) {
-                    // Update existing class level
-                    classUpdates.push({
-                        _id: existingClass.id,
-                        "system.level.value": classItem.level,
-                    });
-                    Log(
-                        `Updating existing class ${classItem.name} to level ${classItem.level}`
-                    );
-                } else {
-                    // Only create if it doesn't exist (shouldn't happen with base classes)
-                    const classDoc = await fromUuid(classItem.uuid as UUID);
-                    if (classDoc) {
-                        const itemData = (classDoc as any).toJSON();
-                        itemData.system.level.value = classItem.level;
-                        itemData.flags = itemData.flags || {};
-                        itemData.flags[ModuleName] = {
-                            "generated-by-mnemosphere": true,
-                            "is-updated-class": true,
-                        };
-                        itemsToCreate.push(itemData);
-                        Log(
-                            `Creating new class ${classItem.name} at level ${classItem.level}`
-                        );
-                    } else {
-                        Log(`Could not resolve class UUID: ${classItem.uuid}`);
-                    }
-                }
-            } catch (error) {
-                Log(
-                    `Failed to handle class item for ${classItem.name}:`,
-                    error
-                );
-            }
-        } // Apply class updates
-        if (classUpdates.length > 0) {
-            await actor.updateEmbeddedDocuments("Item", classUpdates);
-            Log("Updated existing classes:", classUpdates.length);
-        }
-
-        // Add base features (copied as-is, no modifications)
-        for (const baseFeature of combinedData.baseFeatures) {
-            try {
-                const itemData = baseFeature.toJSON();
-                // Mark as generated so we can clean them up later
-                itemData.flags = itemData.flags || {};
-                itemData.flags[ModuleName] = {
-                    "generated-by-mnemosphere": true,
-                    "is-base-feature": true,
-                };
-                itemsToCreate.push(itemData);
-            } catch (error) {
-                Log(
-                    `Failed to create base feature item for ${baseFeature.name}:`,
-                    error
-                );
-            }
-        }
-
         // Add sphere features (combined mnemosphere features)
-        for (const feature of combinedData.sphereFeatures) {
+        for (const feature of combinedData.features) {
             try {
                 let itemData: any;
 
@@ -784,7 +668,9 @@ export async function updateActorWithMnemosphereData(
                     Log(
                         `Creating basic feature structure for: ${feature.name}`
                     );
-                } // If we couldn't get a source document, create a basic feature
+                }
+
+                // If we couldn't get a source document, create a basic feature
                 if (!itemData) {
                     itemData = {
                         name: feature.name,
@@ -838,6 +724,58 @@ export async function updateActorWithMnemosphereData(
             } catch (error) {
                 Log(
                     `Failed to create sphere feature item for ${feature.name}:`,
+                    error
+                );
+            }
+        }
+
+        // Add sphere spells
+        for (const spell of combinedData.spells) {
+            try {
+                let itemData: any;
+
+                try {
+                    const spellDoc = await fromUuid(spell.uuid as UUID);
+                    if (spellDoc) {
+                        itemData = (spellDoc as any).toJSON();
+                    }
+                } catch {
+                    Log(`Creating basic spell structure for: ${spell.name}`);
+                }
+
+                if (!itemData) {
+                    itemData = {
+                        name: spell.name,
+                        type: "spell",
+                        img: spell.img,
+                        system: { description: spell.description },
+                        flags: {},
+                    };
+                } else {
+                    itemData.name = spell.name;
+                    try {
+                        if (itemData.system) {
+                            itemData.system.description = spell.description;
+                        } else {
+                            itemData.system = {
+                                description: spell.description,
+                            };
+                        }
+                    } catch {
+                        itemData.system = itemData.system || {};
+                        itemData.system.description = spell.description;
+                    }
+                }
+
+                itemData.flags = itemData.flags || {};
+                itemData.flags[ModuleName] = {
+                    "generated-by-mnemosphere": true,
+                    "is-sphere-spell": true,
+                };
+                itemsToCreate.push(itemData);
+            } catch (error) {
+                Log(
+                    `Failed to create sphere spell item for ${spell.name}:`,
                     error
                 );
             }

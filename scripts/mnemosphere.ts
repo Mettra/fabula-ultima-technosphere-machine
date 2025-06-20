@@ -11,6 +11,10 @@ import { parseUUIDLink, createUUIDLink, type UUIDLink } from "./uuid-utils.js";
 
 export const MnemosphereHeader = "Mnemosphere";
 
+export function ItemIsMnemosphere(item: Item) {
+    return item.system.summary.value?.startsWith(MnemosphereHeader);
+}
+
 export function SetupMnemosphereHooks() {
     async function MnemosphereFromDescription(
         id: Mnemosphere_ID,
@@ -38,6 +42,10 @@ export function SetupMnemosphereHooks() {
                 Relations.Mnemosphere.class.define(id, doc.uuid);
             } else if (doc.type === "skill") {
                 Relations.Mnemosphere.skill.define(id, doc.uuid);
+            } else if (doc.type === "spell") {
+                Relations.Mnemosphere.spell.define(id, doc.uuid);
+            } else if (doc.type === "classFeature") {
+                Relations.Mnemosphere.feature.define(id, doc.uuid);
             } else if (doc.type === "heroic") {
                 Relations.Mnemosphere.heroicskill.define(id, doc.uuid);
             } else {
@@ -54,9 +62,9 @@ export function SetupMnemosphereHooks() {
         async function processItems(items, _ctx) {
             items.forEach(async (item) => {
                 // Added async here
-                if (item.system.summary.value?.startsWith(MnemosphereHeader)) {
+                if (ItemIsMnemosphere(item)) {
                     let MnemosphereId = Relations.Mnemosphere.GetNextId();
-                    Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+                    Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
                     await MnemosphereFromDescription(
                         MnemosphereId,
                         item.system.description
@@ -76,22 +84,21 @@ export function SetupMnemosphereHooks() {
     Hooks.on("createItem", async (item, options, userId) => {
         Log("createItem", item, options, userId);
         // Check if this item is a Mnemosphere by looking at the summary field (like the ready hook does)
-        if (!item.system.summary?.value?.startsWith(MnemosphereHeader)) return;
+        if (!ItemIsMnemosphere(item)) return;
 
         // We need the description for Mnemosphere data extraction
         if (item.system?.description === undefined) return;
         const description = item.system.description;
 
         let MnemosphereId = Relations.Mnemosphere.GetNextId();
-        Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+        Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
         await MnemosphereFromDescription(MnemosphereId, description);
     });
     Hooks.on("updateItem", async (item, changes, options, userId) => {
         Log("updateItem", item, options, userId);
 
         // Check if this item is currently a Mnemosphere (by summary field)
-        const currentlyMnemosphere =
-            item.system.summary?.value?.startsWith(MnemosphereHeader);
+        const currentlyMnemosphere = ItemIsMnemosphere(item);
 
         // Check if summary is being updated to/from Mnemosphere status
         const summaryChanging = changes.system?.summary?.value !== undefined;
@@ -102,14 +109,14 @@ export function SetupMnemosphereHooks() {
         const descriptionChanging = changes.system?.description !== undefined;
 
         // Do we already know about this item as a Mnemosphere?
-        let existingMnemosphereId = Relations.Item.Mnemosphere.get(item.uuid);
+        let existingMnemosphereId = Relations.Item.mnemosphere.get(item.uuid);
 
         // Handle summary changes that affect Mnemosphere classification
         if (summaryChanging) {
             if (newSummaryIsMnemosphere && !existingMnemosphereId) {
                 // Item is becoming a Mnemosphere - create new relation
                 let MnemosphereId = Relations.Mnemosphere.GetNextId();
-                Relations.Item.Mnemosphere.define(item.uuid, MnemosphereId);
+                Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
                 const description =
                     changes.system?.description || item.system.description;
                 if (description) {
@@ -125,7 +132,7 @@ export function SetupMnemosphereHooks() {
             } else if (!newSummaryIsMnemosphere && existingMnemosphereId) {
                 // Item is no longer a Mnemosphere - remove relation
                 Relations.Mnemosphere.ClearRelations(existingMnemosphereId);
-                Relations.Item.Mnemosphere.remove(item.uuid);
+                Relations.Item.mnemosphere.remove(item.uuid);
                 Log(`Removed Mnemosphere ${item.uuid} due to summary change`);
                 return;
             }
@@ -268,7 +275,7 @@ export async function resolveSkills(skillUUIDs: UUID[]) {
 
 export async function filterMnemospheres(items: Item[]) {
     const skillsAndItems = items.map((i) => {
-        const MnemosphereId = Relations.Item.Mnemosphere.get(i.uuid as UUID);
+        const MnemosphereId = Relations.Item.mnemosphere.get(i.uuid as UUID);
         if (!MnemosphereId) return null;
 
         return [

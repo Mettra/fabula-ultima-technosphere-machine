@@ -2,6 +2,8 @@ type ID = number & { readonly __brand: "ID" };
 export type Skill_ID = UUID;
 export type Class_ID = UUID;
 export type Item_ID = UUID;
+export type Feature_ID = UUID;
+export type Spell_ID = UUID;
 export type HeroicSkill_ID = UUID;
 export type Mnemosphere_ID = number & { readonly __brand: "Mnemosphere" };
 
@@ -13,7 +15,7 @@ const Relations = {
             return this.NextId++ as any;
         },
 
-        Mnemosphere: {
+        mnemosphere: {
             tbl: {} as { [key: Item_ID]: Mnemosphere_ID },
             define: function (id: Item_ID, value: Mnemosphere_ID) {
                 this.tbl[id] = value;
@@ -31,7 +33,7 @@ const Relations = {
          * @param {Item_ID} id - The unique ID of the Item.
          */
         ClearRelations(id) {
-            delete this.Mnemosphere.tbl[id];
+            delete this.mnemosphere.tbl[id];
         },
     },
 
@@ -60,7 +62,8 @@ const Relations = {
 
             define: function (id: Mnemosphere_ID, value: UUID) {
                 if (!this.tbl[id]) this.tbl[id] = [];
-                //if (this.tbl[id].length >= 5) RelationErrorHandler.notifyError('Limit exceeded');
+                if (this.tbl[id].length >= 5)
+                    RelationErrorHandler.notifyError("Limit exceeded");
                 this.tbl[id].push(value);
             },
 
@@ -97,6 +100,48 @@ const Relations = {
             },
         },
 
+        feature: {
+            tbl: {} as { [key: Mnemosphere_ID]: UUID[] },
+
+            define: function (id: Mnemosphere_ID, value: UUID) {
+                if (!this.tbl[id]) this.tbl[id] = [];
+
+                this.tbl[id].push(value);
+            },
+
+            clear: function (id, value) {
+                delete this.tbl[id];
+            },
+
+            get: function (id: Mnemosphere_ID): UUID[] | undefined {
+                return this.tbl[id];
+            },
+            remove: function (id: Mnemosphere_ID) {
+                delete this.tbl[id];
+            },
+        },
+
+        spell: {
+            tbl: {} as { [key: Mnemosphere_ID]: UUID[] },
+
+            define: function (id: Mnemosphere_ID, value: UUID) {
+                if (!this.tbl[id]) this.tbl[id] = [];
+
+                this.tbl[id].push(value);
+            },
+
+            clear: function (id, value) {
+                delete this.tbl[id];
+            },
+
+            get: function (id: Mnemosphere_ID): UUID[] | undefined {
+                return this.tbl[id];
+            },
+            remove: function (id: Mnemosphere_ID) {
+                delete this.tbl[id];
+            },
+        },
+
         heroicskill: {
             tbl: {} as { [key: Mnemosphere_ID]: UUID },
             define: function (id: Mnemosphere_ID, value: UUID) {
@@ -118,6 +163,8 @@ const Relations = {
             delete this.class.tbl[id];
             delete this.skill.tbl[id];
             delete this.uuid.tbl[id];
+            delete this.feature.tbl[id];
+            delete this.spell.tbl[id];
             delete this.heroicskill.tbl[id];
         },
     },
@@ -125,8 +172,8 @@ const Relations = {
     LogAll: function () {
         console.log("--- Logging All Relation Tables ---");
         console.log(
-            "Relations.Item.Mnemosphere.tbl:",
-            this.Item.Mnemosphere.tbl
+            "Relations.Item.mnemosphere.tbl:",
+            this.Item.mnemosphere.tbl
         );
         console.log(
             "Relations.Mnemosphere.class.tbl:",
@@ -139,6 +186,14 @@ const Relations = {
         console.log(
             "Relations.Mnemosphere.uuid.tbl:",
             this.Mnemosphere.uuid.tbl
+        );
+        console.log(
+            "Relations.Mnemosphere.feature.tbl:",
+            this.Mnemosphere.feature.tbl
+        );
+        console.log(
+            "Relations.Mnemosphere.spell.tbl:",
+            this.Mnemosphere.spell.tbl
         );
         console.log(
             "Relations.Mnemosphere.heroicskill.tbl:",

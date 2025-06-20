@@ -22,6 +22,7 @@ Sphere name ability.
 Summary at bottom of inherited abilities.
 See what spheres grant what ability.
 
+Have a sheet where skills/features can be viewed and drag/drop.
 
 
 Phase 2:
@@ -34,7 +35,11 @@ Config with Origin
 Choose origin to roll from in GM
 
 
-Bug: Mnemosphere dragged into class won't be classified
+Change class name on sphere skills to be the sphere name.
+
+Magichant special handling
+    - Just grab the highest level sphere
+
 
 
 

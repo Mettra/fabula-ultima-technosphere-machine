@@ -166,7 +166,7 @@ async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
     const MAX_ITERATIONS = 100;
     let iter = 0;
     while (++iter < MAX_ITERATIONS) {
-        let sphereId = Relations.Item.Mnemosphere.get(sphereItemUUID);
+        let sphereId = Relations.Item.mnemosphere.get(sphereItemUUID);
         let classUUID = Relations.Mnemosphere.class.get(sphereId);
         if (classUUID == null) {
             ui.notifications.error(
@@ -420,7 +420,7 @@ Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
     const regularTreasures: any[] = [];
     for (const item of allTreasures) {
         const itemAny = item as any;
-        const mnemosphereId = Relations.Item.Mnemosphere.get(
+        const mnemosphereId = Relations.Item.mnemosphere.get(
             itemAny.uuid as UUID
         );
         if (mnemosphereId) {
