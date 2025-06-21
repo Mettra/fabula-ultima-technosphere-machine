@@ -39,14 +39,12 @@ $OptionalItems = @(
 )
 
 # Define files and directories to exclude (LevelDB files that may be locked by Foundry)
+# "*.ldb", "MANIFEST-*", and "CURRENT" are required for FVTT to correctly read the database.
 $ExcludePatterns = @(
-    "*.ldb",
     "*.log", 
-    "CURRENT",
     "LOCK",
     "LOG",
-    "LOG.old",
-    "MANIFEST-*"
+    "LOG.old"
 )
 
 # Combine essential items and any existing optional items
