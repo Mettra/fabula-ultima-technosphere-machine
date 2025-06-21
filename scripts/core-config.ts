@@ -96,3 +96,33 @@ export function getItemDisplayData(item) {
         qualityString,
     };
 }
+
+/**
+ * Generic helper function to process an array and apply a callback to each unique element,
+ * accumulating results in a functional style.
+ *
+ * @template T The type of the array elements.
+ * @template U The type of the accumulated result.
+ * @param {T[]} arr The input array.
+ * @param {U} initialValue The initial value for the accumulator.
+ * @param {(acc: U, value: T, count: number) => U} callback The callback function to apply to each unique element.
+ *                                                             It receives the accumulator, the unique value, and its count.
+ * @returns {U} The final accumulated result.
+ */
+export function unique<T, U>(
+    arr: T[],
+    initialValue: U,
+    callback: (acc: U, value: T, count: number) => U
+): U {
+    const counts = arr.reduce((acc: Map<T, number>, val: T) => {
+        acc.set(val, (acc.get(val) || 0) + 1);
+        return acc;
+    }, new Map<T, number>());
+
+    let accumulator = initialValue;
+    for (const [value, count] of counts) {
+        accumulator = callback(accumulator, value, count);
+    }
+
+    return accumulator;
+}

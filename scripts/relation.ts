@@ -20,8 +20,26 @@ const Relations = {
             define: function (id: Item_ID, value: Mnemosphere_ID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Item_ID): Mnemosphere_ID | undefined {
+            get: function (id: Item_ID): Mnemosphere_ID[] {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return [obj];
+                } else {
+                    return [];
+                }
+            },
+            check: function (id: Item_ID): Mnemosphere_ID | undefined {
                 return this.tbl[id];
+            },
+            expect: function (id: Item_ID): Mnemosphere_ID {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return obj;
+                } else {
+                    throw Error(
+                        `Relation Error! Item ${id} does not have a mapping to Mnemosphere.`
+                    );
+                }
             },
             remove: function (id: Item_ID) {
                 delete this.tbl[id];
@@ -49,8 +67,26 @@ const Relations = {
             define: function (id: Mnemosphere_ID, value: UUID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Mnemosphere_ID): UUID | undefined {
+            get: function (id: Mnemosphere_ID): UUID[] {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return [obj];
+                } else {
+                    return [];
+                }
+            },
+            check: function (id: Mnemosphere_ID): UUID | undefined {
                 return this.tbl[id];
+            },
+            expect: function (id: Mnemosphere_ID): UUID {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return obj;
+                } else {
+                    throw Error(
+                        `Relation Error! Mnemosphere ${id} does not have a mapping to Class.`
+                    );
+                }
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
@@ -71,8 +107,8 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Mnemosphere_ID): UUID[] | undefined {
-                return this.tbl[id];
+            get: function (id: Mnemosphere_ID): UUID[] {
+                return this.tbl[id] || [];
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
@@ -92,8 +128,8 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Mnemosphere_ID): string[] | undefined {
-                return this.tbl[id];
+            get: function (id: Mnemosphere_ID): string[] {
+                return this.tbl[id] || [];
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
@@ -113,8 +149,8 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Mnemosphere_ID): UUID[] | undefined {
-                return this.tbl[id];
+            get: function (id: Mnemosphere_ID): UUID[] {
+                return this.tbl[id] || [];
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
@@ -134,8 +170,8 @@ const Relations = {
                 delete this.tbl[id];
             },
 
-            get: function (id: Mnemosphere_ID): UUID[] | undefined {
-                return this.tbl[id];
+            get: function (id: Mnemosphere_ID): UUID[] {
+                return this.tbl[id] || [];
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];
@@ -147,8 +183,26 @@ const Relations = {
             define: function (id: Mnemosphere_ID, value: UUID) {
                 this.tbl[id] = value;
             },
-            get: function (id: Mnemosphere_ID): UUID | undefined {
+            get: function (id: Mnemosphere_ID): UUID[] {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return [obj];
+                } else {
+                    return [];
+                }
+            },
+            check: function (id: Mnemosphere_ID): UUID | undefined {
                 return this.tbl[id];
+            },
+            expect: function (id: Mnemosphere_ID): UUID {
+                let obj = this.tbl[id];
+                if (obj) {
+                    return obj;
+                } else {
+                    throw Error(
+                        `Relation Error! Mnemosphere ${id} does not have a mapping to HeroicSkill.`
+                    );
+                }
             },
             remove: function (id: Mnemosphere_ID) {
                 delete this.tbl[id];

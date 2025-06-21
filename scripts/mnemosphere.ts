@@ -1,13 +1,9 @@
 // Mnemosphere class and related functionality
 
-import { Log, Mnemosphere_SPLIT_KEY, ModuleName } from "./core-config.js";
-import {
-    extractKVPairsFromLines,
-    extractParagraphsAsLines,
-    splitArray,
-} from "./parsing-utils.js";
+import { Log } from "./core-config.js";
+import { extractParagraphsAsLines } from "./parsing-utils.js";
 import { Mnemosphere_ID, Relations } from "./relation.js";
-import { parseUUIDLink, createUUIDLink, type UUIDLink } from "./uuid-utils.js";
+import { createUUIDLink, parseUUIDLink } from "./uuid-utils.js";
 
 export const MnemosphereHeader = "Mnemosphere";
 
@@ -109,7 +105,7 @@ export function SetupMnemosphereHooks() {
         const descriptionChanging = changes.system?.description !== undefined;
 
         // Do we already know about this item as a Mnemosphere?
-        let existingMnemosphereId = Relations.Item.mnemosphere.get(item.uuid);
+        let existingMnemosphereId = Relations.Item.mnemosphere.check(item.uuid);
 
         // Handle summary changes that affect Mnemosphere classification
         if (summaryChanging) {
@@ -275,7 +271,7 @@ export async function resolveSkills(skillUUIDs: UUID[]) {
 
 export async function filterMnemospheres(items: Item[]) {
     const skillsAndItems = items.map((i) => {
-        const MnemosphereId = Relations.Item.mnemosphere.get(i.uuid as UUID);
+        const MnemosphereId = Relations.Item.mnemosphere.check(i.uuid as UUID);
         if (!MnemosphereId) return null;
 
         return [
@@ -289,13 +285,14 @@ export async function filterMnemospheres(items: Item[]) {
 
     let result = validMnemosphereItems.map(async (obj) => {
         const skillUUIDs = (obj[0] || []) as UUID[];
-        const heroicSkillUUID = obj[1] as UUID | undefined;
+        const heroicSkillUUID = obj[1] as UUID[];
         const item = obj[2] as Item;
 
         const skills = await resolveSkills(skillUUIDs);
+
         let heroicSkill = null;
-        if (heroicSkillUUID) {
-            const heroicSkillDoc = await fromUuid(heroicSkillUUID);
+        heroicSkillUUID.forEach(async (sk) => {
+            const heroicSkillDoc = await fromUuid(sk);
             if (heroicSkillDoc) {
                 heroicSkill = {
                     name: heroicSkillDoc.name,
@@ -303,7 +300,7 @@ export async function filterMnemospheres(items: Item[]) {
                     uuid: heroicSkillUUID,
                 };
             }
-        }
+        });
 
         return {
             name: item.name,

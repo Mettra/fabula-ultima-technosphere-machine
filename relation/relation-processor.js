@@ -258,7 +258,9 @@ const Relations = {
                 ${target.toLowerCase()}: {
                     tbl : {} as { [key: ${concept}_ID]: ${targetType}; },
                     define: function(id : ${concept}_ID, value : ${targetType}) { this.tbl[id] = value; },
-                    get: function(id : ${concept}_ID) : ${targetType}|undefined { return this.tbl[id]; },
+                    get: function(id : ${concept}_ID) : ${targetType}[] { let obj = this.tbl[id]; if(obj) { return [obj]; } else { return []; } },
+                    check: function(id : ${concept}_ID) : ${targetType}|undefined {  return this.tbl[id]; },
+                    expect: function(id : ${concept}_ID) : ${targetType} { let obj = this.tbl[id]; if(obj) { return obj; } else { throw Error(\`Relation Error! ${concept} \${id} does not have a mapping to ${target}.\`); } },
                     remove: function(id : ${concept}_ID) { delete this.tbl[id]; },
                 },
 `;
@@ -281,7 +283,7 @@ const Relations = {
                         delete this.tbl[id];
                     },
 
-                    get: function(id : ${concept}_ID) : ${targetType}[]|undefined { return this.tbl[id]; },
+                    get: function(id : ${concept}_ID) : ${targetType}[] { return this.tbl[id] || []; },
                     remove: function(id : ${concept}_ID) { delete this.tbl[id]; }
                 },
 `;

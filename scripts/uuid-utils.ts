@@ -44,3 +44,12 @@ export async function resolveCompendiumUUID(uuid: string) {
 
     return result;
 }
+
+export async function expectUUID(uuid: UUID) {
+    let result = await fromUuid(uuid);
+    if (!result) {
+        throw new Error(`UUID ${uuid} could not be resolved.`);
+    }
+
+    return result;
+}
