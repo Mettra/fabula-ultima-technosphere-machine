@@ -9,7 +9,10 @@ import { DEV_MODE, Log } from "./core-config.js";
 import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
 import { SetupMnemosphereHooks } from "./mnemosphere.js";
 import { SetupPartySheetHooks } from "./party-sheet/party-sheet.js";
-import { SetupRollTableHooks } from "./roll-table/roll-table.js";
+import {
+    migrateCompendiumRollTables,
+    SetupRollTableHooks,
+} from "./roll-table/roll-table.js";
 
 Hooks.once("init", async () => {
     SetupMnemosphereHooks();
@@ -60,4 +63,15 @@ Hooks.on("hotReload", () => {
     if (DEV_MODE) {
         cleanupAnimationDevMode();
     }
+});
+
+Hooks.once("ready", async () => {
+    // Expose migration utility to the console for administrative use.
+    // @ts-ignore
+    window.FUTM_MIGRATION = {
+        migrateCompendiumRollTables,
+    };
+    console.log(
+        "FUTM | Migration tools available under `window.FUTM_MIGRATION`"
+    );
 });

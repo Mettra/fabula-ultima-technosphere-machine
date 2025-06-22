@@ -1,12 +1,13 @@
 // Roll table functionality and custom rolling logic
 
-import { Log } from "./core-config.js";
+import { Log, ModuleName } from "./core-config.js";
 import {
     extractKVPairsFromLines,
     extractParagraphsAsLines,
 } from "./parsing-utils.js";
-import { Mnemosphere_ID, Relations } from "./relation.js";
-import { parseUUIDLink } from "./uuid-utils.js";
+import { FLAG_ADD_SKILL, FLAG_FORCE_RESULT } from "./roll-table/roll-table.js";
+import { getTSFlag } from "./utils/foundry-utils.js";
+import { getUUIDFromLink } from "./uuid-utils.js";
 
 export async function getDocumentFromResult(result: any): Promise<any | null> {
     let pack;
@@ -48,27 +49,27 @@ export async function rollTableCustom(
     roll = roll instanceof Roll ? roll : Roll.create(rollTable.formula);
     let extra_results = [];
 
-    // Custom rules processing from the RollTable description
-    const paragraphs = extractParagraphsAsLines(rollTable.description);
-    const lines = extractKVPairsFromLines(paragraphs);
-    for (let kv of lines) {
-        if (kv.key.toLowerCase() == "start") {
-            if (initialAbility == false) continue;
+    // Custom rules processing from flags
+    const forceResult = getTSFlag(rollTable, "mnemosphere-rolltable-force");
+    if (initialAbility && forceResult) {
+        Log(`Force Start Rule - Force set roll to result: ${forceResult}`);
+        const result = rollTable.results.find(
+            (res) => res.text === forceResult
+        );
+        if (result && result.range.length > 0) {
+            roll = Roll.create(result.range[0].toString());
+        }
+    }
 
-            Log(`START Rule - Force set roll`);
-            rollTable.results.forEach((res) => {
-                if (res.text == kv.value) {
-                    roll = Roll.create(res.range[0].toString());
-                }
-            });
-        } else if (kv.key.toLowerCase() == "add") {
-            let link = await parseUUIDLink(kv.value);
-            let doc = await fromUuid(link.uuid);
+    const addSkillUUID = getTSFlag(rollTable, "mnemosphere-rolltable-skill");
+    if (addSkillUUID) {
+        let doc = await fromUuid(addSkillUUID);
+        if (doc) {
             extra_results.push({
                 documentId: doc.id,
                 documentCollection: doc.pack,
                 type: doc.pack ? CONST.TABLE_RESULT_TYPES.COMPENDIUM : null,
-                text: link.name,
+                text: doc.name,
             });
         }
     }
@@ -149,4 +150,56 @@ export async function rollTableCustom(
     results = results.concat(extra_results);
 
     return { roll, results };
+}
+
+/**
+ * Migrates custom rules from a RollTable's description to flags.
+ * After migration, the description is cleared.
+ * @param {RollTable} rollTable The RollTable document to migrate.
+ */
+export async function migrateRollTableDescriptionToFlags(rollTable: RollTable) {
+    const description = rollTable.description;
+    if (!description || description.trim().length === 0) {
+        return false;
+    }
+
+    const lines = extractParagraphsAsLines(description);
+    const rules = extractKVPairsFromLines(lines);
+
+    if (rules.length === 0) {
+        return false;
+    }
+
+    const updateData = {};
+    let changesMade = false;
+
+    rules.forEach((rule) => {
+        if (rule.key.toLowerCase() == "start") {
+            const forceResult = rule.value;
+            if (forceResult) {
+                updateData[`flags.${ModuleName}.${FLAG_FORCE_RESULT}`] =
+                    forceResult;
+                changesMade = true;
+            }
+        } else if (rule.key.toLowerCase() == "add") {
+            const uuidLink = rule.value;
+            const uuid = getUUIDFromLink(uuidLink);
+            if (uuid) {
+                updateData[`flags.${ModuleName}.${FLAG_ADD_SKILL}`] = uuid;
+                changesMade = true;
+            }
+        }
+    });
+
+    if (!changesMade) {
+        return false;
+    }
+
+    // If any rules were migrated, clear the description and update the document
+    updateData["description"] = "";
+    Log(
+        `Migrating rules from description to flags for RollTable: ${rollTable.name}`
+    );
+    await rollTable.update(updateData);
+    return true;
 }

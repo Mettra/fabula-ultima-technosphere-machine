@@ -13,4 +13,5 @@
     border-radius: 6px;
     flex-wrap: wrap;
     min-height: 69px;
+    flex-direction: column;
 }

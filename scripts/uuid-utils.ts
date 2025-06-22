@@ -31,6 +31,17 @@ export async function parseUUIDLink(linkText: string): Promise<UUIDLink> {
     return { uuid, name };
 }
 
+export function getUUIDFromLink(linkText: string) {
+    let results = LinkRegex.exec(linkText);
+    if (!results || results.length < 2) {
+        console.warn("Invalid UUID link format:", linkText);
+        return null;
+    }
+
+    const uuid = results[1] as UUID;
+    return uuid;
+}
+
 export function createUUIDLink(link: UUIDLink): string {
     return `@UUID[${link.uuid}]{${link.name}}`;
 }
