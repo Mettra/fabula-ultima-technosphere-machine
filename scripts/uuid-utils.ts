@@ -37,7 +37,7 @@ export function createUUIDLink(link: UUIDLink): string {
 
 export async function resolveCompendiumUUID(uuid: string) {
     const result = await fromUuid(uuid);
-    if (result.pack !== "undefined") {
+    if (result.pack != null) {
         let pack = game.packs.get(result.pack);
         return await pack.getDocument(result._id);
     }
