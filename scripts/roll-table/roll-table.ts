@@ -46,7 +46,10 @@ export function SetupRollTableHooks() {
                     addSkillDoc: addSkillDoc,
                 }
             );
-            const descriptionEditor = html.find(".editor.prosemirror").parent();
+
+            const editorContainer = html.find(".editor");
+
+            const descriptionEditor = editorContainer.parent();
             descriptionEditor.after(propertiesPane);
 
             const mnemospherePane = html.find(".mnemosphere-properties");
@@ -58,9 +61,8 @@ export function SetupRollTableHooks() {
                     .not('[data-action="toggle-mnemosphere-properties"]')
                     .hide();
 
-                let container = html.find(".editor.prosemirror");
-                container.height("auto");
-                container.children(".editor-container").height(0).hide();
+                editorContainer.height("auto");
+                editorContainer.children(".editor-container").height(0).hide();
 
                 mnemospherePane.show();
             } else {
