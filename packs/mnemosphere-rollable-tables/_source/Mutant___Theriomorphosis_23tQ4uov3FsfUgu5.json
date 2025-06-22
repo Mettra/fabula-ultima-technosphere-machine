@@ -1,0 +1,226 @@
+{
+  "folder": "V7l18kS4PSxFsHeK",
+  "name": "Mutant - Theriomorphosis",
+  "_id": "23tQ4uov3FsfUgu5",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Amphibia",
+      "documentId": "oQA8DJ1AThzaj2xn",
+      "img": "icons/creatures/amphibians/bullfrog-glass-teal.webp",
+      "_id": "fBZJsQj8aWkW215G",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.fBZJsQj8aWkW215G"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Arpaktida",
+      "documentId": "m5u3EqO2qcTrzUsE",
+      "img": "icons/creatures/mammals/wolf-shadow-black.webp",
+      "_id": "Eqb0qGjSbOb85wS2",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.Eqb0qGjSbOb85wS2"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Dynamotheria",
+      "documentId": "16PEnfsbdFCrjmK7",
+      "img": "icons/creatures/abilities/bear-roar-bite-brown-green.webp",
+      "_id": "bFDQsfQfIsvlOcRj",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.bFDQsfQfIsvlOcRj"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Electrophora",
+      "documentId": "KgtM9TDDAmvHSRtm",
+      "img": "icons/magic/lightning/claws-unarmed-strike-teal.webp",
+      "_id": "LrS9HQVzPiZrn4dN",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.LrS9HQVzPiZrn4dN"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Neurophagioda",
+      "documentId": "JvQgZNls70zIUcPz",
+      "img": "icons/magic/death/undead-skeleton-worn-blue.webp",
+      "_id": "N8X0SpsWXRfn0BZt",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.N8X0SpsWXRfn0BZt"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Placophora",
+      "documentId": "SX5g2dOXpZxC8S9w",
+      "img": "icons/creatures/fish/crab-blue-purple.webp",
+      "_id": "c0dwdT7h2olgJIcd",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.c0dwdT7h2olgJIcd"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Pneumaphora",
+      "documentId": "K25s15WXpevzqBMx",
+      "img": "icons/creatures/birds/corvid-flying-wings-purple.webp",
+      "_id": "ZHki0al1nCXW5vyI",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.ZHki0al1nCXW5vyI"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Polypoda",
+      "documentId": "9SE0c4vvFhv5dJMB",
+      "img": "icons/creatures/fish/squid-kraken-orange.webp",
+      "_id": "u9FsIVJQeouNGzr0",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.u9FsIVJQeouNGzr0"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Pterotheria",
+      "documentId": "eSjmS6Ky8Gs2CSRl",
+      "img": "icons/creatures/mammals/bat-giant-tattered-purple.webp",
+      "_id": "kgd4aa3pGATS9bKw",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.kgd4aa3pGATS9bKw"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Pyrophora",
+      "documentId": "XZzcdzzBKIGaKzpx",
+      "img": "icons/magic/fire/elemental-fire-humanoid.webp",
+      "_id": "3sRBSAf0CROVz9m4",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.3sRBSAf0CROVz9m4"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Tachytheria",
+      "documentId": "9POVT2ve07jXTL18",
+      "img": "icons/creatures/mammals/deer-antlers-glowing-blue.webp",
+      "_id": "A2rSCDv4o0JudWVD",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.A2rSCDv4o0JudWVD"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        12,
+        12
+      ],
+      "drawn": false,
+      "text": "Toxicophora",
+      "documentId": "7wkyAWTOZfSaiawJ",
+      "img": "icons/creatures/invertebrates/tick-cross-glowing-purple.webp",
+      "_id": "XHyFtVst54uZ4Qjk",
+      "flags": {},
+      "_key": "!tables.results!23tQ4uov3FsfUgu5.XHyFtVst54uZ4Qjk"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.WYHDqKbW1fJIqaQn",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.23tQ4uov3FsfUgu5",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769516,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d12",
+  "_key": "!tables!23tQ4uov3FsfUgu5"
+}

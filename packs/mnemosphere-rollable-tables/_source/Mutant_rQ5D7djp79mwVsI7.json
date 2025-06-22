@@ -1,0 +1,93 @@
+{
+  "folder": "V7l18kS4PSxFsHeK",
+  "name": "Mutant",
+  "img": "modules/fabula-ultima-compendium/images/classes/Mutant.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Biophagy",
+      "documentId": "2HYH3BomL5x6kUNY",
+      "img": "icons/creatures/abilities/fang-tooth-blood-red.webp",
+      "_id": "KY86UPn0uibClYfT",
+      "flags": {},
+      "_key": "!tables.results!rQ5D7djp79mwVsI7.KY86UPn0uibClYfT"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Ecdysis",
+      "documentId": "yVTTWvlmpnQDc7Xo",
+      "img": "icons/magic/defensive/armor-stone-skin.webp",
+      "_id": "FyRdejI617cyOZuB",
+      "flags": {},
+      "_key": "!tables.results!rQ5D7djp79mwVsI7.FyRdejI617cyOZuB"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Genoclepsis",
+      "documentId": "K8OvAdpihQqxHOWd",
+      "img": "icons/creatures/slimes/slime-face-hollow-green.webp",
+      "_id": "xqmqhALkqw566WoJ",
+      "flags": {},
+      "_key": "!tables.results!rQ5D7djp79mwVsI7.xqmqhALkqw566WoJ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Mutant - Theriomorphosis",
+      "documentId": "23tQ4uov3FsfUgu5",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "yjzpT43HSoRiqA3L",
+      "flags": {},
+      "_key": "!tables.results!rQ5D7djp79mwVsI7.yjzpT43HSoRiqA3L"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411261886,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "rQ5D7djp79mwVsI7",
+  "_key": "!tables!rQ5D7djp79mwVsI7"
+}

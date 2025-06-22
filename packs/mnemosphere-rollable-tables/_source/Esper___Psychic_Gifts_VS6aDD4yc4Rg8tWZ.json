@@ -1,0 +1,178 @@
+{
+  "folder": "rVMOxHgZmQoK82Pr",
+  "name": "Esper - Psychic Gifts",
+  "_id": "VS6aDD4yc4Rg8tWZ",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Atmokinesis",
+      "documentId": "RsMlp2ZWQJ5GG7R2",
+      "img": "icons/magic/air/air-smoke-casting.webp",
+      "_id": "wRQOqGLMYs7pdGf5",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.wRQOqGLMYs7pdGf5"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Clairvoyance",
+      "documentId": "dD2JcrzgVEzf3wLp",
+      "img": "icons/magic/perception/orb-eye-scrying.webp",
+      "_id": "5SgNw0HAjd2cXJvF",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.5SgNw0HAjd2cXJvF"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Gravitokinesis",
+      "documentId": "fKiFiFYPPRGkVyMm",
+      "img": "icons/magic/earth/strike-fist-stone-gray.webp",
+      "_id": "MUP2hq4wp63gvnr9",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.MUP2hq4wp63gvnr9"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Life Transference",
+      "documentId": "a3oAKlkb3pws0hlC",
+      "img": "icons/magic/unholy/projectile-smoke-tendril-green.webp",
+      "_id": "etaIIoCHbaOgLHUc",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.etaIIoCHbaOgLHUc"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Photokinesis",
+      "documentId": "zRkc6VBna62E8BB3",
+      "img": "icons/magic/unholy/hand-fire-skeleton-pink.webp",
+      "_id": "aHhlBh9OYpoLO8qv",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.aHhlBh9OYpoLO8qv"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Psychic Backlash",
+      "documentId": "wLl67Lo0vTuDJnW2",
+      "img": "icons/magic/unholy/projectile-helix-blood-red.webp",
+      "_id": "HgpCbfGDHuuhSCeM",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.HgpCbfGDHuuhSCeM"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Psychic Shield",
+      "documentId": "PtEs4BNrzHMmFh3M",
+      "img": "icons/magic/defensive/barrier-shield-dome-blue-purple.webp",
+      "_id": "bYQA9PBvkcYbXBts",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.bYQA9PBvkcYbXBts"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Reassuring Presence",
+      "documentId": "vnpCQO20eo24ykDq",
+      "img": "icons/magic/light/orb-hands-humanoid-yellow.webp",
+      "_id": "ICHa6umBWC2ctLUZ",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.ICHa6umBWC2ctLUZ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Thermokinesis",
+      "documentId": "sq8XybryA3a8cTnH",
+      "img": "icons/magic/light/hand-sparks-glow-yellow.webp",
+      "_id": "yLJwhZX0uEfNU888",
+      "flags": {},
+      "_key": "!tables.results!VS6aDD4yc4Rg8tWZ.yLJwhZX0uEfNU888"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.0KXzUIwx2M1VbcXg",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.VS6aDD4yc4Rg8tWZ",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769705,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d9",
+  "_key": "!tables!VS6aDD4yc4Rg8tWZ"
+}

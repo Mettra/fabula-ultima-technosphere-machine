@@ -6,10 +6,7 @@ out
 build
 fabula-ultima-technosphere-machine.zip
 
-# Uneeded LevelDB files. "*.ldb", "MANIFEST-*", and "CURRENT" are required for FVTT to correctly read the database.
-packs/**/*.log
-packs/**/LOG
-packs/**/LOG.old
-packs/**/LOCK
+packs/mnemosphere-rollable-tables/*
+!packs/mnemosphere-rollable-tables/_source/
 
 foundry-config.json

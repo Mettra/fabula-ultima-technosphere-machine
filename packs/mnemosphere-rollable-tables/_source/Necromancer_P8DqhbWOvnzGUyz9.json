@@ -1,0 +1,114 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Necromancer",
+  "img": "modules/fabula-ultima-compendium/images/classes/Necromancer.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Beyond the Realms of Death",
+      "documentId": "d82bYzn1IieuleXW",
+      "img": "icons/magic/death/skull-trio-badge-purple.webp",
+      "_id": "uSzIQZycBsJbDokW",
+      "flags": {},
+      "_key": "!tables.results!P8DqhbWOvnzGUyz9.uSzIQZycBsJbDokW"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Children of the Grave",
+      "documentId": "0Ep5fny0Qfwxqnos",
+      "img": "icons/magic/death/skull-humanoid-worn-teal.webp",
+      "_id": "C6jJfValqBWDcqOh",
+      "flags": {},
+      "_key": "!tables.results!P8DqhbWOvnzGUyz9.C6jJfValqBWDcqOh"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Fear is the Key",
+      "documentId": "2vyXhx0A8D2zhJ1S",
+      "img": "icons/magic/death/weapon-scythe-rune-green.webp",
+      "_id": "yJeLnWm98N1wG5Uh",
+      "flags": {},
+      "_key": "!tables.results!P8DqhbWOvnzGUyz9.yJeLnWm98N1wG5Uh"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "For Whom the Bell Tolls",
+      "documentId": "snLpUK38rFtb4MrS",
+      "img": "icons/magic/death/skull-horned-goat-pentagram-red.webp",
+      "_id": "29UXQsGka8SavLzC",
+      "flags": {},
+      "_key": "!tables.results!P8DqhbWOvnzGUyz9.29UXQsGka8SavLzC"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Rondo of Nightmare",
+      "documentId": "mCDTjiRAUehrcyHc",
+      "img": "icons/magic/death/undead-ghost-scream-teal.webp",
+      "_id": "k2w4ffDabR4jkN5z",
+      "flags": {},
+      "_key": "!tables.results!P8DqhbWOvnzGUyz9.k2w4ffDabR4jkN5z"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-force": "Beyond the Realms of Death",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769576,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "P8DqhbWOvnzGUyz9",
+  "_key": "!tables!P8DqhbWOvnzGUyz9"
+}

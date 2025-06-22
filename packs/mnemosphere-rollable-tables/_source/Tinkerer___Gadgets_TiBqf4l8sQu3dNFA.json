@@ -1,0 +1,98 @@
+{
+  "folder": "ZesBez6Pu91ZapS5",
+  "name": "Tinkerer - Gadgets",
+  "_id": "TiBqf4l8sQu3dNFA",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Alchemy",
+      "documentId": "UH5pXFGX1htUZWs6",
+      "img": "icons/consumables/potions/potion-round-corked-glowing-green.webp",
+      "_id": "CMK7NC5lKugVphIq",
+      "flags": {},
+      "_key": "!tables.results!TiBqf4l8sQu3dNFA.CMK7NC5lKugVphIq"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Infusions",
+      "documentId": "8qbjcDCr0LgHJdve",
+      "img": "icons/magic/symbols/rune-sigil-black-pink.webp",
+      "_id": "FpGPWiSPRBrBpqcp",
+      "flags": {},
+      "_key": "!tables.results!TiBqf4l8sQu3dNFA.FpGPWiSPRBrBpqcp"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Magispheres",
+      "documentId": "DMcOiF5M3UX2PZdi",
+      "img": "icons/commodities/treasure/stone-cracked-lightning-blue.webp",
+      "_id": "q1rUUHaD2s5YVnlD",
+      "flags": {},
+      "_key": "!tables.results!TiBqf4l8sQu3dNFA.q1rUUHaD2s5YVnlD"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Magitech",
+      "documentId": "5oK9s4wzd8qS6WQi",
+      "img": "icons/commodities/tech/tube-chamber-lightning.webp",
+      "_id": "Q2Ho0bL3SsytP17F",
+      "flags": {},
+      "_key": "!tables.results!TiBqf4l8sQu3dNFA.Q2Ho0bL3SsytP17F"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.ngpddvzilSH8XCr6",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769674,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "",
+  "_key": "!tables!TiBqf4l8sQu3dNFA"
+}

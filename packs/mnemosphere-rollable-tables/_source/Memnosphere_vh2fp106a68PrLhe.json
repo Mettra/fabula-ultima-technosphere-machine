@@ -1,0 +1,333 @@
+{
+  "name": "Memnosphere",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Chanter",
+      "documentId": "zMVZDrETn03qE8UK",
+      "img": "modules/fabula-ultima-compendium/images/classes/Chanter.png",
+      "_id": "5lE2uDCvoiiTZEVu",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.5lE2uDCvoiiTZEVu"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Dancer",
+      "documentId": "04kkIajSv26FBvhm",
+      "img": "modules/fabula-ultima-compendium/images/classes/Dancer.png",
+      "_id": "BQ91DprlhwWwgXEF",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.BQ91DprlhwWwgXEF"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Elementalist",
+      "documentId": "UtcBNFoK5sr7JPFo",
+      "img": "modules/fabula-ultima-compendium/images/classes/Elementalist.png",
+      "_id": "GurOfyqyrz2GyWY3",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.GurOfyqyrz2GyWY3"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Entropist",
+      "documentId": "CXLWY02OWq4Z9Fej",
+      "img": "modules/fabula-ultima-compendium/images/classes/Entropist.png",
+      "_id": "uZDVSF8V1Hz3PkoY",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.uZDVSF8V1Hz3PkoY"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Esper",
+      "documentId": "fer2Qs9q8g8UY5cZ",
+      "img": "modules/fabula-ultima-compendium/images/classes/Esper.png",
+      "_id": "W7KNWBFjpOvEjngw",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.W7KNWBFjpOvEjngw"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Mutant",
+      "documentId": "rQ5D7djp79mwVsI7",
+      "img": "modules/fabula-ultima-compendium/images/classes/Mutant.png",
+      "_id": "aMzMnm1nzWtl6ryV",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.aMzMnm1nzWtl6ryV"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Chimerist",
+      "documentId": "ot4lD2BB7pC8hxHT",
+      "img": "modules/fabula-ultima-compendium/images/classes/Chimerist.png",
+      "_id": "qAD4qbck8JwhkViw",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.qAD4qbck8JwhkViw"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Commander",
+      "documentId": "Z4fIYQGBqUfujuou",
+      "img": "modules/fabula-ultima-compendium/images/classes/Commander.png",
+      "_id": "5VjXWv1uG8LhaF1T",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.5VjXWv1uG8LhaF1T"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Darkblade",
+      "documentId": "8eYgb2cjSvCQtGln",
+      "img": "modules/fabula-ultima-compendium/images/classes/Darkblade.png",
+      "_id": "ePr4Kaa4fR80usRB",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.ePr4Kaa4fR80usRB"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Fury",
+      "documentId": "u37Vn1hOpcWRXEBy",
+      "img": "modules/fabula-ultima-compendium/images/classes/Fury.png",
+      "_id": "b6AS4QuwBk75Ur55",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.b6AS4QuwBk75Ur55"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Guardian",
+      "documentId": "I4RbwHF6YT9XMqjD",
+      "img": "modules/fabula-ultima-compendium/images/classes/Guardian.png",
+      "_id": "mkHIsAzP9Bxpuv7Q",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.mkHIsAzP9Bxpuv7Q"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        12,
+        12
+      ],
+      "drawn": false,
+      "text": "Loremaster",
+      "documentId": "yo13hJZWW8rwQ6Mu",
+      "img": "modules/fabula-ultima-compendium/images/classes/Loremaster.png",
+      "_id": "1yF4N3abfQsiUcH0",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.1yF4N3abfQsiUcH0"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        13,
+        13
+      ],
+      "drawn": false,
+      "text": "Necromancer",
+      "documentId": "P8DqhbWOvnzGUyz9",
+      "img": "modules/fabula-ultima-compendium/images/classes/Necromancer.png",
+      "_id": "fVirLfYqoFPsC47F",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.fVirLfYqoFPsC47F"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        14,
+        14
+      ],
+      "drawn": false,
+      "text": "Orator",
+      "documentId": "jtaKgOzABxWVXchv",
+      "img": "modules/fabula-ultima-compendium/images/classes/Orator.png",
+      "_id": "rCY8fNfPjQcv0Cqm",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.rCY8fNfPjQcv0Cqm"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        15,
+        15
+      ],
+      "drawn": false,
+      "text": "Rogue",
+      "documentId": "wNzTkYYU2JKJN6kU",
+      "img": "modules/fabula-ultima-compendium/images/classes/Rogue.png",
+      "_id": "gzxACbZeDscRWsHC",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.gzxACbZeDscRWsHC"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        16,
+        16
+      ],
+      "drawn": false,
+      "text": "Sharpshooter",
+      "documentId": "ApgGJ1JMSzUP2kqL",
+      "img": "modules/fabula-ultima-compendium/images/classes/Sharpshooter.png",
+      "_id": "lLbkpr4bOG2N2JbV",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.lLbkpr4bOG2N2JbV"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        17,
+        17
+      ],
+      "drawn": false,
+      "text": "Weaponmaster",
+      "documentId": "FZ8kSCtOd6SqY3mj",
+      "img": "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
+      "_id": "6EMo0qUO8WLvWBYU",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.6EMo0qUO8WLvWBYU"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        18,
+        18
+      ],
+      "drawn": false,
+      "text": "Spiritist",
+      "documentId": "rd8TBQKZvVjNyxHk",
+      "img": "modules/fabula-ultima-compendium/images/classes/Spiritist.png",
+      "_id": "XYY8EaGtxbXvFYR4",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.XYY8EaGtxbXvFYR4"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        19,
+        19
+      ],
+      "drawn": false,
+      "text": "Tinkerer",
+      "documentId": "tmSHB88RDGoRpECm",
+      "img": "modules/fabula-ultima-compendium/images/classes/Tinkerer.png",
+      "_id": "P7dqvVBGp9TSyw3V",
+      "flags": {},
+      "_key": "!tables.results!vh2fp106a68PrLhe.P7dqvVBGp9TSyw3V"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "folder": null,
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411016160,
+    "modifiedTime": 1749411365179,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d19",
+  "_id": "vh2fp106a68PrLhe",
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "_key": "!tables!vh2fp106a68PrLhe"
+}

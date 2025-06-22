@@ -1,0 +1,66 @@
+{
+  "folder": "ewCP1Esr7LFStknk",
+  "name": "Chanter - Magichant",
+  "_id": "ZjvKiBIdrx2WMWNQ",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Keys",
+      "documentId": "VL86Nl4eRxcpKUhQ",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "DjfNhOKnY9AAFx2K",
+      "flags": {},
+      "_key": "!tables.results!ZjvKiBIdrx2WMWNQ.DjfNhOKnY9AAFx2K"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Tones",
+      "documentId": "FG4Whqp1dMAu5Xp8",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "43hVGD6P0tiijTKa",
+      "flags": {},
+      "_key": "!tables.results!ZjvKiBIdrx2WMWNQ.43hVGD6P0tiijTKa"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 200000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.8SNt5UO0uThpUbte",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769733,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d2",
+  "_key": "!tables!ZjvKiBIdrx2WMWNQ"
+}

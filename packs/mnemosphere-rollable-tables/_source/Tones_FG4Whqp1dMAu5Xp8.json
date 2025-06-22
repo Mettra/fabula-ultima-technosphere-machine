@@ -1,0 +1,141 @@
+{
+  "folder": "ewCP1Esr7LFStknk",
+  "name": "Tones",
+  "_id": "FG4Whqp1dMAu5Xp8",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Calm Tone",
+      "documentId": "iAkYgEZOj7zBqBE0",
+      "img": "icons/magic/life/cross-area-circle-green-white.webp",
+      "_id": "XpmcD8FKLef0ryk0",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.XpmcD8FKLef0ryk0"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Energetic Tone",
+      "documentId": "VoHm3fZf1hgHvc1r",
+      "img": "icons/magic/control/debuff-energy-hold-levitate-yellow.webp",
+      "_id": "4J8c5HHnG5V1iQfN",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.4J8c5HHnG5V1iQfN"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Frantic Tone",
+      "documentId": "bwCQTaVWekiET4JW",
+      "img": "icons/magic/sonic/explosion-shock-wave-teal.webp",
+      "_id": "lnfXDFfSnbRoVkoF",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.lnfXDFfSnbRoVkoF"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Haunting Tone",
+      "documentId": "0bFfHg1MtCe3Vc1y",
+      "img": "icons/magic/death/undead-ghosts-trio-blue.webp",
+      "_id": "CQk3w8jLXUbQwbyQ",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.CQk3w8jLXUbQwbyQ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Lively Tone",
+      "documentId": "mnux23pHoueFGZns",
+      "img": "icons/magic/light/hand-sparks-glow-yellow.webp",
+      "_id": "QL21wkbXM5y0E2xy",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.QL21wkbXM5y0E2xy"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Menacing Tone",
+      "documentId": "xbMiy6dWCeKSFXKm",
+      "img": "icons/magic/perception/shadow-stealth-eyes-purple.webp",
+      "_id": "bbQIJToj4B4FdXyW",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.bbQIJToj4B4FdXyW"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Solemn Tone",
+      "documentId": "SZN5xxdwfgSvYNPP",
+      "img": "icons/magic/nature/leaf-oak-glow-green.webp",
+      "_id": "sSJJlLYFQRPOhzVA",
+      "flags": {},
+      "_key": "!tables.results!FG4Whqp1dMAu5Xp8.sSJJlLYFQRPOhzVA"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d7",
+  "_key": "!tables!FG4Whqp1dMAu5Xp8"
+}

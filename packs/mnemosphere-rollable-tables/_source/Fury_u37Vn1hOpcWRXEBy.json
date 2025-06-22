@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Fury",
+  "img": "modules/fabula-ultima-compendium/images/classes/Fury.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Adrenaline",
+      "documentId": "lWWRAnq5CiFbCZwb",
+      "img": "icons/skills/melee/strike-axe-blood-red.webp",
+      "_id": "gL5atpBUYW6YQ8eF",
+      "flags": {},
+      "_key": "!tables.results!u37Vn1hOpcWRXEBy.gL5atpBUYW6YQ8eF"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Frenzy",
+      "documentId": "6WsreIvWWDyzWzmX",
+      "img": "icons/skills/melee/maneuver-greatsword-yellow.webp",
+      "_id": "EHxdAFDYHpxhR1UG",
+      "flags": {},
+      "_key": "!tables.results!u37Vn1hOpcWRXEBy.EHxdAFDYHpxhR1UG"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Indomitable Spirit",
+      "documentId": "SkgAgcSCg5dP3cI0",
+      "img": "icons/magic/unholy/silhouette-evil-horned-giant.webp",
+      "_id": "RxQzL0JUKzy5ClPt",
+      "flags": {},
+      "_key": "!tables.results!u37Vn1hOpcWRXEBy.RxQzL0JUKzy5ClPt"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Provoke",
+      "documentId": "ZVruyJAxxqAB1Ve4",
+      "img": "icons/magic/control/fear-fright-monster-grin-red-orange.webp",
+      "_id": "0sYqsNbknHwrtxRW",
+      "flags": {},
+      "_key": "!tables.results!u37Vn1hOpcWRXEBy.0sYqsNbknHwrtxRW"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Withstand",
+      "documentId": "xKUctwMlfzlieG1C",
+      "img": "icons/magic/holy/barrier-shield-winged-blue.webp",
+      "_id": "1mqrcIWaZ1loHMZk",
+      "flags": {},
+      "_key": "!tables.results!u37Vn1hOpcWRXEBy.1mqrcIWaZ1loHMZk"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "u37Vn1hOpcWRXEBy",
+  "_key": "!tables!u37Vn1hOpcWRXEBy"
+}

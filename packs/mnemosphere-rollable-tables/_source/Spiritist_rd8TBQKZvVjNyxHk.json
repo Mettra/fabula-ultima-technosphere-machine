@@ -1,0 +1,93 @@
+{
+  "folder": "uNZ7Y06gjUH95ugJ",
+  "name": "Spiritist",
+  "img": "modules/fabula-ultima-compendium/images/classes/Spiritist.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Healing Power",
+      "documentId": "3DQx9lNnuLiyq1Md",
+      "img": "icons/magic/life/cross-beam-green.webp",
+      "_id": "NYNJQgGFNTGnG34I",
+      "flags": {},
+      "_key": "!tables.results!rd8TBQKZvVjNyxHk.NYNJQgGFNTGnG34I"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Support Magic",
+      "documentId": "wPhk5rH99IEMlNfU",
+      "img": "icons/magic/light/hand-sparks-smoke-teal.webp",
+      "_id": "wrrD3rdV0O2C3QH1",
+      "flags": {},
+      "_key": "!tables.results!rd8TBQKZvVjNyxHk.wrrD3rdV0O2C3QH1"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Vismagus",
+      "documentId": "MeXFn8aJLNQXXDpR",
+      "img": "icons/magic/life/heart-hand-gold-green-light.webp",
+      "_id": "o7nxnnRjXySpQKwC",
+      "flags": {},
+      "_key": "!tables.results!rd8TBQKZvVjNyxHk.o7nxnnRjXySpQKwC"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Spiritist - Spiritual Magic",
+      "documentId": "TedLJbquHvhWwDte",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "6lOtqMLqvSBQc3fm",
+      "flags": {},
+      "_key": "!tables.results!rd8TBQKZvVjNyxHk.6lOtqMLqvSBQc3fm"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411274799,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "rd8TBQKZvVjNyxHk",
+  "_key": "!tables!rd8TBQKZvVjNyxHk"
+}

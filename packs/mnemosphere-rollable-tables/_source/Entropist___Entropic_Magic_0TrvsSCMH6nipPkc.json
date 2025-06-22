@@ -1,0 +1,210 @@
+{
+  "folder": "O6GTIXeySOmss3aK",
+  "name": "Entropist - Entropic Magic",
+  "_id": "0TrvsSCMH6nipPkc",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Acceleration",
+      "documentId": "pmjoA8U33dCMre5t",
+      "img": "icons/magic/time/clock-spinning-gold-pink.webp",
+      "_id": "R2GfUU0eFJpffvfk",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.R2GfUU0eFJpffvfk"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Anomaly",
+      "documentId": "Dx1SpdRIHVUfgnt0",
+      "img": "icons/magic/death/skeleton-fish-teal.webp",
+      "_id": "Z0iD6Kj9zO9A0YbZ",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.Z0iD6Kj9zO9A0YbZ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Dark Weapon",
+      "documentId": "M3o2qgmNbtSMRPsv",
+      "img": "icons/skills/melee/strike-axe-energy-pink.webp",
+      "_id": "AE8NvX5gT65aC8ar",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.AE8NvX5gT65aC8ar"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Dispel",
+      "documentId": "EfmyAOA3eSzs9ex6",
+      "img": "icons/magic/symbols/runes-star-magenta.webp",
+      "_id": "u3YjP9J25BVvE49R",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.u3YjP9J25BVvE49R"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Drain Spirit",
+      "documentId": "UNhs86GVvg1kU5hW",
+      "img": "icons/magic/death/skull-humanoid-white-blue.webp",
+      "_id": "ixqmwguAno9dUglM",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.ixqmwguAno9dUglM"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Drain Vigor",
+      "documentId": "UCwlEBvaMtShG9e2",
+      "img": "icons/magic/death/skull-humanoid-white-red.webp",
+      "_id": "AIVcgWxzqI5In50h",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.AIVcgWxzqI5In50h"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Gamble",
+      "documentId": "TV2puAICfimGVqlt",
+      "img": "icons/commodities/currency/coin-engraved-sun-smile-copper.webp",
+      "_id": "DYHUA2Jloz8PJe2I",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.DYHUA2Jloz8PJe2I"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Mirror",
+      "documentId": "kxkhfpzGIi40MNif",
+      "img": "icons/magic/defensive/shield-barrier-deflect-teal.webp",
+      "_id": "AQ2iMwMdFECS82lJ",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.AQ2iMwMdFECS82lJ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Omega",
+      "documentId": "tfZkBQAeeN7ms6cJ",
+      "img": "icons/magic/death/skull-energy-light-white.webp",
+      "_id": "AbZeiDtW9rGyFePB",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.AbZeiDtW9rGyFePB"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Stop",
+      "documentId": "tbjB4Xri0IVLIF1r",
+      "img": "icons/magic/time/clock-stopwatch-white-blue.webp",
+      "_id": "BFbD6PdyFyrXWlsX",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.BFbD6PdyFyrXWlsX"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Umbra",
+      "documentId": "vDAd5VTrpRjvA3vK",
+      "img": "icons/magic/unholy/strike-body-explode-disintegrate.webp",
+      "_id": "z4RZJDYWVS3DjlZI",
+      "flags": {},
+      "_key": "!tables.results!0TrvsSCMH6nipPkc.z4RZJDYWVS3DjlZI"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.KlX3Pa8ylTT0MVls",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.0TrvsSCMH6nipPkc",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769479,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d11",
+  "_key": "!tables!0TrvsSCMH6nipPkc"
+}

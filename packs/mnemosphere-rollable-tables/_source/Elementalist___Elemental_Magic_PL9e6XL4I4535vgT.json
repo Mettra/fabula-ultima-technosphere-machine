@@ -1,0 +1,242 @@
+{
+  "folder": "lsdtfwcmEQTf1BbS",
+  "name": "Elementalist - Elemental Magic",
+  "_id": "PL9e6XL4I4535vgT",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Elemental Shroud",
+      "documentId": "0uCpf1eYQc6ckvzw",
+      "img": "icons/magic/defensive/shield-barrier-flaming-diamond-acid.webp",
+      "_id": "D1vV4DsFGLgcy5nl",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.D1vV4DsFGLgcy5nl"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Elemental Weapon",
+      "documentId": "yP74TvXbje5u37f6",
+      "img": "icons/magic/fire/dagger-rune-enchant-flame-strong-green.webp",
+      "_id": "az3cEdmzS801lNaJ",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.az3cEdmzS801lNaJ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Flare",
+      "documentId": "M3KAMYQS06guV19a",
+      "img": "icons/magic/fire/projectile-fireball-orange-yellow.webp",
+      "_id": "xxjo7J92c0Wko8EP",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.xxjo7J92c0Wko8EP"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Fulgur",
+      "documentId": "hEt1Io2dSM1DcW57",
+      "img": "icons/magic/lightning/bolts-forked-large-blue.webp",
+      "_id": "qHI8RRfy3c1fq9T8",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.qHI8RRfy3c1fq9T8"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Glacies",
+      "documentId": "sRBIZ2CAdQIvBxY7",
+      "img": "icons/magic/water/barrier-ice-wall-snow.webp",
+      "_id": "ogVMYfJTEwlTgYdH",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.ogVMYfJTEwlTgYdH"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Iceberg",
+      "documentId": "KzdW9bKTfhsKHr5I",
+      "img": "icons/magic/water/barrier-ice-crystal-wall-faceted.webp",
+      "_id": "560XFINiyUsrCTRw",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.560XFINiyUsrCTRw"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Ignis",
+      "documentId": "iFpx5bxhhy6QtKkS",
+      "img": "icons/magic/fire/projectile-beams-salvo-red.webp",
+      "_id": "u8IkH1XbpmzOu5lt",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.u8IkH1XbpmzOu5lt"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Rift",
+      "documentId": "ZhXCFtaFThhXr1Xt",
+      "img": "icons/magic/earth/projectile-boulder-dust.webp",
+      "_id": "ju7JAjHSBu6Cfxs8",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.ju7JAjHSBu6Cfxs8"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Soaring Strike",
+      "documentId": "u38udYpfdKFQ1igw",
+      "img": "icons/skills/melee/strike-spear-red.webp",
+      "_id": "fEZ2Ld7QKLpvpWQp",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.fEZ2Ld7QKLpvpWQp"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Terra",
+      "documentId": "H8BiSphs8ivFKlyQ",
+      "img": "icons/magic/earth/explosion-lava-stone-red.webp",
+      "_id": "bTzsEsVaJ1Yoc7oe",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.bTzsEsVaJ1Yoc7oe"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Thunderbolt",
+      "documentId": "Oj9911IzO96DJbX4",
+      "img": "icons/magic/lightning/bolt-strike-blue-white.webp",
+      "_id": "QBg62sRMjQ8rlKZB",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.QBg62sRMjQ8rlKZB"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        12,
+        12
+      ],
+      "drawn": false,
+      "text": "Ventus",
+      "documentId": "mTq00clS22LaL5pq",
+      "img": "icons/magic/air/air-wave-gust-blue.webp",
+      "_id": "iLRP9Ui4C2xolAnq",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.iLRP9Ui4C2xolAnq"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        13,
+        13
+      ],
+      "drawn": false,
+      "text": "Vortex",
+      "documentId": "QaKWI1Camurmn66P",
+      "img": "icons/magic/air/wind-tornado-funnel-gray.webp",
+      "_id": "hmYYPWjUoyr3HU4w",
+      "flags": {},
+      "_key": "!tables.results!PL9e6XL4I4535vgT.hmYYPWjUoyr3HU4w"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.HhG5PASXthqZ2vHi",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.PL9e6XL4I4535vgT",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769604,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d13",
+  "_key": "!tables!PL9e6XL4I4535vgT"
+}

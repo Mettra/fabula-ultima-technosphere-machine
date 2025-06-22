@@ -1,0 +1,322 @@
+{
+  "folder": "RyrmU8S39G76T83C",
+  "name": "Dancer - Dance",
+  "_id": "BgFd94PqW5bh9u8W",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Angel Dance",
+      "documentId": "pUdrOBQlsmGFJ9x9",
+      "img": "icons/magic/holy/angel-winged-humanoid-blue.webp",
+      "_id": "vxrDpSDxKPMCUAYz",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.vxrDpSDxKPMCUAYz"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Banshee Dance",
+      "documentId": "HjXee40BheylZXGr",
+      "img": "icons/magic/death/undead-ghost-strike-white.webp",
+      "_id": "qDUb6olFgdkfVDt3",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.qDUb6olFgdkfVDt3"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Bat Dance",
+      "documentId": "3hKnBKnIaGMbSjwL",
+      "img": "icons/creatures/mammals/bat-movement-flying-purple.webp",
+      "_id": "c0wDGdpCfc4TXB5f",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.c0wDGdpCfc4TXB5f"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Golem Dance",
+      "documentId": "nqQRZQXayHN64h5T",
+      "img": "icons/creatures/magical/construct-golem-stone-blue.webp",
+      "_id": "S478goEjE1czFuLz",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.S478goEjE1czFuLz"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Griffin Dance",
+      "documentId": "rgu6v3rvpuxnoFMe",
+      "img": "icons/commodities/biological/wing-bird-white.webp",
+      "_id": "6iA6TJEfqxBU3V2i",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.6iA6TJEfqxBU3V2i"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Hydra Dance",
+      "documentId": "NpJ4HjGyXLxzETII",
+      "img": "icons/creatures/reptiles/lizard-mouth-glowing-red.webp",
+      "_id": "r4S6LkU1SjE7TaF4",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.r4S6LkU1SjE7TaF4"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Kraken Dance",
+      "documentId": "QMRLO4AK6PGPkX1e",
+      "img": "icons/creatures/fish/squid-kraken-teal.webp",
+      "_id": "BuMoTuSAxk4bsGOs",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.BuMoTuSAxk4bsGOs"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Lion Dance",
+      "documentId": "XxQTrNzt7BPaSbFF",
+      "img": "icons/creatures/abilities/lion-roar-yellow.webp",
+      "_id": "FAPwtsz9e3AqmJIi",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.FAPwtsz9e3AqmJIi"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Maenad Dance",
+      "documentId": "uidsBvueMZszRN3X",
+      "img": "icons/consumables/drinks/wine-amphora-clay-red.webp",
+      "_id": "GLYEbw4q2HYLFIoh",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.GLYEbw4q2HYLFIoh"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Myrmidon Dance",
+      "documentId": "IByzYBgvvsGPb5QP",
+      "img": "icons/creatures/magical/construct-iron-stomping-yellow.webp",
+      "_id": "f3u8mPy7a3jgK5YH",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.f3u8mPy7a3jgK5YH"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Nightmare Dance",
+      "documentId": "SKD2fX4QElTw2jQo",
+      "img": "icons/creatures/unholy/demon-horned-winged-laughing.webp",
+      "_id": "324xk0szXrRMKHqn",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.324xk0szXrRMKHqn"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        12,
+        12
+      ],
+      "drawn": false,
+      "text": "Ouroboros Dance",
+      "documentId": "fyHLVr86wVL9lIYF",
+      "img": "icons/creatures/reptiles/serpent-horned-green.webp",
+      "_id": "D2UrBF3IkBQuoznX",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.D2UrBF3IkBQuoznX"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        13,
+        13
+      ],
+      "drawn": false,
+      "text": "Peacock Dance",
+      "documentId": "VcJtyZjX5XT8V0YS",
+      "img": "icons/creatures/birds/songbird-yellow-flying.webp",
+      "_id": "93cWAzkFoRbrZxGI",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.93cWAzkFoRbrZxGI"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        14,
+        14
+      ],
+      "drawn": false,
+      "text": "Peacock Dance",
+      "documentId": "VcJtyZjX5XT8V0YS",
+      "img": "icons/creatures/birds/songbird-yellow-flying.webp",
+      "_id": "9M4ayDGWP7NIsqHs",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.9M4ayDGWP7NIsqHs"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        15,
+        15
+      ],
+      "drawn": false,
+      "text": "Phoenix Dance",
+      "documentId": "dsp1RcwVdGdUe8el",
+      "img": "icons/magic/fire/projectile-wave-arrow.webp",
+      "_id": "UlhBO5ndZb42lo1o",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.UlhBO5ndZb42lo1o"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        16,
+        16
+      ],
+      "drawn": false,
+      "text": "Satyr Dance",
+      "documentId": "a1SsfJwMwZLA6XKC",
+      "img": "icons/creatures/mammals/goat-horned-blue.webp",
+      "_id": "A0vUl6rRFFaXgX0m",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.A0vUl6rRFFaXgX0m"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        17,
+        17
+      ],
+      "drawn": false,
+      "text": "Unicorn Dance",
+      "documentId": "5n80RQomgaUfmeQU",
+      "img": "icons/creatures/mammals/unicorn-horned-white.webp",
+      "_id": "Uyq5cXjGxZIf6A9A",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.Uyq5cXjGxZIf6A9A"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        18,
+        18
+      ],
+      "drawn": false,
+      "text": "Yeti Dance",
+      "documentId": "aCDdVLxSoG9UguPC",
+      "img": "icons/creatures/magical/spirit-undead-horned-blue.webp",
+      "_id": "yVMlzaFtZacDiwab",
+      "flags": {},
+      "_key": "!tables.results!BgFd94PqW5bh9u8W.yVMlzaFtZacDiwab"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.ZKqe8rQqG6p5sCun",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.BgFd94PqW5bh9u8W",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769549,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d18",
+  "_key": "!tables!BgFd94PqW5bh9u8W"
+}

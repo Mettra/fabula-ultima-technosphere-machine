@@ -1,0 +1,93 @@
+{
+  "folder": "lsdtfwcmEQTf1BbS",
+  "name": "Elementalist",
+  "img": "modules/fabula-ultima-compendium/images/classes/Elementalist.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Cataclysm",
+      "documentId": "nMIhjKfRHVK5CZKp",
+      "img": "icons/magic/fire/barrier-wall-explosion-orange.webp",
+      "_id": "QiYESrzpc9xzDX8N",
+      "flags": {},
+      "_key": "!tables.results!UtcBNFoK5sr7JPFo.QiYESrzpc9xzDX8N"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Magical Artillery",
+      "documentId": "CmWOLUBaJpucy02F",
+      "img": "icons/magic/earth/projectiles-magma-stone-orange.webp",
+      "_id": "UyWJvG8hSaCHu46N",
+      "flags": {},
+      "_key": "!tables.results!UtcBNFoK5sr7JPFo.UyWJvG8hSaCHu46N"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Spellblade",
+      "documentId": "mIbplXaSLUfw4ooD",
+      "img": "icons/magic/fire/dagger-rune-enchant-flame-strong-purple.webp",
+      "_id": "PCgiBtibKBqR6iA9",
+      "flags": {},
+      "_key": "!tables.results!UtcBNFoK5sr7JPFo.PCgiBtibKBqR6iA9"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Elementalist - Elemental Magic",
+      "documentId": "PL9e6XL4I4535vgT",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "mZZ7dnzdDaNp6Wig",
+      "flags": {},
+      "_key": "!tables.results!UtcBNFoK5sr7JPFo.mZZ7dnzdDaNp6Wig"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411208675,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "UtcBNFoK5sr7JPFo",
+  "_key": "!tables!UtcBNFoK5sr7JPFo"
+}

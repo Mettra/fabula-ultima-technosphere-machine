@@ -1,0 +1,114 @@
+{
+  "folder": "RyrmU8S39G76T83C",
+  "name": "Dancer",
+  "img": "modules/fabula-ultima-compendium/images/classes/Dancer.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Follow My Lead",
+      "documentId": "VVAqyZDwHqMAzGbf",
+      "img": "icons/magic/control/control-influence-puppet.webp",
+      "_id": "Sq8oisWykXJj2uPV",
+      "flags": {},
+      "_key": "!tables.results!04kkIajSv26FBvhm.Sq8oisWykXJj2uPV"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Frenetic Footwork",
+      "documentId": "87ThI1tRMTKjh3IE",
+      "img": "icons/skills/movement/feet-winged-boots-brown.webp",
+      "_id": "c1XSC2O9dE3DPiFo",
+      "flags": {},
+      "_key": "!tables.results!04kkIajSv26FBvhm.c1XSC2O9dE3DPiFo"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Quick-Change",
+      "documentId": "qsGZRHgvNHQi36nC",
+      "img": "icons/commodities/leather/leather-buckle-steel-tan.webp",
+      "_id": "O3sIYXWdDz4vmeHj",
+      "flags": {},
+      "_key": "!tables.results!04kkIajSv26FBvhm.O3sIYXWdDz4vmeHj"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Wardancer",
+      "documentId": "YDsOEBjdZO4pCSFg",
+      "img": "icons/magic/movement/pinwheel-turning-blue.webp",
+      "_id": "ZW2xD8SOYhibU70u",
+      "flags": {},
+      "_key": "!tables.results!04kkIajSv26FBvhm.ZW2xD8SOYhibU70u"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Dancer - Dance",
+      "documentId": "BgFd94PqW5bh9u8W",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "rMIYpDHAihIiSNMo",
+      "flags": {},
+      "_key": "!tables.results!04kkIajSv26FBvhm.rMIYpDHAihIiSNMo"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-force": "Dancer - Dance",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611767914,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "04kkIajSv26FBvhm",
+  "_key": "!tables!04kkIajSv26FBvhm"
+}

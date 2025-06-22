@@ -1,0 +1,93 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Chimerist",
+  "img": "modules/fabula-ultima-compendium/images/classes/Chimerist.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Consume",
+      "documentId": "HTfqWXqUehqPzgsu",
+      "img": "icons/magic/unholy/hand-claw-fire-blue.webp",
+      "_id": "uckgGN6k8q958RUe",
+      "flags": {},
+      "_key": "!tables.results!ot4lD2BB7pC8hxHT.uckgGN6k8q958RUe"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Feral Speech",
+      "documentId": "R2gPoRDVeGubK9xS",
+      "img": "icons/creatures/abilities/cougar-roar-rush-orange.webp",
+      "_id": "Gjl4BnoackLrrmjP",
+      "flags": {},
+      "_key": "!tables.results!ot4lD2BB7pC8hxHT.Gjl4BnoackLrrmjP"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Pathogenesis",
+      "documentId": "HCbZBeRZRKyb9nlP",
+      "img": "icons/magic/nature/plant-undersea-orb-purple.webp",
+      "_id": "NKWn1OTmq1P9HYbc",
+      "flags": {},
+      "_key": "!tables.results!ot4lD2BB7pC8hxHT.NKWn1OTmq1P9HYbc"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Spell Mimic",
+      "documentId": "u1rni1dAuttTm3xS",
+      "img": "icons/creatures/mammals/humanoid-fox-cat-archer.webp",
+      "_id": "yBbWdEUTMBxaGXhz",
+      "flags": {},
+      "_key": "!tables.results!ot4lD2BB7pC8hxHT.yBbWdEUTMBxaGXhz"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.8eYgb2cjSvCQtGln",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "ot4lD2BB7pC8hxHT",
+  "_key": "!tables!ot4lD2BB7pC8hxHT"
+}

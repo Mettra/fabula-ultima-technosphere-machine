@@ -1,0 +1,242 @@
+{
+  "folder": "uNZ7Y06gjUH95ugJ",
+  "name": "Spiritist - Spiritual Magic",
+  "_id": "TedLJbquHvhWwDte",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Aura",
+      "documentId": "RNtndiEGFrIig2Ac",
+      "img": "icons/magic/defensive/shield-barrier-flaming-diamond-blue.webp",
+      "_id": "IAblioaAf4IcpZey",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.IAblioaAf4IcpZey"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Awaken",
+      "documentId": "wFVhDMeiEKUj4sn1",
+      "img": "icons/magic/control/energy-stream-link-spiral-white.webp",
+      "_id": "HAhDyFLWS0HOPQnj",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.HAhDyFLWS0HOPQnj"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Barrier",
+      "documentId": "yamEWsXBrdeVBeGq",
+      "img": "icons/magic/defensive/shield-barrier-flaming-diamond-orange.webp",
+      "_id": "cgsR5dcVSSyPb6sA",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.cgsR5dcVSSyPb6sA"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Cleanse",
+      "documentId": "vSj1UBmERvHGYBp9",
+      "img": "icons/magic/control/buff-flight-wings-runes-blue-white.webp",
+      "_id": "jf22TmnpHW60amPZ",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.jf22TmnpHW60amPZ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Enrage",
+      "documentId": "7rCnKmGO4Tec6GwM",
+      "img": "icons/skills/social/intimidation-impressing.webp",
+      "_id": "IcRTVtcQsqhZAQcr",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.IcRTVtcQsqhZAQcr"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Hallucination",
+      "documentId": "V4mnGDvhuhQUGtep",
+      "img": "icons/commodities/biological/eye-blue-gold.webp",
+      "_id": "eQXDsER4kTRpsalc",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.eQXDsER4kTRpsalc"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Heal",
+      "documentId": "T2RpWUmme5Nt2SCa",
+      "img": "icons/magic/life/heart-area-circle-red-green.webp",
+      "_id": "Da7w1cYQh7fGZu4Q",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.Da7w1cYQh7fGZu4Q"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Lux",
+      "documentId": "0mdq4JsWzyyP2Fbx",
+      "img": "icons/magic/holy/projectiles-blades-salvo-yellow.webp",
+      "_id": "xl3BVbhwqT9LDs9p",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.xl3BVbhwqT9LDs9p"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        9,
+        9
+      ],
+      "drawn": false,
+      "text": "Mercy",
+      "documentId": "O9NHWhcBzxaV4f22",
+      "img": "icons/magic/life/ankh-shadow-green.webp",
+      "_id": "qvkNSrxxqKdbpVNX",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.qvkNSrxxqKdbpVNX"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        10,
+        10
+      ],
+      "drawn": false,
+      "text": "Reinforce",
+      "documentId": "SuhxQXKFULzADxKv",
+      "img": "icons/magic/defensive/shield-barrier-flaming-diamond-blue-yellow.webp",
+      "_id": "1wQmjo6hQ3YSfJyB",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.1wQmjo6hQ3YSfJyB"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        11,
+        11
+      ],
+      "drawn": false,
+      "text": "Soul Shroud",
+      "documentId": "DQ2VGCsswOIVi6Zg",
+      "img": "icons/magic/defensive/shield-barrier-flaming-diamond-teal-purple.webp",
+      "_id": "JKpCZ3sqhbzVKnZw",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.JKpCZ3sqhbzVKnZw"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        12,
+        12
+      ],
+      "drawn": false,
+      "text": "Soul Weapon",
+      "documentId": "o1JW179wTaa4Z8is",
+      "img": "icons/skills/melee/sword-winged-holy-orange.webp",
+      "_id": "YP7vYz8MYso60QtV",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.YP7vYz8MYso60QtV"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        13,
+        13
+      ],
+      "drawn": false,
+      "text": "Torpor",
+      "documentId": "LqKKuGKem1Rnft44",
+      "img": "icons/magic/unholy/orb-swirling-teal.webp",
+      "_id": "uI4QozL1zUIAT7JE",
+      "flags": {},
+      "_key": "!tables.results!TedLJbquHvhWwDte.uI4QozL1zUIAT7JE"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-skill": "Compendium.fabula-ultima-compendium.class-skills.Item.YeXD6hP8wC3B0eBa",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": "RollTable.TedLJbquHvhWwDte",
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769639,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "",
+  "_key": "!tables!TedLJbquHvhWwDte"
+}

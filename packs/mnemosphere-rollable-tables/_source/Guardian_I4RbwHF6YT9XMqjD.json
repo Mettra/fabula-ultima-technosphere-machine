@@ -1,0 +1,93 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Guardian",
+  "img": "modules/fabula-ultima-compendium/images/classes/Guardian.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Defensive Mastery",
+      "documentId": "vtALqP9a4X4DmMkM",
+      "img": "icons/skills/melee/shield-block-gray-orange.webp",
+      "_id": "mUWCPoC5bM9kQiFf",
+      "flags": {},
+      "_key": "!tables.results!I4RbwHF6YT9XMqjD.mUWCPoC5bM9kQiFf"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Fortress",
+      "documentId": "1Nz7jRIOD436gdfZ",
+      "img": "icons/environment/settlement/city-gate.webp",
+      "_id": "tnhpUDs7qGPF7tyj",
+      "flags": {},
+      "_key": "!tables.results!I4RbwHF6YT9XMqjD.tnhpUDs7qGPF7tyj"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Protect",
+      "documentId": "6i7bz7JbFFnM2DIR",
+      "img": "icons/skills/melee/shield-damaged-broken-brown.webp",
+      "_id": "gQiGa8ofkpiWybNV",
+      "flags": {},
+      "_key": "!tables.results!I4RbwHF6YT9XMqjD.gQiGa8ofkpiWybNV"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Retaliation",
+      "documentId": "Oa7ZNEko1ubAD3rB",
+      "img": "icons/skills/melee/shield-block-bash-yellow.webp",
+      "_id": "7MzaKh9rmmYGtHGF",
+      "flags": {},
+      "_key": "!tables.results!I4RbwHF6YT9XMqjD.7MzaKh9rmmYGtHGF"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "I4RbwHF6YT9XMqjD",
+  "_key": "!tables!I4RbwHF6YT9XMqjD"
+}

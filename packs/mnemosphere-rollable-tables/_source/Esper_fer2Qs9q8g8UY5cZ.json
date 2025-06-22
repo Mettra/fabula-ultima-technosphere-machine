@@ -1,0 +1,109 @@
+{
+  "folder": "rVMOxHgZmQoK82Pr",
+  "name": "Esper",
+  "img": "modules/fabula-ultima-compendium/images/classes/Esper.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Cognitive Focus",
+      "documentId": "ooMFjS6VXeXzdFWK",
+      "img": "icons/magic/perception/eye-tendrils-web-purple.webp",
+      "_id": "mys9hDbeOSg39Z8R",
+      "flags": {},
+      "_key": "!tables.results!fer2Qs9q8g8UY5cZ.mys9hDbeOSg39Z8R"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Hypercognition",
+      "documentId": "Fr6I57jAWI7PVrEJ",
+      "img": "icons/magic/control/debuff-energy-hold-teal-blue.webp",
+      "_id": "vddiYe8LmVc2mVFP",
+      "flags": {},
+      "_key": "!tables.results!fer2Qs9q8g8UY5cZ.vddiYe8LmVc2mVFP"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Navigator",
+      "documentId": "UcR5qMyYA33CBbEY",
+      "img": "icons/magic/light/explosion-star-glow-blue-purple.webp",
+      "_id": "mYug7jQlpWyn1O14",
+      "flags": {},
+      "_key": "!tables.results!fer2Qs9q8g8UY5cZ.mYug7jQlpWyn1O14"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Psychokinesis",
+      "documentId": "uiJoIzN64r2MxiJx",
+      "img": "icons/magic/unholy/hand-marked-pink.webp",
+      "_id": "rsGHqrmWdsjrEqlo",
+      "flags": {},
+      "_key": "!tables.results!fer2Qs9q8g8UY5cZ.rsGHqrmWdsjrEqlo"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Esper - Psychic Gifts",
+      "documentId": "VS6aDD4yc4Rg8tWZ",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "pJhGneQB46d0DFrW",
+      "flags": {},
+      "_key": "!tables.results!fer2Qs9q8g8UY5cZ.pJhGneQB46d0DFrW"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411248986,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "fer2Qs9q8g8UY5cZ",
+  "_key": "!tables!fer2Qs9q8g8UY5cZ"
+}

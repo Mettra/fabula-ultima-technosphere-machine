@@ -1,3 +1,4 @@
 {
-  "foundryAppPath": "C:\\Program Files\\Foundry Virtual Tabletop\\resources\\app\\main.js"
+  "foundryAppPath": "C:\\Program Files\\Foundry Virtual Tabletop\\resources\\app\\main.js",
+  "foundryDataPath": "C:\\Users\\<User>\\AppData\\Local\\FoundryVTT"
 }

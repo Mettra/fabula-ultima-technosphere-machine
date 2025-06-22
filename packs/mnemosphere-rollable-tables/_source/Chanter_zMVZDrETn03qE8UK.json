@@ -1,0 +1,114 @@
+{
+  "folder": "ewCP1Esr7LFStknk",
+  "name": "Chanter",
+  "_id": "zMVZDrETn03qE8UK",
+  "img": "modules/fabula-ultima-compendium/images/classes/Chanter.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Resonance",
+      "documentId": "K6EqevlRnGGTqrL4",
+      "img": "icons/magic/sonic/projectile-sound-rings-wave.webp",
+      "_id": "QQ14SOeaGP817noZ",
+      "flags": {},
+      "_key": "!tables.results!zMVZDrETn03qE8UK.QQ14SOeaGP817noZ"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Siren's Song",
+      "documentId": "6RYIGbY92Uf4kCdC",
+      "img": "icons/magic/symbols/rune-sigil-rough-white-teal.webp",
+      "_id": "yNeUbRQwxMfZv9lE",
+      "flags": {},
+      "_key": "!tables.results!zMVZDrETn03qE8UK.yNeUbRQwxMfZv9lE"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Sound Barrier",
+      "documentId": "5S60FxaPPP1Iv0QW",
+      "img": "icons/magic/defensive/barrier-shield-dome-blue-purple.webp",
+      "_id": "QLwY3PH8gqAbtEbx",
+      "flags": {},
+      "_key": "!tables.results!zMVZDrETn03qE8UK.QLwY3PH8gqAbtEbx"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Vibrato",
+      "documentId": "cpoKkXZWxDzTQTca",
+      "img": "icons/magic/sonic/explosion-shock-sound-wave.webp",
+      "_id": "kjF0SeDFuG5BVJWd",
+      "flags": {},
+      "_key": "!tables.results!zMVZDrETn03qE8UK.kjF0SeDFuG5BVJWd"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Chanter - Magichant",
+      "documentId": "ZjvKiBIdrx2WMWNQ",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "L68IaPyf593bpkBi",
+      "flags": {},
+      "_key": "!tables.results!zMVZDrETn03qE8UK.L68IaPyf593bpkBi"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {
+    "fabula-ultima-technosphere-machine": {
+      "mnemosphere-rolltable-force": "Chanter - Magichant",
+      "mnemosphere-rolltable": true
+    }
+  },
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1750611769763,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_key": "!tables!zMVZDrETn03qE8UK"
+}

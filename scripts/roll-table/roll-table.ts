@@ -2,7 +2,7 @@ import { Log } from "../core-config";
 import { migrateRollTableDescriptionToFlags } from "../roll-table-utils";
 import { getTSFlag, setTSFlag } from "../utils/foundry-utils";
 
-export const FLAG_PROPERTIES_ROLLTABLE = "mnemosphere-properties-visible";
+export const FLAG_PROPERTIES_ROLLTABLE = "mnemosphere-rolltable";
 export const FLAG_FORCE_RESULT = "mnemosphere-rolltable-force";
 export const FLAG_ADD_SKILL = "mnemosphere-rolltable-skill";
 

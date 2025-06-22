@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Rogue",
+  "img": "modules/fabula-ultima-compendium/images/classes/Rogue.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Cheap Shot",
+      "documentId": "29gExXSpRXuCCi0S",
+      "img": "icons/skills/wounds/bone-broken-knee-beam.webp",
+      "_id": "wME29To05BsuYixk",
+      "flags": {},
+      "_key": "!tables.results!wNzTkYYU2JKJN6kU.wME29To05BsuYixk"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Dodge",
+      "documentId": "PlBbKReGhMn5oNfs",
+      "img": "icons/magic/movement/abstract-ribbons-red-orange.webp",
+      "_id": "l4pu4FrocPbwcTnY",
+      "flags": {},
+      "_key": "!tables.results!wNzTkYYU2JKJN6kU.l4pu4FrocPbwcTnY"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "High Speed",
+      "documentId": "KWFiHvZdWqdYCQcE",
+      "img": "icons/skills/movement/feet-winged-boots-glowing-yellow.webp",
+      "_id": "3Nm59SOgMGcxIP5w",
+      "flags": {},
+      "_key": "!tables.results!wNzTkYYU2JKJN6kU.3Nm59SOgMGcxIP5w"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "See You Later",
+      "documentId": "LsRIEA6Q5xBmWfQs",
+      "img": "icons/equipment/back/cloak-hooded-blue.webp",
+      "_id": "Zc97rHeivJE2ylEt",
+      "flags": {},
+      "_key": "!tables.results!wNzTkYYU2JKJN6kU.Zc97rHeivJE2ylEt"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Soul Steal",
+      "documentId": "RUpi2XHxYCtQPjRd",
+      "img": "icons/skills/social/theft-pickpocket-bribery-brown.webp",
+      "_id": "1kn6dRJgFidN1S5n",
+      "flags": {},
+      "_key": "!tables.results!wNzTkYYU2JKJN6kU.1kn6dRJgFidN1S5n"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "wNzTkYYU2JKJN6kU",
+  "_key": "!tables!wNzTkYYU2JKJN6kU"
+}

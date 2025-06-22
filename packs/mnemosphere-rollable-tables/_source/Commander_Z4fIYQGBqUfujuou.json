@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Commander",
+  "img": "modules/fabula-ultima-compendium/images/classes/Commander.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Bishop's Edict",
+      "documentId": "553aZuldhfkSulXJ",
+      "img": "icons/commodities/treasure/token-cross-gem-yellow.webp",
+      "_id": "51oDyguOu0hlbYfx",
+      "flags": {},
+      "_key": "!tables.results!Z4fIYQGBqUfujuou.51oDyguOu0hlbYfx"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Charging Cavalry",
+      "documentId": "eHqcxevvNv4VMnYh",
+      "img": "icons/sundries/gaming/chess-knight-white.webp",
+      "_id": "Yst53xKheaDcarg8",
+      "flags": {},
+      "_key": "!tables.results!Z4fIYQGBqUfujuou.Yst53xKheaDcarg8"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Crushing Chariot",
+      "documentId": "pzi1Y3y1eOzMAMO4",
+      "img": "icons/sundries/gaming/chess-pawn-white-pink.webp",
+      "_id": "kDy0cgh0nLdsOq7J",
+      "flags": {},
+      "_key": "!tables.results!Z4fIYQGBqUfujuou.kDy0cgh0nLdsOq7J"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "King's Castle",
+      "documentId": "UFg5uOohCeRLxx08",
+      "img": "icons/commodities/treasure/broach-crown-gold.webp",
+      "_id": "n6Zfd2HA7X08YKm7",
+      "flags": {},
+      "_key": "!tables.results!Z4fIYQGBqUfujuou.n6Zfd2HA7X08YKm7"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Queen's Gambit",
+      "documentId": "mjk96HoHcAtBtJE5",
+      "img": "icons/commodities/treasure/crown-gold-satin-gems-red.webp",
+      "_id": "SkWoxklSjQGc5CCO",
+      "flags": {},
+      "_key": "!tables.results!Z4fIYQGBqUfujuou.SkWoxklSjQGc5CCO"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "Z4fIYQGBqUfujuou",
+  "_key": "!tables!Z4fIYQGBqUfujuou"
+}

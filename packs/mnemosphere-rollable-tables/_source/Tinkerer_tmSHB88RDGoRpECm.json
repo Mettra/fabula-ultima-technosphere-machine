@@ -1,0 +1,93 @@
+{
+  "folder": "ZesBez6Pu91ZapS5",
+  "name": "Tinkerer",
+  "img": "modules/fabula-ultima-compendium/images/classes/Tinkerer.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Emergency Item",
+      "documentId": "x8xRJ8i3vRqKumec",
+      "img": "icons/containers/bags/pack-leather-black-brown.webp",
+      "_id": "mJKk2HGtP4RH8iX3",
+      "flags": {},
+      "_key": "!tables.results!tmSHB88RDGoRpECm.mJKk2HGtP4RH8iX3"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Potion Rain",
+      "documentId": "4URhwJfFy27DiR0V",
+      "img": "icons/commodities/tech/smoke-bomb-purple.webp",
+      "_id": "UDVHiV281lsn8a71",
+      "flags": {},
+      "_key": "!tables.results!tmSHB88RDGoRpECm.UDVHiV281lsn8a71"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Secret Formula",
+      "documentId": "FzTPxsD3Cyp7ABFG",
+      "img": "icons/sundries/documents/blueprint-shield.webp",
+      "_id": "Xsgm1muTWbnIJM7I",
+      "flags": {},
+      "_key": "!tables.results!tmSHB88RDGoRpECm.Xsgm1muTWbnIJM7I"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "world.mnemosphere-rollable-tables",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Tinkerer - Gadgets",
+      "documentId": "TiBqf4l8sQu3dNFA",
+      "img": "icons/svg/d20-grey.svg",
+      "_id": "h0TU7Nj6OLdlbcYk",
+      "flags": {},
+      "_key": "!tables.results!tmSHB88RDGoRpECm.h0TU7Nj6OLdlbcYk"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411289581,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d4",
+  "_id": "tmSHB88RDGoRpECm",
+  "_key": "!tables!tmSHB88RDGoRpECm"
+}

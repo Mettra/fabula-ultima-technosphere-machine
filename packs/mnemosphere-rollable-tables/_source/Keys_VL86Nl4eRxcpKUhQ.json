@@ -1,0 +1,157 @@
+{
+  "folder": "ewCP1Esr7LFStknk",
+  "name": "Keys",
+  "_id": "VL86Nl4eRxcpKUhQ",
+  "img": "icons/svg/d20-grey.svg",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Key of Flame",
+      "documentId": "0qMmXuTaJXDYskIr",
+      "img": "icons/magic/fire/projectile-fireball-red-yellow.webp",
+      "_id": "a6dQkcOtxdlh9kSL",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.a6dQkcOtxdlh9kSL"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Key of Iron",
+      "documentId": "1jWpdSrx4OUXVZdI",
+      "img": "icons/magic/defensive/armor-shield-barrier-steel.webp",
+      "_id": "ypTJH48RgsVRia1k",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.ypTJH48RgsVRia1k"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Key of Frost",
+      "documentId": "791OtJBT1qGLmNEg",
+      "img": "icons/magic/water/snowflake-ice-blue.webp",
+      "_id": "qnQUrdUDeOkm71SA",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.qnQUrdUDeOkm71SA"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Key of Radiance",
+      "documentId": "9ytiDrzhlpOp8cn3",
+      "img": "icons/magic/light/beam-rays-yellow.webp",
+      "_id": "LMweNsPLHZH0zyaN",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.LMweNsPLHZH0zyaN"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Key of Shadow",
+      "documentId": "BTIyLCGbutKfxFso",
+      "img": "icons/magic/unholy/projectile-flame-white-purple.webp",
+      "_id": "3q4LXnDsub3DFdlq",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.3q4LXnDsub3DFdlq"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        6,
+        6
+      ],
+      "drawn": false,
+      "text": "Key of Stone",
+      "documentId": "OyDvkO61KgeCgTbN",
+      "img": "icons/magic/earth/laval-stone-orange.webp",
+      "_id": "S0BTVD6hfzwt5RW3",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.S0BTVD6hfzwt5RW3"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        7,
+        7
+      ],
+      "drawn": false,
+      "text": "Key of Thunder",
+      "documentId": "WfSDk944FDdW6WX4",
+      "img": "icons/magic/lightning/bolt-strike-sparks-teal.webp",
+      "_id": "zkpqTN3VFmLcUfae",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.zkpqTN3VFmLcUfae"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        8,
+        8
+      ],
+      "drawn": false,
+      "text": "Key of Wind",
+      "documentId": "XYssswhnbh2jtGcL",
+      "img": "icons/magic/air/wind-tornado-funnel-blue-grey.webp",
+      "_id": "rOWHpb2ZUBMhfCWT",
+      "flags": {},
+      "_key": "!tables.results!VL86Nl4eRxcpKUhQ.rOWHpb2ZUBMhfCWT"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d8",
+  "_key": "!tables!VL86Nl4eRxcpKUhQ"
+}

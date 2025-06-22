@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Sharpshooter",
+  "img": "modules/fabula-ultima-compendium/images/classes/Sharpshooter.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Barrage",
+      "documentId": "YG9wAfQTQMrwDABc",
+      "img": "icons/skills/ranged/arrows-flying-salvo-yellow.webp",
+      "_id": "lYx9OR2LaCG9wemP",
+      "flags": {},
+      "_key": "!tables.results!ApgGJ1JMSzUP2kqL.lYx9OR2LaCG9wemP"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Crossfire",
+      "documentId": "TtA9X4zQeomQdOOv",
+      "img": "icons/skills/ranged/arrow-strike-glowing-teal.webp",
+      "_id": "xMKYfdrqohodfRdv",
+      "flags": {},
+      "_key": "!tables.results!ApgGJ1JMSzUP2kqL.xMKYfdrqohodfRdv"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Hawkeye",
+      "documentId": "c3OrlGuBW4Kwy3Dn",
+      "img": "icons/magic/perception/eye-slit-orange.webp",
+      "_id": "A7yeJHiDrht9iWdA",
+      "flags": {},
+      "_key": "!tables.results!ApgGJ1JMSzUP2kqL.A7yeJHiDrht9iWdA"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Ranged Weapon Mastery",
+      "documentId": "tHn95aaO6UJTpbAv",
+      "img": "icons/skills/targeting/crosshair-scope-sniper-green.webp",
+      "_id": "FmU0EkGfrUOnHWii",
+      "flags": {},
+      "_key": "!tables.results!ApgGJ1JMSzUP2kqL.FmU0EkGfrUOnHWii"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Warning Shot",
+      "documentId": "vtzRrNijLhEGrGWl",
+      "img": "icons/skills/ranged/target-bullseye-archer-orange.webp",
+      "_id": "Am8ztIESvda6i8OS",
+      "flags": {},
+      "_key": "!tables.results!ApgGJ1JMSzUP2kqL.Am8ztIESvda6i8OS"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "ApgGJ1JMSzUP2kqL",
+  "_key": "!tables!ApgGJ1JMSzUP2kqL"
+}

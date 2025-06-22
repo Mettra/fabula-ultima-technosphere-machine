@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Loremaster",
+  "img": "modules/fabula-ultima-compendium/images/classes/Loremaster.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Flash of Insight",
+      "documentId": "pRrPF5O7gxzCltKA",
+      "img": "icons/magic/perception/hand-eye-fire-blue.webp",
+      "_id": "2DBlImkRm2o2uBqY",
+      "flags": {},
+      "_key": "!tables.results!yo13hJZWW8rwQ6Mu.2DBlImkRm2o2uBqY"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Focused",
+      "documentId": "JxFAJcYAQ4y6TkNX",
+      "img": "icons/magic/perception/eye-ringed-green.webp",
+      "_id": "PdGD5wC99yt7MwmP",
+      "flags": {},
+      "_key": "!tables.results!yo13hJZWW8rwQ6Mu.PdGD5wC99yt7MwmP"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Knowledge is Power",
+      "documentId": "hwuBTK5EtzyZQQM6",
+      "img": "icons/skills/wounds/anatomy-organ-brain-pink-red.webp",
+      "_id": "dJOqioRfuTCN9csU",
+      "flags": {},
+      "_key": "!tables.results!yo13hJZWW8rwQ6Mu.dJOqioRfuTCN9csU"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Quick Assessment",
+      "documentId": "hAjS7mPuWAfwMWHe",
+      "img": "icons/tools/scribal/magnifying-glass.webp",
+      "_id": "ogXJIQi0rVT8bhj1",
+      "flags": {},
+      "_key": "!tables.results!yo13hJZWW8rwQ6Mu.ogXJIQi0rVT8bhj1"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Trained Memory",
+      "documentId": "D8Mfqdar0ePqXseN",
+      "img": "icons/skills/trades/academics-investigation-puzzles.webp",
+      "_id": "mfmjb2fZh53iXWoD",
+      "flags": {},
+      "_key": "!tables.results!yo13hJZWW8rwQ6Mu.mfmjb2fZh53iXWoD"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "yo13hJZWW8rwQ6Mu",
+  "_key": "!tables!yo13hJZWW8rwQ6Mu"
+}

@@ -1,0 +1,109 @@
+{
+  "folder": "b9QeqzMGWb8g21Ym",
+  "name": "Weaponmaster",
+  "img": "modules/fabula-ultima-compendium/images/classes/Weaponmaster.png",
+  "description": "",
+  "results": [
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        1,
+        1
+      ],
+      "drawn": false,
+      "text": "Bladestorm",
+      "documentId": "V9OwgB0KbYT8WTcZ",
+      "img": "icons/skills/melee/strikes-sword-scimitar.webp",
+      "_id": "NpjvCBki8mrnwVcn",
+      "flags": {},
+      "_key": "!tables.results!FZ8kSCtOd6SqY3mj.NpjvCBki8mrnwVcn"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        2,
+        2
+      ],
+      "drawn": false,
+      "text": "Bonecrusher",
+      "documentId": "KAgq9ZsxOZKi5BlK",
+      "img": "icons/skills/wounds/bone-broken-marrow-red.webp",
+      "_id": "DleoT0uSxbXlUXpI",
+      "flags": {},
+      "_key": "!tables.results!FZ8kSCtOd6SqY3mj.DleoT0uSxbXlUXpI"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        3,
+        3
+      ],
+      "drawn": false,
+      "text": "Breach",
+      "documentId": "HrId6VRPnWs3uUXc",
+      "img": "icons/skills/melee/strike-flail-destructive-yellow.webp",
+      "_id": "8qGp1uPLzRM7JkVL",
+      "flags": {},
+      "_key": "!tables.results!FZ8kSCtOd6SqY3mj.8qGp1uPLzRM7JkVL"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        4,
+        4
+      ],
+      "drawn": false,
+      "text": "Counterattack",
+      "documentId": "rn71h8lnpDQ65JB0",
+      "img": "icons/skills/melee/swords-parry-block-blue.webp",
+      "_id": "psbej810KCvXC5OX",
+      "flags": {},
+      "_key": "!tables.results!FZ8kSCtOd6SqY3mj.psbej810KCvXC5OX"
+    },
+    {
+      "type": "pack",
+      "documentCollection": "fabula-ultima-compendium.class-skills",
+      "weight": 1,
+      "range": [
+        5,
+        5
+      ],
+      "drawn": false,
+      "text": "Melee Weapon Mastery",
+      "documentId": "qDLhHyDyFxo6Nrap",
+      "img": "icons/skills/melee/weapons-crossed-swords-yellow.webp",
+      "_id": "AcwMrbfWgpS9qRQZ",
+      "flags": {},
+      "_key": "!tables.results!FZ8kSCtOd6SqY3mj.AcwMrbfWgpS9qRQZ"
+    }
+  ],
+  "replacement": true,
+  "displayRoll": true,
+  "sort": 100000,
+  "ownership": {
+    "default": 0,
+    "F8pOuZOXSEH70oHZ": 3
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": "RollTable.ot4lD2BB7pC8hxHT",
+    "duplicateSource": "RollTable.UOYluF4erDhvlNUo",
+    "coreVersion": "12.343",
+    "systemId": "projectfu",
+    "systemVersion": "3.1.2",
+    "createdTime": 1749411019131,
+    "modifiedTime": 1749411019131,
+    "lastModifiedBy": "F8pOuZOXSEH70oHZ"
+  },
+  "formula": "1d5",
+  "_id": "FZ8kSCtOd6SqY3mj",
+  "_key": "!tables!FZ8kSCtOd6SqY3mj"
+}
