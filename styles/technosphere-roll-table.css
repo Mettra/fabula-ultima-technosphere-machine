@@ -1,0 +1,16 @@
+.roll-table-config .editor-menu a[data-action='toggle-mnemosphere-properties'] {
+    margin-left: auto;
+}
+
+
+.mnemosphere-properties {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    gap: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    flex-wrap: wrap;
+    min-height: 69px;
+}

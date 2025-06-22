@@ -14,7 +14,8 @@
   "styles": [
     "styles/technosphere-machine.css",
     "styles/technosphere-party-sheet.css",
-    "styles/animations/animation-overlay.css"
+    "styles/animations/animation-overlay.css",
+    "styles/technosphere-roll-table.css"
   ],
   "languages": [
     {

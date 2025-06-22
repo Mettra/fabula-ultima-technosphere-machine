@@ -9,12 +9,14 @@ import { DEV_MODE, Log } from "./core-config.js";
 import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
 import { SetupMnemosphereHooks } from "./mnemosphere.js";
 import { SetupPartySheetHooks } from "./party-sheet/party-sheet.js";
+import { SetupRollTableHooks } from "./roll-table/roll-table.js";
 
 Hooks.once("init", async () => {
     SetupMnemosphereHooks();
     SetupMnemosphereCoreHooks();
     SetupPartySheetHooks();
     SetupActorSheetHooks();
+    SetupRollTableHooks();
 
     // Register socket events
     await loadTemplates([
@@ -22,6 +24,8 @@ Hooks.once("init", async () => {
         "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/mnemosphere-section.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/popups/heroic-skill-popup.hbs",
         "modules/fabula-ultima-technosphere-machine/templates/animations/animation-overlay.hbs",
+        "modules/fabula-ultima-technosphere-machine/templates/inject/roll-table/mnemosphere-toggle.hbs",
+        "modules/fabula-ultima-technosphere-machine/templates/inject/roll-table/mnemosphere-properties.hbs",
     ]);
 
     document.body.insertAdjacentHTML(
