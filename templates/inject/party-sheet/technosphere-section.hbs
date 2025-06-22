@@ -1,4 +1,4 @@
-<div class="tab" data-tab="technosphere-machine">
+<div class="tab technosphere-tab-container" data-tab="technosphere-machine">
     {{#if isGM}}
     <fieldset class="section-container title-fieldset desc resource-content">
         <legend class="resource-label-m">
@@ -12,20 +12,50 @@
     {{/if}}
     </fieldset>
     <fieldset class="section-container title-fieldset desc resource-content">
+        <div class="technosphere-actions">
+            <button type="button" class="button active" data-action="select-technosphere-tab" data-tab="create">Create</button>
+            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="level-up">Level Up</button>
+            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="combine">Combine</button>
+            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="sacrifice">Sacrifice</button>
+        </div>
+    </fieldset>
+
+    <div class="technosphere-content">
+        <div class="technosphere-tab-content" data-tab="create">
+            <fieldset class="section-container title-fieldset desc resource-content" style="text-align:center;">
+                <legend class="resource-label-m">Create</legend>
+                <button type="button" class="technosphere-roll button button-style" style="width: 200px; height:200px;">
+                    <i class="icon ra ra-dice-five"></i> Roll Mnemosphere
+                </button>
+            </fieldset>
+            <div style="margin-top: 10px;">
+            </div>
+        </div>
+        <div class="technosphere-tab-content" data-tab="level-up" style="display: none;">
+            <fieldset class="section-container title-fieldset desc resource-content">
+                <legend class="resource-label-m">Level Up</legend>
+                <div style="text-align: center; padding: 20px;">Coming soon!</div>
+            </fieldset>
+        </div>
+        <div class="technosphere-tab-content" data-tab="combine" style="display: none;">
+            <fieldset class="section-container title-fieldset desc resource-content">
+                <legend class="resource-label-m">Combine</legend>
+                <div style="text-align: center; padding: 20px;">Coming soon!</div>
+            </fieldset>
+        </div>
+        <div class="technosphere-tab-content" data-tab="sacrifice" style="display: none;">
+            <fieldset class="section-container title-fieldset desc resource-content">
+                <legend class="resource-label-m">Sacrifice</legend>
+                <div style="text-align: center; padding: 20px;">Coming soon!</div>
+            </fieldset>
+        </div>
+    </div>
+
+    <fieldset class="section-container title-fieldset desc resource-content mnemosphere-inventory">
         <legend class="resource-label-m">
-            Technosphere Machine
+            Mnemospheres
         </legend>
         <div class="Mnemosphere-selection-area" style="margin: 5px 0;">
-            <div class="Mnemosphere-grid">
-                {{!-- "Create New Mnemosphere" card --}}
-                <div class="Mnemosphere-card item-card interactive {{#unless existingSphere}}selected{{/unless}}" data-uuid="" data-action="selectMnemosphere" title="Create New Mnemosphere">
-                    <div class="plate border">
-                        <div class="name" style="text-align: center; font-weight: bold;">Create New</div>
-                        <i class="fas fa-plus-circle" style="font-size: 2.5em; display: block; text-align: center; margin-top: 8px;"></i>
-                    </div>
-                </div>
-            </div>
-
             {{#if characterMnemospheres}}
             <label class="resource-label" style="display: block; margin-bottom: 8px; font-weight: bold;">Character Inventory</label>
             <div class="Mnemosphere-grid">
@@ -49,11 +79,6 @@
                 {{/each}}
             </div>
             {{/if}}
-        </div>
-        <div style="margin-top: 10px;">
-            <button type="button" class="technosphere-roll button button-style" style="width: 100%;">
-                <i class="icon ra ra-dice-five"></i> Roll Mnemosphere
-            </button>
         </div>
     </fieldset>
 </div>

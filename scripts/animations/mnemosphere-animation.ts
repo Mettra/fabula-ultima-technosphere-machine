@@ -1,13 +1,12 @@
 import {
     animate,
-    createTimeline,
-    utils,
     createSpring,
+    createTimeline,
     createTimer,
     eases,
+    utils,
 } from "animejs";
 import { DEV_MODE, Log } from "../core-config.js";
-import { easing } from "jquery";
 import { getPixelArtColors } from "./utils/image-colors.js";
 
 class PathWindowAnimator {
@@ -415,6 +414,30 @@ export function playMnemosphereAnimation(MnemosphereData: {
             // Example: background: 'url(path/to/your/default_bg.webp) center center / cover no-repeat'
         });
 
+        const effect = function (file, style?) {
+            const videoElement = document.createElement("video");
+            videoElement.src = file;
+            videoElement.muted = true; // Ensure the video is muted
+            videoElement.loop = false; // Loop the video
+            videoElement.autoplay = false; // Autoplay the video
+            Object.assign(videoElement.style, {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "400px", // Adjust as needed
+                height: "400px", // Adjust as needed
+                objectFit: "contain", // or 'cover' depending on desired effect
+                opacity: "0", // Initially hidden
+                zIndex: "9", // Place below item
+                pointerEvents: "none",
+            });
+            Object.assign(videoElement.style, style || {});
+            animationContainer.appendChild(videoElement);
+
+            return videoElement;
+        };
+
         // Item image placeholder
         const itemImageElement = createElement(
             "div",
@@ -597,7 +620,27 @@ export function playMnemosphereAnimation(MnemosphereData: {
                     // TODO: Call any post-animation logic here (e.g., display item in UI, resolve a promise)
                 }, holdTime); // Hold the final frame before fading out
             },
-        }); // --- 3. Animation Phases (Add your Anime.js calls here) ---
+        });
+
+        // --- 3. Animation Phases (Add your Anime.js calls here) ---
+
+        /*
+        tl.add(
+            effect(
+                "modules/jb2a_patreon/Library/Generic/Energy/EnergyWall01_01_Regular_Green_Circle_Complete_500x500.webm"
+            ),
+            {
+                autoplay: true,
+                opacity: [0, 1], // Fade in video
+                duration: 500,
+                ease: "linear",
+                onBegin: (ev) => {
+                    ev.targets.forEach((obj) => obj.play());
+                },
+            }
+        );
+        */
+
         // // Phase A: Intro & Background Transition
         tl.add(animationContainer, {
             backgroundColor: ["rgba(0,0,0,0.0)", "rgba(0,0,0,0.85)"], // Fade in dark overlay

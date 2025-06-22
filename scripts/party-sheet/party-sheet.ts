@@ -149,7 +149,7 @@ async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
             // Get all skills for summary
             let allSkillUUIDs = Relations.Mnemosphere.skill.get(sphereId) ?? [];
             let heroicSkillUUID =
-                Relations.Mnemosphere.heroicskill.expect(sphereId);
+                Relations.Mnemosphere.heroicskill.check(sphereId);
             let summary = await createMnemosphereSummary(
                 allSkillUUIDs,
                 heroicSkillUUID
@@ -240,6 +240,26 @@ export function SetupPartySheetHooks() {
         );
         bindMnemosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);
 
+        // Handle Technosphere tab selection
+        html.find('[data-action="select-technosphere-tab"]')
+            .unbind("click")
+            .bind("click", (event) => {
+                event.preventDefault();
+                const tab = $(event.currentTarget).data("tab");
+
+                // Update button active state
+                html.find(
+                    '[data-action="select-technosphere-tab"]'
+                ).removeClass("active");
+                $(event.currentTarget).addClass("active");
+
+                // Show/hide tab content
+                html.find(".technosphere-tab-content").hide();
+                html.find(
+                    `.technosphere-tab-content[data-tab="${tab}"]`
+                ).show();
+            });
+
         // Bind heroic skill popups
         for (const sphere of [...partyMnemospheres, ...characterMnemospheres]) {
             if (sphere.canChooseHeroicSkill) {
@@ -278,23 +298,18 @@ export function SetupPartySheetHooks() {
 
                 let sphereItemUUID = getFlag(sheet, FLAG_EXISTINGSPHERE);
 
-                // No Mnemosphere selected means generate a new one
-                if (sphereItemUUID == null || sphereItemUUID == "") {
-                    const itemData = await generateNewMnemosphere(
-                        getFlag(sheet, FLAG_ROLLTABLE)
-                    );
-                    // TODO: Get proper image URL and rarity for the animation
-                    await playMnemosphereAnimation({
-                        itemName: itemData.name,
-                        rarity: "common",
-                        imageUrl: itemData.img,
-                    }); // Added animation call
-                    sheet.actor.createEmbeddedDocuments("Item", [itemData]);
-                } else {
-                    await addAbilityToMnemosphere(sphereItemUUID);
-                }
+                // Generate new sphere
+                const itemData = await generateNewMnemosphere(
+                    getFlag(sheet, FLAG_ROLLTABLE)
+                );
 
-                sheet.activateTab("technosphere-machine");
+                await playMnemosphereAnimation({
+                    itemName: itemData.name,
+                    rarity: "common",
+                    imageUrl: itemData.img,
+                });
+
+                sheet.actor.createEmbeddedDocuments("Item", [itemData]);
                 return false;
             });
     });

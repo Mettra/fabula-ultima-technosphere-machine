@@ -144,3 +144,37 @@
 .heroic-skill-button i {
     display: block;
 }
+
+/* New styles for Technosphere tabs */
+.technosphere-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+    gap: 5px;
+}
+
+.technosphere-actions .button {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+    padding: 10px 0;
+    line-height: 1.5;
+    height: auto;
+}
+
+.technosphere-actions .button.active {
+    border-color: var(--color-border-highlight, #ff6400);
+    box-shadow: 0 0 8px var(--color-border-highlight, #ff6400);
+    font-weight: bold;
+}
+
+.technosphere-tab-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.mnemosphere-inventory {
+    flex-grow: 1;
+    overflow-y: auto;
+}
