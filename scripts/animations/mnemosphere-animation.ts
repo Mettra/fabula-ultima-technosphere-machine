@@ -990,5 +990,19 @@ export function playMnemosphereAnimation(MnemosphereData: {
 //   font-family: var(--your-cool-font-family); /* Define in your main CSS */
 // }
 
+export function playInfusionAnimation(infusionData: {
+    skill: { name: string; imageUrl: string | null };
+    sphere: { name: string; imageUrl: string | null };
+}): Promise<void> {
+    return new Promise(async (resolve) => {
+        console.log("Playing infusion animation with data:", infusionData);
+        // In the future, a full animation will be implemented here.
+        ui.notifications.info(
+            `Infused ${infusionData.skill.name} into ${infusionData.sphere.name}!`
+        );
+        resolve();
+    });
+}
+
 // Remember to export this function if it's part of a module system
 // export { playMnemosphereAnimation }; // Already done by 'export function'

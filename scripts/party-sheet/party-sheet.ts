@@ -1,4 +1,7 @@
-import { playMnemosphereAnimation } from "../animations/mnemosphere-animation";
+import {
+    playInfusionAnimation,
+    playMnemosphereAnimation,
+} from "../animations/mnemosphere-animation";
 import {
     getCharacter,
     getFlag,
@@ -171,10 +174,70 @@ async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
     return iter < MAX_ITERATIONS;
 }
 
+async function infuseSkillIntoMnemosphere(
+    sphereItemUUID: UUID,
+    skillUUID: UUID
+) {
+    let sphereId: Mnemosphere_ID;
+
+    try {
+        sphereId = Relations.Item.mnemosphere.expect(sphereItemUUID);
+    } catch (e) {
+        ui.notifications.error(
+            `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the summary, and a link to the class RollTable.`
+        );
+
+        throw e;
+    }
+
+    let existingSkills = await resolveSkills(
+        Relations.Mnemosphere.skill.get(sphereId) ?? []
+    );
+
+    const existingSkill = existingSkills[skillUUID];
+    if (existingSkill && existingSkill.rank == existingSkill.maxRank) {
+        ui.notifications.error(
+            `This Mnemosphere already has the maximum rank for this skill.`
+        );
+        return false;
+    }
+
+    let newAbillityLinks = await createMnemosphereDescriptionBody([skillUUID]);
+    let item = await fromUuid(sphereItemUUID);
+    if (item && "system" in item) {
+        // Get all skills for summary
+        let allSkillUUIDs = [
+            ...(Relations.Mnemosphere.skill.get(sphereId) ?? []),
+            skillUUID,
+        ];
+        let heroicSkillUUID = Relations.Mnemosphere.heroicskill.check(sphereId);
+        let summary = await createMnemosphereSummary(
+            allSkillUUIDs,
+            heroicSkillUUID
+        );
+
+        item.update({
+            system: {
+                summary: {
+                    value: summary,
+                },
+                description:
+                    (item as any).system.description + newAbillityLinks,
+            },
+        });
+
+        return true;
+    }
+
+    return false;
+}
+
 export function SetupPartySheetHooks() {
     Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         const FLAG_ROLLTABLE = "technosphere-roll-table";
         const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
+        const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
+        const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
 
         // Add Technosphere tab
         html.find(".sheet-tabs").append(
@@ -312,5 +375,206 @@ export function SetupPartySheetHooks() {
                 sheet.actor.createEmbeddedDocuments("Item", [itemData]);
                 return false;
             });
+
+        // Set up drag data for Mnemosphere cards
+        html.find('.Mnemosphere-card[draggable="true"]').on(
+            "dragstart",
+            (event) => {
+                const uuid = event.currentTarget.dataset.uuid;
+                const data = {
+                    type: "Item",
+                    uuid: uuid,
+                };
+                event.originalEvent.dataTransfer.setData(
+                    "text/plain",
+                    JSON.stringify(data)
+                );
+            }
+        );
+
+        // Handle Infusion UI
+        const infusionSkillDropzone = html.find(".infusion-skill-dropzone");
+        const infusionSphereSocket = html.find(".infusion-sphere-socket");
+        const infuseButton = html.find(".infuse-button");
+
+        // Helper to update dropzone appearance
+        async function updateDropzone(dropzone, uuid, type) {
+            if (!dropzone.length) return;
+            const placeholder = dropzone.find(
+                type === "skill" ? ".placeholder-text" : ".socket-placeholder"
+            );
+            const display = dropzone.find(
+                type === "skill" ? ".skill-display" : ".sphere-display"
+            );
+
+            if (!uuid) {
+                placeholder.show();
+                display.hide();
+                return;
+            }
+
+            const item = await fromUuid(uuid);
+
+            if (item && "img" in item && "name" in item) {
+                display.find("img").attr("src", item.img);
+                if (type === "skill") {
+                    display.find(".skill-name").text(item.name);
+                }
+                placeholder.hide();
+                display.show();
+            } else {
+                placeholder.show();
+                display.hide();
+            }
+        }
+
+        // Initialize UI from flags
+        await updateDropzone(
+            infusionSkillDropzone,
+            getFlag(sheet, FLAG_INFUSION_SKILL),
+            "skill"
+        );
+        await updateDropzone(
+            infusionSphereSocket,
+            getFlag(sheet, FLAG_INFUSION_SPHERE),
+            "sphere"
+        );
+
+        // Drag and drop for skill
+        infusionSkillDropzone
+            .on("dragover", (event) => {
+                event.preventDefault();
+                infusionSkillDropzone.addClass("drag-over");
+            })
+            .on("dragleave", () => {
+                infusionSkillDropzone.removeClass("drag-over");
+            })
+            .on("drop", async (event) => {
+                event.preventDefault();
+                infusionSkillDropzone.removeClass("drag-over");
+                try {
+                    const data = JSON.parse(
+                        event.originalEvent.dataTransfer.getData("text/plain")
+                    );
+                    if (data.type !== "Item" || !data.uuid) return;
+
+                    const item = await fromUuid(data.uuid);
+                    if (item?.type !== "skill") {
+                        ui.notifications.warn(
+                            "You can only drop skills in this area."
+                        );
+                        return;
+                    }
+
+                    await SetFlagWithoutRender(
+                        sheet.document,
+                        ModuleName,
+                        FLAG_INFUSION_SKILL,
+                        data.uuid
+                    );
+                    await updateDropzone(
+                        infusionSkillDropzone,
+                        data.uuid,
+                        "skill"
+                    );
+                } catch (e) {
+                    console.warn("Could not parse dropped data", e);
+                }
+            });
+
+        // Drag and drop for sphere
+        infusionSphereSocket
+            .on("dragover", (event) => {
+                event.preventDefault();
+                infusionSphereSocket.addClass("drag-over");
+            })
+            .on("dragleave", () => {
+                infusionSphereSocket.removeClass("drag-over");
+            })
+            .on("drop", async (event) => {
+                event.preventDefault();
+                infusionSphereSocket.removeClass("drag-over");
+                try {
+                    const data = JSON.parse(
+                        event.originalEvent.dataTransfer.getData("text/plain")
+                    );
+                    if (data.type !== "Item" || !data.uuid) return;
+
+                    const item = await fromUuid(data.uuid);
+                    if (
+                        item?.type !== "treasure" ||
+                        !item.system.summary?.value.startsWith(
+                            MnemosphereHeader
+                        )
+                    ) {
+                        ui.notifications.warn(
+                            "You can only drop Mnemospheres in this area."
+                        );
+                        return;
+                    }
+
+                    await SetFlagWithoutRender(
+                        sheet.document,
+                        ModuleName,
+                        FLAG_INFUSION_SPHERE,
+                        data.uuid
+                    );
+                    await updateDropzone(
+                        infusionSphereSocket,
+                        data.uuid,
+                        "sphere"
+                    );
+                } catch (e) {
+                    console.warn("Could not parse dropped data", e);
+                }
+            });
+
+        // Handle Infuse button click
+        infuseButton.on("click", async (event) => {
+            event.preventDefault();
+
+            const skillUUID = getFlag(sheet, FLAG_INFUSION_SKILL);
+            const sphereUUID = getFlag(sheet, FLAG_INFUSION_SPHERE);
+
+            if (!skillUUID || !sphereUUID) {
+                ui.notifications.error(
+                    "You must provide both a skill and a Mnemosphere to infuse."
+                );
+                return;
+            }
+
+            // TODO: Add cost check similar to rolling
+
+            const success = await infuseSkillIntoMnemosphere(
+                sphereUUID,
+                skillUUID
+            );
+
+            if (success) {
+                const skillItem = await fromUuid(skillUUID);
+                const sphereItem = await fromUuid(sphereUUID);
+
+                await playInfusionAnimation({
+                    skill: { name: skillItem.name, imageUrl: skillItem.img },
+                    sphere: { name: sphereItem.name, imageUrl: sphereItem.img },
+                });
+
+                // Clear flags and reset UI
+                await SetFlagWithoutRender(
+                    sheet.document,
+                    ModuleName,
+                    FLAG_INFUSION_SKILL,
+                    null
+                );
+                await SetFlagWithoutRender(
+                    sheet.document,
+                    ModuleName,
+                    FLAG_INFUSION_SPHERE,
+                    null
+                );
+                await updateDropzone(infusionSkillDropzone, null, "skill");
+                await updateDropzone(infusionSphereSocket, null, "sphere");
+            }
+        });
     });
 }

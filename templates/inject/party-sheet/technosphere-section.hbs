@@ -34,7 +34,22 @@
         <div class="technosphere-tab-content" data-tab="level-up" style="display: none;">
             <fieldset class="section-container title-fieldset desc resource-content">
                 <legend class="resource-label-m">Level Up</legend>
-                <div style="text-align: center; padding: 20px;">Coming soon!</div>
+                <div class="infusion-container" style="text-align: center; padding: 10px;">
+                    <div class="infusion-skill-dropzone" style="border: 2px dashed #ccc; padding: 30px; margin-bottom: 10px; background-color: rgba(0,0,0,0.1);">
+                        <div class="placeholder-text">Drag a skill to infuse it into the mnemosphere</div>
+                        <div class="skill-display" style="display: none; align-items: center; justify-content: center; flex-direction: column;">
+                            <img src="" alt="Skill Icon" style="width: 64px; height: 64px; border: none;" />
+                            <span class="skill-name" style="font-size: 1.2em; font-weight: bold;"></span>
+                        </div>
+                    </div>
+                    <div class="infusion-sphere-socket" style="border: 2px dashed #ccc; padding: 10px; margin-bottom: 10px; width: 100px; height: 100px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center; background-image: url('modules/fabula-ultima-technosphere-machine/assets/mnemosphere-blank.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+                        <div class="socket-placeholder" style="font-size: 0.8em;">Socket for sphere</div>
+                        <div class="sphere-display" style="display: none;">
+                            <img src="" alt="Sphere Icon" style="width: 64px; height: 64px; border: none;" />
+                        </div>
+                    </div>
+                    <button type="button" class="button infuse-button">Infuse</button>
+                </div>
             </fieldset>
         </div>
         <div class="technosphere-tab-content" data-tab="combine" style="display: none;">
