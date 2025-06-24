@@ -1,13 +1,8 @@
-import {
-    playInfusionAnimation,
-    playMnemosphereAnimation,
-} from "../animations/mnemosphere-animation";
+import { playInfusionAnimation } from "../animations/mnemosphere-animation";
 import {
     ensureGM,
     getCharacter,
-    getFlag,
     Log,
-    Mnemosphere_ROLL_COST,
     ModuleName,
     SetFlagWithoutRender,
 } from "../core-config";
@@ -22,6 +17,7 @@ import {
 } from "../mnemosphere";
 import { Mnemosphere_ID, Relations } from "../relation";
 import { getDocumentFromResult, rollTableCustom } from "../roll-table-utils";
+import { synchronize } from "../socket";
 import { bindHeroicSkillPopup, bindUUIDInput } from "../ui-bindings";
 import { resolveCompendiumUUID } from "../uuid-utils";
 
@@ -90,7 +86,7 @@ async function rollMnemosphereAbility(
     return rolledUUIDS;
 }
 
-async function generateNewMnemosphere(rollTableUUID: UUID) {
+export async function generateNewMnemosphere(rollTableUUID: UUID) {
     Log("Rolling new Mnemosphere");
     let classUUID = await rollClassUUID(rollTableUUID);
     let initialAbilities = await rollMnemosphereAbility(classUUID, {
@@ -163,13 +159,12 @@ async function infuseSkillIntoMnemosphere(
     return false;
 }
 
+export const FLAG_ROLLTABLE = "technosphere-roll-table";
+export const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
+export const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
+export const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
 export function SetupPartySheetHooks() {
     Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
-        const FLAG_ROLLTABLE = "technosphere-roll-table";
-        const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
-        const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
-        const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
-
         // Add Technosphere tab
         html.find(".sheet-tabs").append(
             `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
@@ -203,7 +198,10 @@ export function SetupPartySheetHooks() {
             "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/technosphere-section.hbs",
             {
                 isGM: game.user.isGM,
-                rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
+                rollableTable: sheet.document.getFlag(
+                    ModuleName,
+                    FLAG_ROLLTABLE
+                ),
                 partyMnemospheres: partyMnemospheres,
                 characterMnemospheres: characterMnemospheres,
             }
@@ -257,43 +255,18 @@ export function SetupPartySheetHooks() {
             .bind("click", async (event) => {
                 event.preventDefault();
 
-                // Check and pay the cost to roll
                 let actor = getCharacter();
                 if (actor == null) {
                     ui.notifications.error(
                         `You must have an actor selected, or have chosen one to be your player character.`
                     );
-                    return;
+                    return false;
                 }
 
-                const currentZenit = actor.system.resources.zenit.value;
-                if (currentZenit < Mnemosphere_ROLL_COST) {
-                    ui.notifications.error(
-                        `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
-                            "FU.Zenit"
-                        )} to create a new Mnemosphere.`
-                    );
-                    return;
-                }
-
-                ensureGM();
-                await actor.update({
-                    "system.resources.zenit.value":
-                        currentZenit - Mnemosphere_ROLL_COST,
-                } as any);
-
-                // Generate new sphere
-                const itemData = await generateNewMnemosphere(
-                    getFlag(sheet, FLAG_ROLLTABLE)
-                );
-
-                await playMnemosphereAnimation({
-                    itemName: itemData.name,
-                    rarity: "common",
-                    imageUrl: itemData.img,
+                await synchronize("roll-mnemosphere", {
+                    actorUUID: actor.uuid,
+                    partyUUID: sheet.actor.uuid,
                 });
-
-                sheet.actor.createEmbeddedDocuments("Item", [itemData]);
                 return false;
             });
 
@@ -356,12 +329,12 @@ export function SetupPartySheetHooks() {
         // Initialize UI from flags
         await updateDropzone(
             infusionSkillDropzone,
-            getFlag(sheet, FLAG_INFUSION_SKILL),
+            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SKILL),
             "skill"
         );
         await updateDropzone(
             infusionSphereSocket,
-            getFlag(sheet, FLAG_INFUSION_SPHERE),
+            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SPHERE),
             "sphere"
         );
 
@@ -458,8 +431,14 @@ export function SetupPartySheetHooks() {
         infuseButton.on("click", async (event) => {
             event.preventDefault();
 
-            const skillUUID = getFlag(sheet, FLAG_INFUSION_SKILL);
-            const sphereUUID = getFlag(sheet, FLAG_INFUSION_SPHERE);
+            const skillUUID = sheet.document.getFlag(
+                ModuleName,
+                FLAG_INFUSION_SKILL
+            );
+            const sphereUUID = sheet.document.getFlag(
+                ModuleName,
+                FLAG_INFUSION_SPHERE
+            );
 
             if (!skillUUID || !sphereUUID) {
                 ui.notifications.error(

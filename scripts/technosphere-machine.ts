@@ -5,14 +5,25 @@ import {
     cleanupAnimationDevMode,
     initializeAnimationDevMode,
 } from "./animations/animation-dev-manager.js";
-import { DEV_MODE, Log } from "./core-config.js";
+import { playMnemosphereAnimation } from "./animations/mnemosphere-animation";
+import {
+    DEV_MODE,
+    Log,
+    Mnemosphere_ROLL_COST,
+    ModuleName,
+} from "./core-config.js";
 import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
 import { SetupMnemosphereHooks } from "./mnemosphere.js";
-import { SetupPartySheetHooks } from "./party-sheet/party-sheet.js";
+import {
+    FLAG_ROLLTABLE,
+    generateNewMnemosphere,
+    SetupPartySheetHooks,
+} from "./party-sheet/party-sheet.js";
 import {
     migrateCompendiumRollTables,
     SetupRollTableHooks,
 } from "./roll-table/roll-table.js";
+import { RegisterSynchronization, SetupSockets } from "./socket";
 
 Hooks.once("init", async () => {
     SetupMnemosphereHooks();
@@ -20,6 +31,7 @@ Hooks.once("init", async () => {
     SetupPartySheetHooks();
     SetupActorSheetHooks();
     SetupRollTableHooks();
+    SetupSockets();
 
     // Register socket events
     await loadTemplates([
@@ -39,6 +51,60 @@ Hooks.once("init", async () => {
                 // Add template params here
             }
         )
+    );
+
+    // Modification Functionality
+    RegisterSynchronization(
+        "roll-mnemosphere",
+
+        // GM
+        async (params) => {
+            // Check and pay the cost to roll
+            let actor = await fromUuid(params.actorUUID);
+            if (actor == null) {
+                return {
+                    success: false,
+                    error: `You must have an actor selected, or have chosen one to be your player character.`,
+                };
+            }
+
+            let party = await fromUuid(params.partyUUID);
+
+            const currentZenit = actor.system.resources.zenit.value;
+            if (currentZenit < Mnemosphere_ROLL_COST) {
+                return {
+                    success: false,
+                    error: `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
+                        "FU.Zenit"
+                    )} to create a new Mnemosphere.`,
+                };
+            }
+
+            await actor.update({
+                "system.resources.zenit.value":
+                    currentZenit - Mnemosphere_ROLL_COST,
+            } as any);
+
+            // Generate new sphere
+            const itemData = await generateNewMnemosphere(
+                party.getFlag(ModuleName, FLAG_ROLLTABLE)
+            );
+            party.createEmbeddedDocuments("Item", [itemData]);
+
+            return {
+                name: itemData.name,
+                img: itemData.img,
+            };
+        },
+
+        // On Success
+        async (result) => {
+            await playMnemosphereAnimation({
+                itemName: result.name,
+                rarity: "common",
+                imageUrl: result.img,
+            });
+        }
     );
 });
 

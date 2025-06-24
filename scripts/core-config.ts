@@ -41,15 +41,6 @@ export function getCharacter(): any | null {
     return character;
 }
 
-export function getFlag(sheet: any, flagName: string): any | null {
-    try {
-        return sheet.document.getFlag(ModuleName, flagName);
-    } catch (err) {
-        console.error(`Failed to get flag '${flagName}':`, err);
-        return null;
-    }
-}
-
 export async function SetFlagWithoutRender(
     document: any,
     scope: string,

@@ -1,5 +1,10 @@
-import { Log, ModuleName, getFlag, getItemDisplayData } from "../core-config";
-import { Relations, Relations } from "../relation";
+import {
+    Log,
+    ModuleName,
+    ModuleName,
+    getItemDisplayData,
+} from "../core-config";
+import { Relations } from "../relation";
 import { recomputeTechnosphereSheet } from "../technosphere-recompute";
 
 // Helper functions for Mnemosphere equipment management
@@ -161,7 +166,7 @@ export function SetupActorSheetHooks() {
                 event.target.disabled = true;
                 try {
                     const baseSheetActor = fromUuidSync(
-                        getFlag(sheet, FLAG_BASESHEET)
+                        sheet.document.getFlag(ModuleName, FLAG_BASESHEET)
                     );
                     if (!baseSheetActor) {
                         ui.notifications.error(

@@ -199,12 +199,6 @@ Log(`Action description`, data); // Only logs if DEV_MODE true
 
 ## COMMON PATTERNS
 
-### Flag Operations
-```typescript
-getFlag(sheet, "flag-name")                    // Read
-SetFlagWithoutRender(doc, ModuleName, key, val) // Write without UI update
-```
-
 ### UUID Resolution  
 ```typescript
 const doc = await fromUuid(uuid);              // Async resolution
