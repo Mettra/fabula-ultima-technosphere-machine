@@ -1,6 +1,6 @@
 // Roll table functionality and custom rolling logic
 
-import { Log, ModuleName } from "./core-config.js";
+import { ensureGM, Log, ModuleName } from "./core-config.js";
 import {
     extractKVPairsFromLines,
     extractParagraphsAsLines,
@@ -200,6 +200,8 @@ export async function migrateRollTableDescriptionToFlags(rollTable: RollTable) {
     Log(
         `Migrating rules from description to flags for RollTable: ${rollTable.name}`
     );
+
+    ensureGM();
     await rollTable.update(updateData);
     return true;
 }

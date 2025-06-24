@@ -1,5 +1,17 @@
 Phase 2:
 
+SetupMnemosphereCoreHooks looks like it updates for everyone
+Limit to the one who pressed the button
+updateActor
+
+First sphere in first actor doesn't get treated as a sphere?
+
+General permission issue? 
+Clients can't click on sphere abilities
+Dynamic cost for Mnemosphere
+Add Hoplosphere button?
+
+
 Config with Origin
     - Location name
     - Rollable table of possible technosphere names

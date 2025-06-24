@@ -1,6 +1,6 @@
 // Mnemosphere core functionality for combining equipped mnemosphere skills/features without base actors
 
-import { Log, ModuleName } from "./core-config.js";
+import { ensureGM, Log, ModuleName } from "./core-config.js";
 import { Relations } from "./relation.js";
 import { expectUUID } from "./uuid-utils.js";
 
@@ -421,6 +421,8 @@ async function createItems<T extends { uuid: UUID }>(
  * Update actor with combined mnemosphere data without causing disruptive re-renders
  */
 export async function updateActorWithMnemosphereData(actor: any) {
+    ensureGM();
+
     // Get combined data
     const combinedData = await combineMnemosphereData(actor);
 

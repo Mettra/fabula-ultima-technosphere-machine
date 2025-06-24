@@ -3,6 +3,7 @@ import {
     playMnemosphereAnimation,
 } from "../animations/mnemosphere-animation";
 import {
+    ensureGM,
     getCharacter,
     getFlag,
     Log,
@@ -21,11 +22,7 @@ import {
 } from "../mnemosphere";
 import { Mnemosphere_ID, Relations } from "../relation";
 import { getDocumentFromResult, rollTableCustom } from "../roll-table-utils";
-import {
-    bindHeroicSkillPopup,
-    bindMnemosphereSelectionToFlag,
-    bindUUIDInput,
-} from "../ui-bindings";
+import { bindHeroicSkillPopup, bindUUIDInput } from "../ui-bindings";
 import { resolveCompendiumUUID } from "../uuid-utils";
 
 async function rollClassUUID(rollTableUUID: UUID) {
@@ -107,73 +104,6 @@ async function generateNewMnemosphere(rollTableUUID: UUID) {
     return await createMnemosphereItemData(classUUID, description);
 }
 
-async function addAbilityToMnemosphere(sphereItemUUID: UUID) {
-    const MAX_ITERATIONS = 100;
-    let iter = 0;
-    while (++iter < MAX_ITERATIONS) {
-        let sphereId: Mnemosphere_ID;
-        let classUUID: UUID;
-
-        try {
-            sphereId = Relations.Item.mnemosphere.expect(sphereItemUUID);
-            classUUID = Relations.Mnemosphere.class.expect(sphereId);
-        } catch (e) {
-            ui.notifications.error(
-                `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the summary, and a link to the class RollTable.`
-            );
-
-            throw e;
-        }
-
-        let existingSkills = await resolveSkills(
-            Relations.Mnemosphere.skill.get(sphereId) ?? []
-        );
-        let newAbilities = await rollMnemosphereAbility(classUUID, {
-            initialAbility: false,
-        });
-        let allValid = true;
-        for (let uuid of newAbilities) {
-            const existingSkill = existingSkills[uuid];
-            if (existingSkill && existingSkill.rank == existingSkill.maxRank) {
-                allValid = false;
-                break;
-            }
-        }
-
-        // If we rolled an invalid skill, try again
-        if (!allValid) {
-            continue;
-        }
-        let newAbillityLinks = await createMnemosphereDescriptionBody([
-            ...newAbilities,
-        ]);
-        let item = await fromUuid(sphereItemUUID);
-        if (item && "system" in item) {
-            // Get all skills for summary
-            let allSkillUUIDs = Relations.Mnemosphere.skill.get(sphereId) ?? [];
-            let heroicSkillUUID =
-                Relations.Mnemosphere.heroicskill.check(sphereId);
-            let summary = await createMnemosphereSummary(
-                allSkillUUIDs,
-                heroicSkillUUID
-            );
-
-            item.update({
-                system: {
-                    summary: {
-                        value: summary,
-                    },
-                    description:
-                        (item as any).system.description + newAbillityLinks,
-                },
-            });
-        }
-        break;
-    }
-
-    return iter < MAX_ITERATIONS;
-}
-
 async function infuseSkillIntoMnemosphere(
     sphereItemUUID: UUID,
     skillUUID: UUID
@@ -216,6 +146,7 @@ async function infuseSkillIntoMnemosphere(
             heroicSkillUUID
         );
 
+        ensureGM();
         item.update({
             system: {
                 summary: {
@@ -267,41 +198,31 @@ export function SetupPartySheetHooks() {
             );
         }
 
-        let existingSphereUUID = getFlag(sheet, FLAG_EXISTINGSPHERE);
-        if (
-            existingSphereUUID &&
-            !partyMnemospheres.find((v) => v.uuid == existingSphereUUID)
-        ) {
-            await SetFlagWithoutRender(
-                sheet.document,
-                ModuleName,
-                FLAG_EXISTINGSPHERE,
-                null
-            );
-        }
-
         // Render and append the Technosphere section
         let tsSection = await renderTemplate(
             "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/technosphere-section.hbs",
             {
                 isGM: game.user.isGM,
                 rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
-                existingSphere: existingSphereUUID,
                 partyMnemospheres: partyMnemospheres,
                 characterMnemospheres: characterMnemospheres,
             }
         );
         html.find(".sheet-body").append(tsSection);
 
-        // Bind UI elements
-        bindUUIDInput(
-            sheet,
-            html,
-            "ts-sphere-table",
-            FLAG_ROLLTABLE,
-            "RollTable"
-        );
-        bindMnemosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);
+        // GM SECTION
+        {
+            // Bind UI elements
+            bindUUIDInput(
+                sheet,
+                html,
+                "ts-sphere-table",
+                FLAG_ROLLTABLE,
+                "RollTable"
+            );
+        }
+
+        //bindMnemosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);
 
         // Handle Technosphere tab selection
         html.find('[data-action="select-technosphere-tab"]')
@@ -354,12 +275,12 @@ export function SetupPartySheetHooks() {
                     );
                     return;
                 }
+
+                ensureGM();
                 await actor.update({
                     "system.resources.zenit.value":
                         currentZenit - Mnemosphere_ROLL_COST,
                 } as any);
-
-                let sphereItemUUID = getFlag(sheet, FLAG_EXISTINGSPHERE);
 
                 // Generate new sphere
                 const itemData = await generateNewMnemosphere(
@@ -396,6 +317,10 @@ export function SetupPartySheetHooks() {
         const infusionSkillDropzone = html.find(".infusion-skill-dropzone");
         const infusionSphereSocket = html.find(".infusion-sphere-socket");
         const infuseButton = html.find(".infuse-button");
+
+        // @NOTE
+        // The calls to SetFlagWithoutRender here will need to be replaced with just setting data on the sheet
+        // Since they're just used for UI, and the actual updates must be broadcast to the "server" (GM)
 
         // Helper to update dropzone appearance
         async function updateDropzone(dropzone, uuid, type) {

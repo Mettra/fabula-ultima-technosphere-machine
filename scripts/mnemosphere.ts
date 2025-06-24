@@ -8,7 +8,7 @@ import { createUUIDLink, parseUUIDLink } from "./uuid-utils.js";
 export const MnemosphereHeader = "Mnemosphere";
 
 export function ItemIsMnemosphere(item: Item) {
-    return item.system.summary.value?.startsWith(MnemosphereHeader);
+    return item.system?.summary?.value?.startsWith(MnemosphereHeader);
 }
 
 export function SetupMnemosphereHooks() {

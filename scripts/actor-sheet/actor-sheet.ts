@@ -1,8 +1,6 @@
 import { Log, ModuleName, getFlag, getItemDisplayData } from "../core-config";
-import { updateActorWithMnemosphereData } from "../mnemosphere-core";
-import { Relations } from "../relation";
+import { Relations, Relations } from "../relation";
 import { recomputeTechnosphereSheet } from "../technosphere-recompute";
-import { bindActorDropZone } from "../ui-bindings";
 
 // Helper functions for Mnemosphere equipment management
 function getEquippedMnemospheres(actor: any): string[] {
@@ -49,80 +47,6 @@ async function toggleMnemosphereEquipped(
 
 export function SetupActorSheetHooks() {
     Hooks.on(`renderFUStandardActorSheet`, async (sheet: any, html: any) => {
-        const FLAG_BASESHEET = "technosphere-base-sheet"; // Add Technosphere settings
-        let settings = html.find(`.settings`);
-        settings.prepend(
-            await renderTemplate(
-                "modules/fabula-ultima-technosphere-machine/templates/inject/actor-sheet/technosphere-settings.hbs",
-                {
-                    baseSheet: getFlag(sheet, FLAG_BASESHEET),
-                    isGM: game.user.isGM,
-                }
-            )
-        );
-
-        // Bind UI elements
-        bindActorDropZone(sheet, html, "ts-baseSheet", FLAG_BASESHEET);
-
-        // Handle Apply Technosphere button
-        html.find(".technosphere-apply")
-            .unbind("click")
-            .bind("click", async (event) => {
-                event.target.disabled = true;
-                try {
-                    const baseSheetActor = fromUuidSync(
-                        getFlag(sheet, FLAG_BASESHEET)
-                    );
-                    if (!baseSheetActor) {
-                        ui.notifications.error(
-                            "Invalid Base Sheet UUID. Please ensure the UUID refers to an existing Actor."
-                        );
-                        return;
-                    }
-                    const currentActor = sheet.object;
-                    await recomputeTechnosphereSheet(
-                        currentActor,
-                        baseSheetActor
-                    );
-                    ui.notifications.info(
-                        `Technosphere recomputation applied to ${currentActor.name}.`
-                    );
-                } catch (error) {
-                    console.error(
-                        "Error applying Technosphere recomputation:",
-                        error
-                    );
-                    ui.notifications.error(
-                        "An error occurred during Technosphere recomputation. Check console for details."
-                    );
-                } finally {
-                    event.target.disabled = false;
-                    Log("Technosphere recomputation process finished.");
-                }
-            });
-
-        // Handle Update Mnemosphere Skills button
-        html.find(".mnemosphere-update")
-            .unbind("click")
-            .bind("click", async (event) => {
-                event.target.disabled = true;
-                try {
-                    const currentActor = sheet.object;
-                    await updateActorWithMnemosphereData(currentActor);
-                    ui.notifications.info(
-                        `Mnemosphere skills updated for ${currentActor.name}.`
-                    );
-                } catch (error) {
-                    console.error("Error updating mnemosphere skills:", error);
-                    ui.notifications.error(
-                        "An error occurred while updating mnemosphere skills. Check console for details."
-                    );
-                } finally {
-                    event.target.disabled = false;
-                    Log("Mnemosphere skills update process finished.");
-                }
-            });
-
         // Get all treasure items and separate Mnemospheres from regular treasures
         const actor = sheet.object;
         const allTreasures = Array.from(actor.items).filter(

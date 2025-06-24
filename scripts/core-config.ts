@@ -25,6 +25,12 @@ if (CONFIG.debug.hooks) {
 }
 export { Log };
 
+export function ensureGM() {
+    if (game.user.id !== game.users.activeGM?.id) {
+        throw Error("This function can only be executed by the GM!");
+    }
+}
+
 export function getEventName(name: string): string {
     return `${ModuleName}.${name}`;
 }
@@ -55,6 +61,8 @@ export async function SetFlagWithoutRender(
         throw new Error(
             `Flag scope "${scope}" is not valid or not currently active`
         );
+
+    ensureGM();
     return document.update(
         {
             flags: {
