@@ -56,7 +56,7 @@ export function SetupMnemosphereHooks() {
     // Mnemosphere data hooks
     Hooks.on("ready", async () => {
         async function processItems(items, _ctx) {
-            const promises = items.map(async (item) => {
+            await items.mapAsync(async (item) => {
                 if (ItemIsMnemosphere(item)) {
                     let MnemosphereId = Relations.Mnemosphere.GetNextId();
                     Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
@@ -66,16 +66,12 @@ export function SetupMnemosphereHooks() {
                     );
                 }
             });
-            await Promise.all(promises);
         }
 
-        // After the game is fully initialized
         await processItems(game.items, null);
-        
-        const actorPromises = game.actors.map(async (v) => {
+        await game.actors.mapAsync(async (v) => {
             await processItems(v.items, v);
         });
-        await Promise.all(actorPromises);
 
         Relations.LogAll();
 
@@ -296,7 +292,7 @@ export async function filterMnemospheres(items: Item[]) {
         const skills = await resolveSkills(skillUUIDs);
 
         let heroicSkill = null;
-        heroicSkillUUID.forEach(async (sk) => {
+        await heroicSkillUUID.mapAsync(async (sk) => {
             const heroicSkillDoc = await fromUuid(sk);
             if (heroicSkillDoc) {
                 heroicSkill = {
