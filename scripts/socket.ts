@@ -27,12 +27,21 @@ export async function synchronize<Params, Result extends { success: boolean }>(
         pendingPromises.set(correlationId, { resolve, reject });
     });
 
-    game.socket.emit(SOCKET_NAME, {
+    const data = {
         type: "EXECUTE",
         name,
         params,
         correlationId,
-    });
+    }
+
+    // GM's can just run the function directly, everyone else needs to send it to a gm
+    if (game.user.isGM) {
+        handleEmit(data)
+    }
+    else {
+        game.socket.emit(SOCKET_NAME, data);
+    }
+
 
     let result = await promise;
     if (result.success) {
@@ -64,8 +73,9 @@ async function handleEmit(data) {
 
     const action = syncActions.get(name);
     if (type === "EXECUTE") {
-        // GM receives a request to execute an action
-        if (!game.user.isGM) return;
+        // Only the active GM should process the command
+        if (!game.users.activeGM?.isSelf)
+            return
 
         if (!action) {
             game.socket.emit(SOCKET_NAME, {

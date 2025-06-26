@@ -9,7 +9,6 @@ import { playMnemosphereAnimation } from "./animations/mnemosphere-animation";
 import {
     DEV_MODE,
     Log,
-    Mnemosphere_ROLL_COST,
     ModuleName,
 } from "./core-config.js";
 import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
@@ -17,6 +16,7 @@ import { SetupMnemosphereHooks } from "./mnemosphere.js";
 import {
     FLAG_ROLLTABLE,
     generateNewMnemosphere,
+    getMnemosphereRollCost,
     SetupPartySheetHooks,
 } from "./party-sheet/party-sheet.js";
 import {
@@ -58,7 +58,7 @@ Hooks.once("init", async () => {
         "roll-mnemosphere",
 
         // GM
-        async (params) => {
+        async (params: any) => {
             // Check and pay the cost to roll
             let actor = await fromUuid(params.actorUUID);
             if (actor == null) {
@@ -69,12 +69,13 @@ Hooks.once("init", async () => {
             }
 
             let party = await fromUuid(params.partyUUID);
+            const rollCost = getMnemosphereRollCost(party);
 
             const currentZenit = actor.system.resources.zenit.value;
-            if (currentZenit < Mnemosphere_ROLL_COST) {
+            if (currentZenit < rollCost) {
                 return {
                     success: false,
-                    error: `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
+                    error: `You must have at least ${rollCost} ${game.i18n.localize(
                         "FU.Zenit"
                     )} to create a new Mnemosphere.`,
                 };
@@ -82,7 +83,7 @@ Hooks.once("init", async () => {
 
             await actor.update({
                 "system.resources.zenit.value":
-                    currentZenit - Mnemosphere_ROLL_COST,
+                    currentZenit - rollCost,
             } as any);
 
             // Generate new sphere

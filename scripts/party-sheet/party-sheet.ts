@@ -163,6 +163,16 @@ export const FLAG_ROLLTABLE = "technosphere-roll-table";
 export const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
 export const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
 export const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
+export const FLAG_ROLL_COST = "technosphere-roll-cost";
+
+/**
+ * Get the roll cost for Mnemospheres from the party sheet, defaulting to 600 if not set
+ */
+export function getMnemosphereRollCost(partySheet: any): number {
+    const cost = partySheet.getFlag(ModuleName, FLAG_ROLL_COST);
+    return cost ?? 600;
+}
+
 export function SetupPartySheetHooks() {
     Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
         // Add Technosphere tab
@@ -202,6 +212,7 @@ export function SetupPartySheetHooks() {
                     ModuleName,
                     FLAG_ROLLTABLE
                 ),
+                rollCost: getMnemosphereRollCost(sheet.document),
                 partyMnemospheres: partyMnemospheres,
                 characterMnemospheres: characterMnemospheres,
             }
@@ -218,6 +229,21 @@ export function SetupPartySheetHooks() {
                 FLAG_ROLLTABLE,
                 "RollTable"
             );
+
+            // Bind roll cost input
+            html.find("#ts-roll-cost").on("change", async (event) => {
+                const value = parseInt((event.currentTarget as HTMLInputElement).value) || 600;
+                await sheet.document.setFlag(ModuleName, FLAG_ROLL_COST, value);
+                ui.notifications.info(`Roll cost updated to ${value}.`);
+            });
+
+            // Bind roll cost reset button
+            html.find("#clear-ts-roll-cost").on("click", async (event) => {
+                event.preventDefault();
+                await sheet.document.setFlag(ModuleName, FLAG_ROLL_COST, 600);
+                html.find("#ts-roll-cost").val(600);
+                ui.notifications.info("Roll cost reset to default.");
+            });
         }
 
         //bindMnemosphereSelectionToFlag(sheet, html, FLAG_EXISTINGSPHERE);

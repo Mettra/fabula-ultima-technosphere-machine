@@ -9,6 +9,11 @@
             <input type="text" id="ts-sphere-table" name="ts-sphere-table" value="{{rollableTable}}" style="grid-column: span 6;" data-dtype="RollTable" />
             <a class="clear-button" id="clear-ts-sphere-table" title="Clear Roll Table UUID" style="grid-column: span 1; text-align: center; cursor: pointer; line-height: inherit;">&#10006;</a>
         </div>
+        <div class="header-fields grid grid-9col" style="margin: 5px 0;">
+            <label for="ts-roll-cost" style="grid-column: span 2;">Roll Cost ({{localize "FU.Zenit"}})</label>
+            <input type="number" id="ts-roll-cost" name="ts-roll-cost" value="{{rollCost}}" style="grid-column: span 6;" min="0" step="50" data-dtype="Number" />
+            <a class="clear-button" id="clear-ts-roll-cost" title="Reset to Default (600)" style="grid-column: span 1; text-align: center; cursor: pointer; line-height: inherit;">&#8634;</a>
+        </div>
     {{/if}}
     </fieldset>
     <fieldset class="section-container title-fieldset desc resource-content">
