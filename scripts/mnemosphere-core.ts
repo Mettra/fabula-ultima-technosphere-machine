@@ -186,26 +186,19 @@ async function combineSkills(
                 (a, b) => b.level - a.level
             );
 
-            // Build sources text with HTML formatting
-            let sourcesText = "<hr><h3>Sources:</h3>";
-            sortedLevels.forEach((c) => {
-                sourcesText += `<p><strong>SL ${c.level}</strong> - @UUID[${c.sourceUuid}]{${c.sourceName}}</p>`;
-            });
-
             const originalDescription = getOriginalDescription(
                 skillDoc,
                 skillIdentifier,
                 "skill"
             );
-            const fullDescription = originalDescription + sourcesText;
 
             combinedSkills.push({
-                uuid: skillUuid,
+                uuid: skillUuid as UUID,
                 name: prefix(skillDoc.name),
                 img: (skillDoc as any).img,
                 level: finalLevel,
                 maxLevel: maxPossibleLevel,
-                description: fullDescription,
+                description: originalDescription,
                 contributions: contributions,
                 classType: classType,
             });
@@ -234,24 +227,17 @@ async function combineFeatures(
 
             const { doc: featureDoc, uuid: featureUuid } = resolvedDoc;
 
-            // Build sources text with HTML formatting
-            let sourcesText = "<hr><h3>Sources:</h3>";
-            contributions.forEach((c) => {
-                sourcesText += `<p>@UUID[${c.sourceUuid}]{${c.sourceName}}</p>`;
-            });
-
             const originalDescription = getOriginalDescription(
                 featureDoc,
                 featureIdentifier,
                 "feature"
             );
-            const fullDescription = originalDescription + sourcesText;
 
             combinedFeatures.push({
-                uuid: featureUuid,
+                uuid: featureUuid as UUID,
                 name: prefix(featureDoc.name),
                 img: (featureDoc as any).img,
-                description: fullDescription,
+                description: originalDescription,
                 contributions: contributions,
             });
         } catch (error) {
@@ -276,25 +262,17 @@ async function combineSpells(
 
             const { doc: spellDoc, uuid: spellUuid } = resolvedDoc;
 
-            // Build sources text with HTML formatting
-            let sourcesText = "<hr><h3>Sources:</h3>";
-            contributions.forEach((c) => {
-                sourcesText += `<p>@UUID[${c.sourceUuid}]{${c.sourceName}}</p>`;
-            });
-
             const originalDescription = getOriginalDescription(
                 spellDoc,
                 spellIdentifier,
                 "spell"
             );
 
-            const fullDescription = originalDescription + sourcesText;
-
             combinedSpells.push({
-                uuid: spellUuid,
+                uuid: spellUuid as UUID,
                 name: prefix(spellDoc.name),
                 img: (spellDoc as any).img,
-                description: fullDescription,
+                description: originalDescription,
                 contributions,
             });
         } catch (error) {
@@ -393,15 +371,36 @@ function setItemDescription(
     }
 }
 
-function generateFlags() {
-    return {
+function generateFlags(contributions?: SkillContribution[] | FeatureContribution[] | SpellContribution[]) {
+    const flags: any = {
         [ModuleName]: {
             "generated-by-mnemosphere": true,
         },
     };
+
+    if (contributions && contributions.length > 0) {
+        // Sort contributions by level (for skills) or by source name (for features/spells)
+        const sortedContributions = [...contributions].sort((a, b) => {
+            // Check if it's a skill contribution (has level property)
+            if ('level' in a && 'level' in b) {
+                // Sort by level descending, then by source name
+                if (b.level !== a.level) {
+                    return b.level - a.level;
+                }
+                return a.sourceName.localeCompare(b.sourceName);
+            } else {
+                // For features and spells, sort by source name
+                return a.sourceName.localeCompare(b.sourceName);
+            }
+        });
+
+        flags[ModuleName]["mnemosphere-sources"] = sortedContributions.map(c => c.sourceUuid);
+    }
+
+    return flags;
 }
 
-async function createItems<T extends { uuid: UUID }>(
+async function createItems<T extends { uuid: UUID; contributions: any[] }>(
     items: T[],
     propertiesFn: (item: T) => {}
 ) {
@@ -409,8 +408,8 @@ async function createItems<T extends { uuid: UUID }>(
 
     for (const item of items) {
         const itemData = (await expectUUID(item.uuid)).toJSON();
-        let properties = propertiesFn(item);
-        properties.flags = generateFlags();
+        let properties = propertiesFn(item) as any;
+        properties.flags = generateFlags(item.contributions);
         itemsToCreate.push(foundry.utils.mergeObject(itemData, properties));
     }
 
