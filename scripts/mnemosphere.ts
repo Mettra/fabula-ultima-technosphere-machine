@@ -90,6 +90,7 @@ export function SetupMnemosphereHooks() {
         Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
         await MnemosphereFromDescription(MnemosphereId, description);
     });
+
     Hooks.on("updateItem", async (item, changes, options, userId) => {
         Log("updateItem", item, options, userId);
 

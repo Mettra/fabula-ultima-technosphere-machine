@@ -1,6 +1,6 @@
 // Mnemosphere core functionality for combining equipped mnemosphere skills/features without base actors
 
-import { ensureGM, Log, ModuleName } from "./core-config.js";
+import { Log, ModuleName } from "./core-config.js";
 import { Relations } from "./relation.js";
 import { expectUUID } from "./uuid-utils.js";
 
@@ -421,7 +421,11 @@ async function createItems<T extends { uuid: UUID }>(
  * Update actor with combined mnemosphere data without causing disruptive re-renders
  */
 export async function updateActorWithMnemosphereData(actor: any) {
-    ensureGM();
+    // Check if the current user has permission to update this actor
+    if (!actor.isOwner && !game.user?.isGM) {
+        Log(`User ${game.user?.name} lacks permission to update actor ${actor.name}`);
+        return;
+    }
 
     // Get combined data
     const combinedData = await combineMnemosphereData(actor);
@@ -500,7 +504,17 @@ export function SetupMnemosphereCoreHooks(): void {
         if (
             changes.flags?.[ModuleName]?.["equipped-mnemospheres"] !== undefined
         ) {
-            await updateActorWithMnemosphereData(actor);
+            // Only process the update if:
+            // 1. The current user is the one who made the change, OR
+            // 2. The current user is the GM and the actor has no owner (fallback)
+            const currentUserId = game.user?.id;
+            const isCurrentUserChange = currentUserId === userId;
+            const isActorOwner = actor.isOwner;
+            const isGMFallback = game.user?.isGM && !actor.hasPlayerOwner;
+            
+            if ((isCurrentUserChange && isActorOwner) || isGMFallback) {
+                await updateActorWithMnemosphereData(actor);
+            }
         }
     });
 }
