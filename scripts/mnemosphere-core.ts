@@ -4,6 +4,8 @@ import { Log, ModuleName } from "./core-config.js";
 import { Relations } from "./relation.js";
 import { expectUUID } from "./uuid-utils.js";
 
+export const MNEMOSPHERE_CORE_VERSION = "1";
+
 interface SkillContribution {
     level: number;
     sourceUuid: string;
@@ -64,6 +66,31 @@ function prefix(name) {
  */
 function getEquippedMnemospheres(actor: any): string[] {
     return actor.getFlag(ModuleName, "equipped-mnemospheres") || [];
+}
+
+/**
+ * Get the current mnemosphere-core version stored on the actor
+ */
+function getActorMnemosphereCoreVersion(actor: any): string | null {
+    return actor.getFlag(ModuleName, "mnemosphere-core-version") || null;
+}
+
+/**
+ * Set the mnemosphere-core version on the actor
+ */
+async function setActorMnemosphereCoreVersion(
+    actor: any,
+    version: string
+): Promise<void> {
+    await actor.setFlag(ModuleName, "mnemosphere-core-version", version);
+}
+
+/**
+ * Check if the actor's mnemosphere-core version is current
+ */
+function isActorMnemosphereCoreVersionCurrent(actor: any): boolean {
+    const actorVersion = getActorMnemosphereCoreVersion(actor);
+    return actorVersion === MNEMOSPHERE_CORE_VERSION;
 }
 
 /**
@@ -371,7 +398,9 @@ function setItemDescription(
     }
 }
 
-function generateFlags(contributions?: SkillContribution[] | FeatureContribution[] | SpellContribution[]) {
+function generateFlags(
+    contributions?: SkillContribution[] | FeatureContribution[] | SpellContribution[]
+) {
     const flags: any = {
         [ModuleName]: {
             "generated-by-mnemosphere": true,
@@ -382,7 +411,7 @@ function generateFlags(contributions?: SkillContribution[] | FeatureContribution
         // Sort contributions by level (for skills) or by source name (for features/spells)
         const sortedContributions = [...contributions].sort((a, b) => {
             // Check if it's a skill contribution (has level property)
-            if ('level' in a && 'level' in b) {
+            if ("level" in a && "level" in b) {
                 // Sort by level descending, then by source name
                 if (b.level !== a.level) {
                     return b.level - a.level;
@@ -394,7 +423,9 @@ function generateFlags(contributions?: SkillContribution[] | FeatureContribution
             }
         });
 
-        flags[ModuleName]["mnemosphere-sources"] = sortedContributions.map(c => c.sourceUuid);
+        flags[ModuleName]["mnemosphere-sources"] = sortedContributions.map(
+            (c) => c.sourceUuid
+        );
     }
 
     return flags;
@@ -422,7 +453,9 @@ async function createItems<T extends { uuid: UUID; contributions: any[] }>(
 export async function updateActorWithMnemosphereData(actor: any) {
     // Check if the current user has permission to update this actor
     if (!actor.isOwner && !game.user?.isGM) {
-        Log(`User ${game.user?.name} lacks permission to update actor ${actor.name}`);
+        Log(
+            `User ${game.user?.name} lacks permission to update actor ${actor.name}`
+        );
         return;
     }
 
@@ -491,6 +524,38 @@ export async function updateActorWithMnemosphereData(actor: any) {
         await actor.createEmbeddedDocuments("Item", allItemsToCreate);
         Log("Created new sphere items:", allItemsToCreate.length);
     }
+
+    // Update the actor's mnemosphere-core version to mark it as current
+    await setActorMnemosphereCoreVersion(actor, MNEMOSPHERE_CORE_VERSION);
+    Log(`Updated actor ${actor.name} to mnemosphere-core version ${MNEMOSPHERE_CORE_VERSION}`);
+}
+
+/**
+ * Update all actors that need a mnemosphere-core version update
+ * This can be called when the module version changes to update all actors
+ */
+export async function updateAllActorsForVersionChange(): Promise<void> {
+    const actors = game.actors?.contents || [];
+    const outdatedActors = actors.filter(actor => 
+        !isActorMnemosphereCoreVersionCurrent(actor) && 
+        getEquippedMnemospheres(actor).length > 0
+    );
+
+    if (outdatedActors.length === 0) {
+        Log("No actors need mnemosphere-core version updates");
+        return;
+    }
+
+    Log(`Updating ${outdatedActors.length} actors for mnemosphere-core version change`);
+    
+    for (const actor of outdatedActors) {
+        try {
+            await updateActorWithMnemosphereData(actor);
+            Log(`Updated actor ${actor.name} for version change`);
+        } catch (error) {
+            Log(`Failed to update actor ${actor.name}:`, error);
+        }
+    }
 }
 
 /**
@@ -500,9 +565,9 @@ export function SetupMnemosphereCoreHooks(): void {
     // Listen for flag changes that indicate mnemosphere equipment changes
     Hooks.on("updateActor", async (actor, changes, options, userId) => {
         // Check if equipped mnemospheres changed
-        if (
-            changes.flags?.[ModuleName]?.["equipped-mnemospheres"] !== undefined
-        ) {
+        const equippedMnemospheresChanged = changes.flags?.[ModuleName]?.["equipped-mnemospheres"] !== undefined;
+        
+        if (equippedMnemospheresChanged) {
             // Only process the update if:
             // 1. The current user is the one who made the change, OR
             // 2. The current user is the GM and the actor has no owner (fallback)
@@ -510,10 +575,17 @@ export function SetupMnemosphereCoreHooks(): void {
             const isCurrentUserChange = currentUserId === userId;
             const isActorOwner = actor.isOwner;
             const isGMFallback = game.user?.isGM && !actor.hasPlayerOwner;
-            
+
             if ((isCurrentUserChange && isActorOwner) || isGMFallback) {
                 await updateActorWithMnemosphereData(actor);
             }
+        }
+    });
+
+    // On ready, check all actors for version updates
+    Hooks.once(`${ModuleName}Ready`, async () => {
+        if (game.user?.isGM) {
+            await updateAllActorsForVersionChange();
         }
     });
 }

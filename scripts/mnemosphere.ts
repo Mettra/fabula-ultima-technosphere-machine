@@ -1,6 +1,6 @@
 // Mnemosphere class and related functionality
 
-import { Log } from "./core-config.js";
+import { Log, ModuleName } from "./core-config.js";
 import { extractParagraphsAsLines } from "./parsing-utils.js";
 import { Mnemosphere_ID, Relations } from "./relation.js";
 import { createUUIDLink, parseUUIDLink } from "./uuid-utils.js";
@@ -56,8 +56,7 @@ export function SetupMnemosphereHooks() {
     // Mnemosphere data hooks
     Hooks.on("ready", async () => {
         async function processItems(items, _ctx) {
-            items.forEach(async (item) => {
-                // Added async here
+            const promises = items.map(async (item) => {
                 if (ItemIsMnemosphere(item)) {
                     let MnemosphereId = Relations.Mnemosphere.GetNextId();
                     Relations.Item.mnemosphere.define(item.uuid, MnemosphereId);
@@ -67,15 +66,20 @@ export function SetupMnemosphereHooks() {
                     );
                 }
             });
+            await Promise.all(promises);
         }
 
         // After the game is fully initialized
         await processItems(game.items, null);
-        game.actors.forEach(async (v) => {
+        
+        const actorPromises = game.actors.map(async (v) => {
             await processItems(v.items, v);
         });
+        await Promise.all(actorPromises);
 
         Relations.LogAll();
+
+        Hooks.callAll(`${ModuleName}Ready`);
     });
     Hooks.on("createItem", async (item, options, userId) => {
         Log("createItem", item, options, userId);
