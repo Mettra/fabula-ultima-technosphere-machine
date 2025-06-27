@@ -1,0 +1,25 @@
+# SQLite database files should be treated as binary
+*.db binary
+project.db binary
+
+# Ensure line endings are consistent for text files
+*.ts text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.css text eol=lf
+*.hbs text eol=lf
+*.html text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.lock binary
+
+# Log files
+*.log binary
+*.ldb binary
