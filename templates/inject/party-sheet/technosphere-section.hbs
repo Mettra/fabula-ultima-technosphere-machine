@@ -18,15 +18,15 @@
     </fieldset>
     <fieldset class="section-container title-fieldset desc resource-content">
         <div class="technosphere-actions">
-            <button type="button" class="button active" data-action="select-technosphere-tab" data-tab="create">Create</button>
-            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="level-up">Level Up</button>
-            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="combine">Combine</button>
-            <button type="button" class="button" data-action="select-technosphere-tab" data-tab="sacrifice">Sacrifice</button>
+            <button type="button" class="button {{#if (eq activeTab "create")}}active{{/if}}" data-action="select-technosphere-tab" data-tab="create">Create</button>
+            <button type="button" class="button {{#if (eq activeTab "level-up")}}active{{/if}}" data-action="select-technosphere-tab" data-tab="level-up">Level Up</button>
+            <button type="button" class="button {{#if (eq activeTab "combine")}}active{{/if}}" data-action="select-technosphere-tab" data-tab="combine">Combine</button>
+            <button type="button" class="button {{#if (eq activeTab "sacrifice")}}active{{/if}}" data-action="select-technosphere-tab" data-tab="sacrifice">Sacrifice</button>
         </div>
     </fieldset>
 
     <div class="technosphere-content">
-        <div class="technosphere-tab-content" data-tab="create">
+        <div class="technosphere-tab-content" data-tab="create" {{#unless (eq activeTab "create")}}style="display: none;"{{/unless}}>
             <fieldset class="section-container title-fieldset desc resource-content" style="text-align:center;">
                 <legend class="resource-label-m">Create</legend>
                 <button type="button" class="technosphere-roll button button-style" style="width: 200px; height:200px;">
@@ -36,7 +36,7 @@
             <div style="margin-top: 10px;">
             </div>
         </div>
-        <div class="technosphere-tab-content" data-tab="level-up" style="display: none;">
+        <div class="technosphere-tab-content" data-tab="level-up" {{#unless (eq activeTab "level-up")}}style="display: none;"{{/unless}}>
             <fieldset class="section-container title-fieldset desc resource-content">
                 <legend class="resource-label-m">Level Up</legend>
                 <div style="text-align: center; padding: 20px;">Coming soon!</div>
@@ -64,13 +64,13 @@
             </fieldset>
             -->
         </div>
-        <div class="technosphere-tab-content" data-tab="combine" style="display: none;">
+        <div class="technosphere-tab-content" data-tab="combine" {{#unless (eq activeTab "combine")}}style="display: none;"{{/unless}}>
             <fieldset class="section-container title-fieldset desc resource-content">
                 <legend class="resource-label-m">Combine</legend>
                 <div style="text-align: center; padding: 20px;">Coming soon!</div>
             </fieldset>
         </div>
-        <div class="technosphere-tab-content" data-tab="sacrifice" style="display: none;">
+        <div class="technosphere-tab-content" data-tab="sacrifice" {{#unless (eq activeTab "sacrifice")}}style="display: none;"{{/unless}}>
             <fieldset class="section-container title-fieldset desc resource-content">
                 <legend class="resource-label-m">Sacrifice</legend>
                 <div style="text-align: center; padding: 20px;">Coming soon!</div>

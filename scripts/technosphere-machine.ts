@@ -33,6 +33,25 @@ Hooks.once("init", async () => {
     SetupRollTableHooks();
     SetupSockets();
 
+    // Register client settings for per-user UI state
+    game.settings.register(ModuleName, "party-sheet-main-tab", {
+        name: "Party Sheet Main Tab",
+        hint: "Current main tab selection in party sheet",
+        scope: "client",
+        config: false,
+        type: String,
+        default: "overview"
+    });
+
+    game.settings.register(ModuleName, "party-sheet-technosphere-tab", {
+        name: "Party Sheet Technosphere Sub-Tab",
+        hint: "Current technosphere sub-tab selection in party sheet", 
+        scope: "client",
+        config: false,
+        type: String,
+        default: "create"
+    });
+
     // Register socket events
     await loadTemplates([
         "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/Mnemosphere-card.hbs",
@@ -123,6 +142,10 @@ Handlebars.registerHelper("times", function (n: number, block: any) {
         accum += block.fn({ index: i });
     }
     return accum;
+});
+
+Handlebars.registerHelper("eq", function (a: any, b: any) {
+    return a === b;
 });
 
 // Cleanup when module is disabled/reloaded

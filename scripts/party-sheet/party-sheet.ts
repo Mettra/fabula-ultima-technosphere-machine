@@ -165,6 +165,10 @@ export const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
 export const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
 export const FLAG_ROLL_COST = "technosphere-roll-cost";
 
+// Note: Tab state is now stored in client settings, not flags
+const SETTING_MAIN_TAB = "party-sheet-main-tab";
+const SETTING_TECHNOSPHERE_TAB = "party-sheet-technosphere-tab";
+
 /**
  * Get the roll cost for Mnemospheres from the party sheet, defaulting to 600 if not set
  */
@@ -215,9 +219,28 @@ export function SetupPartySheetHooks() {
                 rollCost: getMnemosphereRollCost(sheet.document),
                 partyMnemospheres: partyMnemospheres,
                 characterMnemospheres: characterMnemospheres,
+                activeTab: game.settings.get(ModuleName, SETTING_TECHNOSPHERE_TAB),
             }
         );
         html.find(".sheet-body").append(tsSection);
+
+        // Restore main tab state if it was technosphere-machine
+        const savedMainTab = game.settings.get(ModuleName, SETTING_MAIN_TAB);
+        if (savedMainTab === "technosphere-machine") {
+            // We need to wait for the next tick to ensure Foundry's tab system is ready
+            setTimeout(() => {
+                const tabs = sheet._tabs[0]; // Get the primary tab group
+                if (tabs) {
+                    tabs.activate("technosphere-machine");
+                }
+            }, 0);
+        }
+
+        // Intercept main tab changes to save state
+        html.find('.sheet-tabs a[data-tab]').on('click', function(event) {
+            const tabName = $(this).data('tab');
+            game.settings.set(ModuleName, SETTING_MAIN_TAB, tabName);
+        });
 
         // GM SECTION
         {
@@ -254,6 +277,9 @@ export function SetupPartySheetHooks() {
             .bind("click", (event) => {
                 event.preventDefault();
                 const tab = $(event.currentTarget).data("tab");
+
+                // Store the active tab state in client settings
+                game.settings.set(ModuleName, SETTING_TECHNOSPHERE_TAB, tab);
 
                 // Update button active state
                 html.find(

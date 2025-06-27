@@ -1,7 +1,5 @@
 Phase 2:
 
-Fix party sheet going back to the original tab whenever it updates...
-
 Config with Origin
     - Location name
     - Rollable table of possible technosphere names
