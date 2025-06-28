@@ -1,8 +1,8 @@
+import { Octokit } from "@octokit/rest";
+import { spawn } from "child_process";
 import fs from "fs/promises";
 import path from "path";
 import semver from "semver";
-import { Octokit } from "@octokit/rest";
-import { spawn } from "child_process";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -136,7 +136,7 @@ class VersionManager {
             const release = await this.octokit.rest.repos.createRelease({
                 owner: GITHUB_REPO_OWNER,
                 repo: GITHUB_REPO_NAME,
-                tag_name: `v${version}`,
+                tag_name: `${version}`,
                 name: `Release ${version}`,
                 body: this.generateReleaseNotes(version),
                 draft: false,
