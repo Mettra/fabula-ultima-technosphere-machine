@@ -255,7 +255,7 @@ export function SetupPartySheetHooks() {
 
             // Bind roll cost input
             html.find("#ts-roll-cost").on("change", async (event) => {
-                const value = parseInt((event.currentTarget as HTMLInputElement).value) || 600;
+                const value = parseInt((event.currentTarget as HTMLInputElement).value);
                 await sheet.document.setFlag(ModuleName, FLAG_ROLL_COST, value);
                 ui.notifications.info(`Roll cost updated to ${value}.`);
             });
