@@ -1,6 +1,6 @@
 {
   "name": "fabula-ultima-technosphere-machine",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "out/scripts/technosphere-machine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
