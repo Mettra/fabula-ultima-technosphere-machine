@@ -52,22 +52,6 @@
       "_id": "q1rUUHaD2s5YVnlD",
       "flags": {},
       "_key": "!tables.results!TiBqf4l8sQu3dNFA.q1rUUHaD2s5YVnlD"
-    },
-    {
-      "type": "pack",
-      "documentCollection": "fabula-ultima-compendium.class-skills",
-      "weight": 1,
-      "range": [
-        4,
-        4
-      ],
-      "drawn": false,
-      "text": "Magitech",
-      "documentId": "5oK9s4wzd8qS6WQi",
-      "img": "icons/commodities/tech/tube-chamber-lightning.webp",
-      "_id": "Q2Ho0bL3SsytP17F",
-      "flags": {},
-      "_key": "!tables.results!TiBqf4l8sQu3dNFA.Q2Ho0bL3SsytP17F"
     }
   ],
   "replacement": true,

@@ -38,14 +38,7 @@
       "ownership": {
         "PLAYER": "OBSERVER",
         "ASSISTANT": "OWNER"
-      },
-      "flags": {},
-      "package": "world",
-      "id": "world.mnemosphere-rollable-tables",
-      "packageType": "world",
-      "packageName": "fabula-test",
-      "index": [],
-      "folders": []
+      }
     }
   ],
   "compatibility": {

@@ -210,7 +210,7 @@ class VersionManager {
 
             console.log(`\n🎉 Successfully released version ${newVersion}!`);
             console.log(
-                `🔗 GitHub: https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/tag/v${newVersion}`
+                `🔗 GitHub: https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/tag/${newVersion}`
             );
         } catch (error) {
             console.error("❌ Release process failed:", error.message);
