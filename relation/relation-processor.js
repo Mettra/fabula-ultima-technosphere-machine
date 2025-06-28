@@ -238,7 +238,7 @@ const Relations = {
         output += `
         
         ${concept}: {
-            NextId: 0,
+            NextId: 1,
 
             GetNextId() : ${concept}_ID {
                 return this.NextId++ as any; 

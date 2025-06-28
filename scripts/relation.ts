@@ -9,7 +9,7 @@ export type Mnemosphere_ID = number & { readonly __brand: "Mnemosphere" };
 
 const Relations = {
     Item: {
-        NextId: 0,
+        NextId: 1,
 
         GetNextId(): Item_ID {
             return this.NextId++ as any;
@@ -56,7 +56,7 @@ const Relations = {
     },
 
     Mnemosphere: {
-        NextId: 0,
+        NextId: 1,
 
         GetNextId(): Mnemosphere_ID {
             return this.NextId++ as any;

@@ -6,11 +6,7 @@ import {
     initializeAnimationDevMode,
 } from "./animations/animation-dev-manager.js";
 import { playMnemosphereAnimation } from "./animations/mnemosphere-animation";
-import {
-    DEV_MODE,
-    Log,
-    ModuleName,
-} from "./core-config.js";
+import { DEV_MODE, Log, ModuleName } from "./core-config.js";
 import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
 import { SetupMnemosphereHooks } from "./mnemosphere.js";
 import {
@@ -40,16 +36,16 @@ Hooks.once("init", async () => {
         scope: "client",
         config: false,
         type: String,
-        default: "overview"
+        default: "overview",
     });
 
     game.settings.register(ModuleName, "party-sheet-technosphere-tab", {
         name: "Party Sheet Technosphere Sub-Tab",
-        hint: "Current technosphere sub-tab selection in party sheet", 
+        hint: "Current technosphere sub-tab selection in party sheet",
         scope: "client",
         config: false,
         type: String,
-        default: "create"
+        default: "create",
     });
 
     // Register socket events
@@ -101,8 +97,7 @@ Hooks.once("init", async () => {
             }
 
             await actor.update({
-                "system.resources.zenit.value":
-                    currentZenit - rollCost,
+                "system.resources.zenit.value": currentZenit - rollCost,
             } as any);
 
             // Generate new sphere
