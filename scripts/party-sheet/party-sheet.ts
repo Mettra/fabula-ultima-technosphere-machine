@@ -1,21 +1,9 @@
-import { playInfusionAnimation } from "../animations/mnemosphere-animation";
-import {
-    ensureGM,
-    getCharacter,
-    Log,
-    ModuleName,
-    SetFlagWithoutRender,
-} from "../core-config";
+import { getCharacter, Log, ModuleName } from "../core-config";
 import {
     createMnemosphereDescription,
-    createMnemosphereDescriptionBody,
     createMnemosphereItemData,
-    createMnemosphereSummary,
     filterMnemospheres,
-    MnemosphereHeader,
-    resolveSkills,
 } from "../mnemosphere";
-import { Mnemosphere_ID, Relations } from "../relation";
 import { getDocumentFromResult, rollTableCustom } from "../roll-table-utils";
 import { synchronize } from "../socket";
 import { bindHeroicSkillPopup, bindUUIDInput } from "../ui-bindings";
@@ -100,65 +88,6 @@ export async function generateNewMnemosphere(rollTableUUID: UUID) {
     return await createMnemosphereItemData(classUUID, description);
 }
 
-async function infuseSkillIntoMnemosphere(
-    sphereItemUUID: UUID,
-    skillUUID: UUID
-) {
-    let sphereId: Mnemosphere_ID;
-
-    try {
-        sphereId = Relations.Item.mnemosphere.expect(sphereItemUUID);
-    } catch (e) {
-        ui.notifications.error(
-            `Mnemosphere item ${sphereItemUUID} is invalid! Ensure the item has ${MnemosphereHeader} at the start of the summary, and a link to the class RollTable.`
-        );
-
-        throw e;
-    }
-
-    let existingSkills = await resolveSkills(
-        Relations.Mnemosphere.skill.get(sphereId) ?? []
-    );
-
-    const existingSkill = existingSkills[skillUUID];
-    if (existingSkill && existingSkill.rank == existingSkill.maxRank) {
-        ui.notifications.error(
-            `This Mnemosphere already has the maximum rank for this skill.`
-        );
-        return false;
-    }
-
-    let newAbillityLinks = await createMnemosphereDescriptionBody([skillUUID]);
-    let item = await fromUuid(sphereItemUUID);
-    if (item && "system" in item) {
-        // Get all skills for summary
-        let allSkillUUIDs = [
-            ...(Relations.Mnemosphere.skill.get(sphereId) ?? []),
-            skillUUID,
-        ];
-        let heroicSkillUUID = Relations.Mnemosphere.heroicskill.check(sphereId);
-        let summary = await createMnemosphereSummary(
-            allSkillUUIDs,
-            heroicSkillUUID
-        );
-
-        ensureGM();
-        item.update({
-            system: {
-                summary: {
-                    value: summary,
-                },
-                description:
-                    (item as any).system.description + newAbillityLinks,
-            },
-        });
-
-        return true;
-    }
-
-    return false;
-}
-
 export const FLAG_ROLLTABLE = "technosphere-roll-table";
 export const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
 export const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
@@ -219,7 +148,10 @@ export function SetupPartySheetHooks() {
                 rollCost: getMnemosphereRollCost(sheet.document),
                 partyMnemospheres: partyMnemospheres,
                 characterMnemospheres: characterMnemospheres,
-                activeTab: game.settings.get(ModuleName, SETTING_TECHNOSPHERE_TAB),
+                activeTab: game.settings.get(
+                    ModuleName,
+                    SETTING_TECHNOSPHERE_TAB
+                ),
             }
         );
         html.find(".sheet-body").append(tsSection);
@@ -237,8 +169,8 @@ export function SetupPartySheetHooks() {
         }
 
         // Intercept main tab changes to save state
-        html.find('.sheet-tabs a[data-tab]').on('click', function(event) {
-            const tabName = $(this).data('tab');
+        html.find(".sheet-tabs a[data-tab]").on("click", function (event) {
+            const tabName = $(this).data("tab");
             game.settings.set(ModuleName, SETTING_MAIN_TAB, tabName);
         });
 
@@ -255,7 +187,9 @@ export function SetupPartySheetHooks() {
 
             // Bind roll cost input
             html.find("#ts-roll-cost").on("change", async (event) => {
-                const value = parseInt((event.currentTarget as HTMLInputElement).value);
+                const value = parseInt(
+                    (event.currentTarget as HTMLInputElement).value
+                );
                 await sheet.document.setFlag(ModuleName, FLAG_ROLL_COST, value);
                 ui.notifications.info(`Roll cost updated to ${value}.`);
             });
@@ -337,200 +271,5 @@ export function SetupPartySheetHooks() {
                 );
             }
         );
-
-        // Handle Infusion UI
-        const infusionSkillDropzone = html.find(".infusion-skill-dropzone");
-        const infusionSphereSocket = html.find(".infusion-sphere-socket");
-        const infuseButton = html.find(".infuse-button");
-
-        // @NOTE
-        // The calls to SetFlagWithoutRender here will need to be replaced with just setting data on the sheet
-        // Since they're just used for UI, and the actual updates must be broadcast to the "server" (GM)
-
-        // Helper to update dropzone appearance
-        async function updateDropzone(dropzone, uuid, type) {
-            if (!dropzone.length) return;
-            const placeholder = dropzone.find(
-                type === "skill" ? ".placeholder-text" : ".socket-placeholder"
-            );
-            const display = dropzone.find(
-                type === "skill" ? ".skill-display" : ".sphere-display"
-            );
-
-            if (!uuid) {
-                placeholder.show();
-                display.hide();
-                return;
-            }
-
-            const item = await fromUuid(uuid);
-
-            if (item && "img" in item && "name" in item) {
-                display.find("img").attr("src", item.img);
-                if (type === "skill") {
-                    display.find(".skill-name").text(item.name);
-                }
-                placeholder.hide();
-                display.show();
-            } else {
-                placeholder.show();
-                display.hide();
-            }
-        }
-
-        // Initialize UI from flags
-        await updateDropzone(
-            infusionSkillDropzone,
-            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SKILL),
-            "skill"
-        );
-        await updateDropzone(
-            infusionSphereSocket,
-            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SPHERE),
-            "sphere"
-        );
-
-        // Drag and drop for skill
-        infusionSkillDropzone
-            .on("dragover", (event) => {
-                event.preventDefault();
-                infusionSkillDropzone.addClass("drag-over");
-            })
-            .on("dragleave", () => {
-                infusionSkillDropzone.removeClass("drag-over");
-            })
-            .on("drop", async (event) => {
-                event.preventDefault();
-                infusionSkillDropzone.removeClass("drag-over");
-                try {
-                    const data = JSON.parse(
-                        event.originalEvent.dataTransfer.getData("text/plain")
-                    );
-                    if (data.type !== "Item" || !data.uuid) return;
-
-                    const item = await fromUuid(data.uuid);
-                    if (item?.type !== "skill") {
-                        ui.notifications.warn(
-                            "You can only drop skills in this area."
-                        );
-                        return;
-                    }
-
-                    await SetFlagWithoutRender(
-                        sheet.document,
-                        ModuleName,
-                        FLAG_INFUSION_SKILL,
-                        data.uuid
-                    );
-                    await updateDropzone(
-                        infusionSkillDropzone,
-                        data.uuid,
-                        "skill"
-                    );
-                } catch (e) {
-                    console.warn("Could not parse dropped data", e);
-                }
-            });
-
-        // Drag and drop for sphere
-        infusionSphereSocket
-            .on("dragover", (event) => {
-                event.preventDefault();
-                infusionSphereSocket.addClass("drag-over");
-            })
-            .on("dragleave", () => {
-                infusionSphereSocket.removeClass("drag-over");
-            })
-            .on("drop", async (event) => {
-                event.preventDefault();
-                infusionSphereSocket.removeClass("drag-over");
-                try {
-                    const data = JSON.parse(
-                        event.originalEvent.dataTransfer.getData("text/plain")
-                    );
-                    if (data.type !== "Item" || !data.uuid) return;
-
-                    const item = await fromUuid(data.uuid);
-                    if (
-                        item?.type !== "treasure" ||
-                        !item.system.summary?.value.startsWith(
-                            MnemosphereHeader
-                        )
-                    ) {
-                        ui.notifications.warn(
-                            "You can only drop Mnemospheres in this area."
-                        );
-                        return;
-                    }
-
-                    await SetFlagWithoutRender(
-                        sheet.document,
-                        ModuleName,
-                        FLAG_INFUSION_SPHERE,
-                        data.uuid
-                    );
-                    await updateDropzone(
-                        infusionSphereSocket,
-                        data.uuid,
-                        "sphere"
-                    );
-                } catch (e) {
-                    console.warn("Could not parse dropped data", e);
-                }
-            });
-
-        // Handle Infuse button click
-        infuseButton.on("click", async (event) => {
-            event.preventDefault();
-
-            const skillUUID = sheet.document.getFlag(
-                ModuleName,
-                FLAG_INFUSION_SKILL
-            );
-            const sphereUUID = sheet.document.getFlag(
-                ModuleName,
-                FLAG_INFUSION_SPHERE
-            );
-
-            if (!skillUUID || !sphereUUID) {
-                ui.notifications.error(
-                    "You must provide both a skill and a Mnemosphere to infuse."
-                );
-                return;
-            }
-
-            // TODO: Add cost check similar to rolling
-
-            const success = await infuseSkillIntoMnemosphere(
-                sphereUUID,
-                skillUUID
-            );
-
-            if (success) {
-                const skillItem = await fromUuid(skillUUID);
-                const sphereItem = await fromUuid(sphereUUID);
-
-                await playInfusionAnimation({
-                    skill: { name: skillItem.name, imageUrl: skillItem.img },
-                    sphere: { name: sphereItem.name, imageUrl: sphereItem.img },
-                });
-
-                // Clear flags and reset UI
-                await SetFlagWithoutRender(
-                    sheet.document,
-                    ModuleName,
-                    FLAG_INFUSION_SKILL,
-                    null
-                );
-                await SetFlagWithoutRender(
-                    sheet.document,
-                    ModuleName,
-                    FLAG_INFUSION_SPHERE,
-                    null
-                );
-                await updateDropzone(infusionSkillDropzone, null, "skill");
-                await updateDropzone(infusionSphereSocket, null, "sphere");
-            }
-        });
     });
 }
