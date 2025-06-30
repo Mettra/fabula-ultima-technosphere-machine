@@ -1,3 +1,23 @@
+
+Level up panel for next session
+
+Drag and drop mnemospheres?
+    -Only needed for adding to slots, and maybe other compat
+
+Support for other tables w/ new key support
+ - other spheres
+ - multi spheres
+
+
+Grey out skill levels for memno abilities.
+
+Stash w/ equipped sphere
+
+Have some sort of way to link spheres with slots
+
+Add verse to magichant
+
+
 Phase 2:
 
 Config with Origin
@@ -10,41 +30,5 @@ Choose origin to roll from in GM
 Magichant special handling
     - Just grab the highest level sphere
 
-
-// Clear all skills and features from selected actor
-(async () => {
-    // Get the selected actor
-    const actor = canvas.tokens.controlled[0]?.actor || game.user.character;
-    
-    if (!actor) {
-        ui.notifications.error("No actor selected. Please select a token or set a character.");
-        return;
-    }
-    
-    console.log(`Clearing skills and features from: ${actor.name}`);
-    
-    // Find all items to delete (skills, spells, features, rituals)
-    const itemsToDelete = actor.items.filter(item => 
-        item.type === "skill" || 
-        item.type === "spell" || 
-        item.type === "feature" || 
-        item.type === "ritual"
-    ).map(item => item.id);
-    
-    if (itemsToDelete.length === 0) {
-        ui.notifications.info("No skills or features found to delete.");
-        return;
-    }
-    
-    console.log(`Found ${itemsToDelete.length} items to delete:`, itemsToDelete);
-    
-    // Delete the items
-    try {
-        await actor.deleteEmbeddedDocuments("Item", itemsToDelete);
-        ui.notifications.info(`Successfully deleted ${itemsToDelete.length} skills and features from ${actor.name}`);
-        console.log("Items deleted successfully");
-    } catch (error) {
-        ui.notifications.error("Failed to delete items. Check console for details.");
-        console.error("Error deleting items:", error);
-    }
-})();
+Phase 3:
+Slot management

@@ -137,4 +137,37 @@
     pointer-events: none;
 }
 
+/* Mnemo skill disabled states */
+.mnemo-skill-disabled {
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+    filter: grayscale(25%) brightness(0.7);
+}
+
+.mnemo-skill-disabled:hover {
+    opacity: 0.5 !important;
+    transform: none !important;
+}
+
+/* Specific styling for disabled skill level controls - just grey the stars */
+.skillLevel input.mnemo-skill-disabled {
+    filter: grayscale(100%) brightness(0.7) !important;
+    opacity: 0.6 !important;
+}
+
+.skillLevel.mnemo-skill-disabled {
+    /* Remove background box styling, just disable interactions */
+    background-color: transparent !important;
+}
+
+/* Additional styling for disabled heroic skill buttons */
+.heroic-skill-button.mnemo-skill-disabled {
+    background-color: #666 !important;
+    border-color: #666 !important;
+}
+
+.heroic-skill-button.mnemo-skill-disabled i {
+    color: #999 !important;
+}
 
