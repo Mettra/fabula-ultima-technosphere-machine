@@ -1,0 +1,466 @@
+commit 49dcc6bb296d71df897e62e8758381679362bf26
+Author: Mettra <Mettra@users.noreply.github.com>
+Date:   Mon Jun 23 21:13:14 2025 -0700
+
+    Updated roll mnemosphere to be client-server
+
+diff --git a/base-context-compressed.md b/base-context-compressed.md
+index 8845b2a..2f5e8e0 100644
+--- a/base-context-compressed.md
++++ b/base-context-compressed.md
+@@ -199,12 +199,6 @@ Log(`Action description`, data); // Only logs if DEV_MODE true
+ 
+ ## COMMON PATTERNS
+ 
+-### Flag Operations
+-```typescript
+-getFlag(sheet, "flag-name")                    // Read
+-SetFlagWithoutRender(doc, ModuleName, key, val) // Write without UI update
+-```
+-
+ ### UUID Resolution  
+ ```typescript
+ const doc = await fromUuid(uuid);              // Async resolution
+diff --git a/module.json b/module.json
+index 576a90a..ac6f596 100644
+--- a/module.json
++++ b/module.json
+@@ -24,6 +24,7 @@
+       "path": "languages/en.json"
+     }
+   ],
++  "socket": true,
+   "url": "https://github.com/Mettra/fabula-ultima-technosphere-machine",
+   "manifest": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/latest/download/module.json",
+   "download": "https://github.com/Mettra/fabula-ultima-technosphere-machine/releases/download/1.3.0/fabula-ultima-technosphere-machine.zip",
+diff --git a/scripts/actor-sheet/actor-sheet.ts b/scripts/actor-sheet/actor-sheet.ts
+index 31285aa..5be7bd2 100644
+--- a/scripts/actor-sheet/actor-sheet.ts
++++ b/scripts/actor-sheet/actor-sheet.ts
+@@ -1,5 +1,10 @@
+-import { Log, ModuleName, getFlag, getItemDisplayData } from "../core-config";
+-import { Relations, Relations } from "../relation";
++import {
++    Log,
++    ModuleName,
++    ModuleName,
++    getItemDisplayData,
++} from "../core-config";
++import { Relations } from "../relation";
+ import { recomputeTechnosphereSheet } from "../technosphere-recompute";
+ 
+ // Helper functions for Mnemosphere equipment management
+@@ -161,7 +166,7 @@ export function SetupActorSheetHooks() {
+                 event.target.disabled = true;
+                 try {
+                     const baseSheetActor = fromUuidSync(
+-                        getFlag(sheet, FLAG_BASESHEET)
++                        sheet.document.getFlag(ModuleName, FLAG_BASESHEET)
+                     );
+                     if (!baseSheetActor) {
+                         ui.notifications.error(
+diff --git a/scripts/core-config.ts b/scripts/core-config.ts
+index 5ed0a11..e368b55 100644
+--- a/scripts/core-config.ts
++++ b/scripts/core-config.ts
+@@ -41,15 +41,6 @@ export function getCharacter(): any | null {
+     return character;
+ }
+ 
+-export function getFlag(sheet: any, flagName: string): any | null {
+-    try {
+-        return sheet.document.getFlag(ModuleName, flagName);
+-    } catch (err) {
+-        console.error(`Failed to get flag '${flagName}':`, err);
+-        return null;
+-    }
+-}
+-
+ export async function SetFlagWithoutRender(
+     document: any,
+     scope: string,
+diff --git a/scripts/party-sheet/party-sheet.ts b/scripts/party-sheet/party-sheet.ts
+index 1bd1248..6c743cf 100644
+--- a/scripts/party-sheet/party-sheet.ts
++++ b/scripts/party-sheet/party-sheet.ts
+@@ -1,13 +1,8 @@
+-import {
+-    playInfusionAnimation,
+-    playMnemosphereAnimation,
+-} from "../animations/mnemosphere-animation";
++import { playInfusionAnimation } from "../animations/mnemosphere-animation";
+ import {
+     ensureGM,
+     getCharacter,
+-    getFlag,
+     Log,
+-    Mnemosphere_ROLL_COST,
+     ModuleName,
+     SetFlagWithoutRender,
+ } from "../core-config";
+@@ -22,6 +17,7 @@ import {
+ } from "../mnemosphere";
+ import { Mnemosphere_ID, Relations } from "../relation";
+ import { getDocumentFromResult, rollTableCustom } from "../roll-table-utils";
++import { synchronize } from "../socket";
+ import { bindHeroicSkillPopup, bindUUIDInput } from "../ui-bindings";
+ import { resolveCompendiumUUID } from "../uuid-utils";
+ 
+@@ -90,7 +86,7 @@ async function rollMnemosphereAbility(
+     return rolledUUIDS;
+ }
+ 
+-async function generateNewMnemosphere(rollTableUUID: UUID) {
++export async function generateNewMnemosphere(rollTableUUID: UUID) {
+     Log("Rolling new Mnemosphere");
+     let classUUID = await rollClassUUID(rollTableUUID);
+     let initialAbilities = await rollMnemosphereAbility(classUUID, {
+@@ -163,13 +159,12 @@ async function infuseSkillIntoMnemosphere(
+     return false;
+ }
+ 
++export const FLAG_ROLLTABLE = "technosphere-roll-table";
++export const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
++export const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
++export const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
+ export function SetupPartySheetHooks() {
+     Hooks.on(`renderFUPartySheet`, async (sheet: any, html: any) => {
+-        const FLAG_ROLLTABLE = "technosphere-roll-table";
+-        const FLAG_EXISTINGSPHERE = "technosphere-existing-sphere";
+-        const FLAG_INFUSION_SKILL = "technosphere-infusion-skill";
+-        const FLAG_INFUSION_SPHERE = "technosphere-infusion-sphere";
+-
+         // Add Technosphere tab
+         html.find(".sheet-tabs").append(
+             `<a class="button button-style" data-tab="technosphere-machine"><i class="icon ra ra-sapphire"></i>Technosphere</a>`
+@@ -203,7 +198,10 @@ export function SetupPartySheetHooks() {
+             "modules/fabula-ultima-technosphere-machine/templates/inject/party-sheet/technosphere-section.hbs",
+             {
+                 isGM: game.user.isGM,
+-                rollableTable: getFlag(sheet, FLAG_ROLLTABLE),
++                rollableTable: sheet.document.getFlag(
++                    ModuleName,
++                    FLAG_ROLLTABLE
++                ),
+                 partyMnemospheres: partyMnemospheres,
+                 characterMnemospheres: characterMnemospheres,
+             }
+@@ -257,43 +255,18 @@ export function SetupPartySheetHooks() {
+             .bind("click", async (event) => {
+                 event.preventDefault();
+ 
+-                // Check and pay the cost to roll
+                 let actor = getCharacter();
+                 if (actor == null) {
+                     ui.notifications.error(
+                         `You must have an actor selected, or have chosen one to be your player character.`
+                     );
+-                    return;
+-                }
+-
+-                const currentZenit = actor.system.resources.zenit.value;
+-                if (currentZenit < Mnemosphere_ROLL_COST) {
+-                    ui.notifications.error(
+-                        `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
+-                            "FU.Zenit"
+-                        )} to create a new Mnemosphere.`
+-                    );
+-                    return;
++                    return false;
+                 }
+ 
+-                ensureGM();
+-                await actor.update({
+-                    "system.resources.zenit.value":
+-                        currentZenit - Mnemosphere_ROLL_COST,
+-                } as any);
+-
+-                // Generate new sphere
+-                const itemData = await generateNewMnemosphere(
+-                    getFlag(sheet, FLAG_ROLLTABLE)
+-                );
+-
+-                await playMnemosphereAnimation({
+-                    itemName: itemData.name,
+-                    rarity: "common",
+-                    imageUrl: itemData.img,
++                await synchronize("roll-mnemosphere", {
++                    actorUUID: actor.uuid,
++                    partyUUID: sheet.actor.uuid,
+                 });
+-
+-                sheet.actor.createEmbeddedDocuments("Item", [itemData]);
+                 return false;
+             });
+ 
+@@ -356,12 +329,12 @@ export function SetupPartySheetHooks() {
+         // Initialize UI from flags
+         await updateDropzone(
+             infusionSkillDropzone,
+-            getFlag(sheet, FLAG_INFUSION_SKILL),
++            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SKILL),
+             "skill"
+         );
+         await updateDropzone(
+             infusionSphereSocket,
+-            getFlag(sheet, FLAG_INFUSION_SPHERE),
++            sheet.document.getFlag(ModuleName, FLAG_INFUSION_SPHERE),
+             "sphere"
+         );
+ 
+@@ -458,8 +431,14 @@ export function SetupPartySheetHooks() {
+         infuseButton.on("click", async (event) => {
+             event.preventDefault();
+ 
+-            const skillUUID = getFlag(sheet, FLAG_INFUSION_SKILL);
+-            const sphereUUID = getFlag(sheet, FLAG_INFUSION_SPHERE);
++            const skillUUID = sheet.document.getFlag(
++                ModuleName,
++                FLAG_INFUSION_SKILL
++            );
++            const sphereUUID = sheet.document.getFlag(
++                ModuleName,
++                FLAG_INFUSION_SPHERE
++            );
+ 
+             if (!skillUUID || !sphereUUID) {
+                 ui.notifications.error(
+diff --git a/scripts/socket.ts b/scripts/socket.ts
+new file mode 100644
+index 0000000..c0bafd5
+--- /dev/null
++++ b/scripts/socket.ts
+@@ -0,0 +1,132 @@
++import { Log } from "./core-config";
++
++const MODULE_ID = "fabula-ultima-technosphere-machine";
++const SOCKET_NAME = `module.${MODULE_ID}`;
++
++type SyncAction = {
++    gmFunction: (params: any) => any | false | Promise<any | false>;
++    everyoneFn: (result: any) => void | Promise<void>;
++};
++
++// A map to hold the functions for different actions.
++const syncActions = new Map<string, SyncAction>();
++// A map to hold pending promises for synchronize calls.
++const pendingPromises = new Map<
++    string,
++    { resolve: (result: any) => void; reject: (reason?: any) => void }
++>();
++
++export async function synchronize<Params, Result extends { success: boolean }>(
++    name: string,
++    params: Params,
++    successFn: (result: Result) => any
++) {
++    const correlationId = foundry.utils.randomID();
++
++    const promise = new Promise<Result>((resolve, reject) => {
++        pendingPromises.set(correlationId, { resolve, reject });
++    });
++
++    game.socket.emit(SOCKET_NAME, {
++        type: "EXECUTE",
++        name,
++        params,
++        correlationId,
++    });
++
++    let result = await promise;
++    if (result.success) {
++        successFn(result);
++    }
++
++    return promise;
++}
++
++/**
++ * Registers the functions for a synchronized action.
++ * This must be called on all clients (GM and players) during setup,
++ * so they know how to handle the action and its result.
++ *
++ * @param name The unique name for the action.
++ * @param gmFunction The function to run on the GM client. Should return `false` to indicate failure.
++ */
++export function RegisterSynchronization<Params, Result>(
++    name: string,
++    gmFunction: (params: Params) => Result | false | Promise<Result | false>,
++    everyoneFn: (result: any) => void | Promise<void>
++): void {
++    syncActions.set(name, { gmFunction, everyoneFn });
++}
++
++async function handleEmit(data) {
++    const { type, name, params, result, correlationId, reason } = data;
++    Log("Emit - ", type, name, params, result, correlationId);
++
++    const action = syncActions.get(name);
++    if (type === "EXECUTE") {
++        // GM receives a request to execute an action
++        if (!game.user.isGM) return;
++
++        if (!action) {
++            game.socket.emit(SOCKET_NAME, {
++                type: "REJECT",
++                name,
++                correlationId,
++                reason: `Action '${name}' is not registered on the GM.`,
++            });
++            return;
++        }
++
++        const gmResult = await action.gmFunction(params);
++        let success =
++            gmResult != false &&
++            (gmResult.success === undefined || gmResult.success == true);
++
++        if (success) {
++            // On success, broadcast the result back to all clients, then yourself
++            let data = {
++                type: "BROADCAST",
++                name,
++                result: { success: true, ...gmResult },
++                correlationId,
++            };
++
++            game.socket.emit(SOCKET_NAME, data);
++            await handleEmit(data);
++        } else {
++            // On failure, broadcast a rejection
++            game.socket.emit(SOCKET_NAME, {
++                type: "REJECT",
++                name,
++                correlationId,
++                result: { success: false, ...gmResult },
++                reason: `GM function for action '${name}' returned false.`,
++            });
++        }
++    } else if (type === "BROADCAST") {
++        action.everyoneFn(result);
++
++        // Resolve the promise on the originating client
++        if (pendingPromises.has(correlationId)) {
++            pendingPromises.get(correlationId)?.resolve(result);
++            pendingPromises.delete(correlationId);
++        }
++    } else if (type === "REJECT") {
++        // A client's promise is being rejected by the GM
++        if (pendingPromises.has(correlationId)) {
++            if (result.error) {
++                ui.notifications.error(result.error);
++            }
++
++            pendingPromises.get(correlationId)?.reject(result);
++            pendingPromises.delete(correlationId);
++        }
++    }
++}
++
++/**
++ * Sets up the socket listeners. This should be called once during the 'setup' or 'ready' hook.
++ */
++export function SetupSockets(): void {
++    game.socket.on(SOCKET_NAME, handleEmit);
++}
+diff --git a/scripts/technosphere-machine.ts b/scripts/technosphere-machine.ts
+index d4559fc..bb7c80f 100644
+--- a/scripts/technosphere-machine.ts
++++ b/scripts/technosphere-machine.ts
+@@ -5,14 +5,25 @@ import {
+     cleanupAnimationDevMode,
+     initializeAnimationDevMode,
+ } from "./animations/animation-dev-manager.js";
+-import { DEV_MODE, Log } from "./core-config.js";
++import { playMnemosphereAnimation } from "./animations/mnemosphere-animation";
++import {
++    DEV_MODE,
++    Log,
++    Mnemosphere_ROLL_COST,
++    ModuleName,
++} from "./core-config.js";
+ import { SetupMnemosphereCoreHooks } from "./mnemosphere-core.js";
+ import { SetupMnemosphereHooks } from "./mnemosphere.js";
+-import { SetupPartySheetHooks } from "./party-sheet/party-sheet.js";
++import {
++    FLAG_ROLLTABLE,
++    generateNewMnemosphere,
++    SetupPartySheetHooks,
++} from "./party-sheet/party-sheet.js";
+ import {
+     migrateCompendiumRollTables,
+     SetupRollTableHooks,
+ } from "./roll-table/roll-table.js";
++import { RegisterSynchronization, SetupSockets } from "./socket";
+ 
+ Hooks.once("init", async () => {
+     SetupMnemosphereHooks();
+@@ -20,6 +31,7 @@ Hooks.once("init", async () => {
+     SetupPartySheetHooks();
+     SetupActorSheetHooks();
+     SetupRollTableHooks();
++    SetupSockets();
+ 
+     // Register socket events
+     await loadTemplates([
+@@ -40,6 +52,60 @@ Hooks.once("init", async () => {
+             }
+         )
+     );
++
++    // Modification Functionality
++    RegisterSynchronization(
++        "roll-mnemosphere",
++
++        // GM
++        async (params) => {
++            // Check and pay the cost to roll
++            let actor = await fromUuid(params.actorUUID);
++            if (actor == null) {
++                return {
++                    success: false,
++                    error: `You must have an actor selected, or have chosen one to be your player character.`,
++                };
++            }
++
++            let party = await fromUuid(params.partyUUID);
++
++            const currentZenit = actor.system.resources.zenit.value;
++            if (currentZenit < Mnemosphere_ROLL_COST) {
++                return {
++                    success: false,
++                    error: `You must have at least ${Mnemosphere_ROLL_COST} ${game.i18n.localize(
++                        "FU.Zenit"
++                    )} to create a new Mnemosphere.`,
++                };
++            }
++
++            await actor.update({
++                "system.resources.zenit.value":
++                    currentZenit - Mnemosphere_ROLL_COST,
++            } as any);
++
++            // Generate new sphere
++            const itemData = await generateNewMnemosphere(
++                party.getFlag(ModuleName, FLAG_ROLLTABLE)
++            );
++            party.createEmbeddedDocuments("Item", [itemData]);
++
++            return {
++                name: itemData.name,
++                img: itemData.img,
++            };
++        },
++
++        // On Success
++        async (result) => {
++            await playMnemosphereAnimation({
++                itemName: result.name,
++                rarity: "common",
++                imageUrl: result.img,
++            });
++        }
++    );
+ });
+ 
+ Hooks.once("ready", async () => {

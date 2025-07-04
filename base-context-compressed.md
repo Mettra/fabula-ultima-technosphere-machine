@@ -150,6 +150,11 @@ User toggles equip → Update flags → mnemosphere-core hook → Combine skills
 Party sheet button → Roll class → Roll skills → Create item → Play animation → Add to actor
 ```
 
+### Client/Server Flow  
+```
+Client presses button → synchronize call → GM recieves message, does modification → Send Message → Client plays animation
+```
+
 ## INTEGRATION POINTS
 
 ### With Fabula Ultima System
