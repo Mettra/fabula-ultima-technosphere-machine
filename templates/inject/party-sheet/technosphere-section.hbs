@@ -39,7 +39,17 @@
         <div class="technosphere-tab-content" data-tab="level-up" {{#unless (eq activeTab "level-up")}}style="display: none;"{{/unless}}>
             <fieldset class="section-container title-fieldset desc resource-content">
                 <legend class="resource-label-m">Level Up</legend>
-                <div style="text-align: center; padding: 20px;">Coming soon!</div>
+                <div class="level-up-container" style="display: flex; justify-content: space-around; align-items: center; padding: 10px;">
+                    <div class="skill-drop-area drop-area" style="border: 2px dashed #aaa; padding: 20px; text-align: center; width: 45%;">
+                        <p>Drop Skill Here</p>
+                    </div>
+                    <div class="mnemosphere-drop-area drop-area" style="border: 2px dashed #aaa; padding: 20px; text-align: center; width: 45%;">
+                        <p>Drop Mnemosphere Here</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 10px;">
+                    <button type="button" class="level-up-button button" disabled>Level Up</button>
+                </div>
             </fieldset>
         </div>
         <div class="technosphere-tab-content" data-tab="combine" {{#unless (eq activeTab "combine")}}style="display: none;"{{/unless}}>

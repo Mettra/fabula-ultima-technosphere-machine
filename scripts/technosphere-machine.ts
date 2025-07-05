@@ -1,4 +1,5 @@
 import "./extensions";
+import "./mnemosphere-actions";
 
 import { SetupActorSheetHooks } from "./actor-sheet/actor-sheet.js";
 import {

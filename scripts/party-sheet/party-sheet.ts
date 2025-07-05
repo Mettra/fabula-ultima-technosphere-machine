@@ -271,5 +271,73 @@ export function SetupPartySheetHooks() {
                 );
             }
         );
+
+        // Level Up section logic
+        const levelUpContainer = html.find(".level-up-container");
+        const skillDropArea = levelUpContainer.find(".skill-drop-area");
+        const mnemosphereDropArea = levelUpContainer.find(".mnemosphere-drop-area");
+        const levelUpButton = html.find(".level-up-button");
+
+        let skillUUID = null;
+        let mnemosphereUUID = null;
+
+        function updateLevelUpButton() {
+            if (skillUUID && mnemosphereUUID) {
+                levelUpButton.prop("disabled", false);
+            } else {
+                levelUpButton.prop("disabled", true);
+            }
+        }
+
+        function setupDropZone(dropArea, type, callback) {
+            dropArea.on("dragover", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                dropArea.css("border-color", "#ff6400");
+            });
+
+            dropArea.on("dragleave", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                dropArea.css("border-color", "#aaa");
+            });
+
+            dropArea.on("drop", async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                dropArea.css("border-color", "#aaa");
+                const data = JSON.parse(
+                    event.originalEvent.dataTransfer.getData("text/plain")
+                );
+
+                if (data.type === type) {
+                    const item = await fromUuid(data.uuid);
+                    if (item) {
+                        callback(data.uuid, item.name);
+                    }
+                }
+            });
+        }
+
+        setupDropZone(skillDropArea, "Item", (uuid, name) => {
+            skillUUID = uuid;
+            skillDropArea.find("p").text(name);
+            updateLevelUpButton();
+        });
+
+        setupDropZone(mnemosphereDropArea, "Item", (uuid, name) => {
+            mnemosphereUUID = uuid;
+            mnemosphereDropArea.find("p").text(name);
+            updateLevelUpButton();
+        });
+
+        levelUpButton.on("click", async () => {
+            if (skillUUID && mnemosphereUUID) {
+                await synchronize("level-up-mnemosphere", {
+                    skillUUID: skillUUID,
+                    mnemosphereUUID: mnemosphereUUID,
+                });
+            }
+        });
     });
 }
